@@ -20,8 +20,8 @@ Waf integration to build [Speech Signal Processing Toolkit (SPTK) library ](http
 # Branches
 
 - master : c++ 向け
-- gcc: c向け
-- g++: c++向け（master にマージされる）
+- c: c向け
+- c++: c++向け（master にマージされる）
 
 # About the SPTK
     
@@ -44,8 +44,13 @@ see README.org
 
 ## Build with gcc
 
-     git checkout gcc
+     git checkout c
      ./waf configure && ./waf
+
+## Build with clang
+
+     git checkout gcc
+     CC=clang ./waf configure && ./waf
 
 ## Install 
 
