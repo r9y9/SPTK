@@ -47,6 +47,11 @@ see README.org
      git checkout gcc
      ./waf configure && ./waf
 
+## Build with clang
+
+     git checkout gcc
+     CC=clang ./waf configure && ./waf
+
 ## Install 
 
      sudo ./waf install
