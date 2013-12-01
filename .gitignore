@@ -12,3 +12,6 @@ build/
 *.~
 *.lib
 *.log
+Makefile
+.deps/
+config.status
