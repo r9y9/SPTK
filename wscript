@@ -29,10 +29,15 @@ def configure(conf):
     conf.define('SPTK_VERSION', VERSION)
     conf.env['VERSION'] = VERSION
 
-    ver = conf.env.CC_VERSION
-    conf.env.append_unique(
-        'CFLAGS',
-        ['-O2', '-Wall', '-g', '-lm'])
+    if conf.env.CC[0] == 'clang':
+        conf.env.append_unique(
+            'CXXFLAGS',
+            ['-O2', '-Wall', '-g'])
+        conf.env.COMPILER_CC = 'clang' # TODO: other solution
+    elif conf.env.COMPILER_CC == 'gcc':
+        conf.env.append_unique(
+            'CXXFLAGS',
+            ['-O2', '-Wall', '-g'])
 
     conf.env.HPREFIX = conf.env.PREFIX + '/include/SPTK'
 
