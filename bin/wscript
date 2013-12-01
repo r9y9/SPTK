@@ -4,7 +4,7 @@ def options(opt):
 def configure(conf):
     pass
 
-def build(bld):
+def build(bld):    
     bld.install_files('${HPREFIX}', '../include/SPTK.h')
 
     src = [        
@@ -84,7 +84,6 @@ def build(bld):
         target = 'SPTK',
         vnum = bld.env['VERSION'],
         use = 'SPTKlib',
+#        defines = bld.env.defines, # TODO how to get conf.env.DEFINES..?
+        defines = ['HAVE_STRING_H'],
         includes = ['../include'])
-
-
-        
