@@ -49,7 +49,7 @@ see README.org
 
 ## Build with clang
 
-     git checkout gcc
+     git checkout c
      CC=clang ./waf configure && ./waf
 
 ## Install 
