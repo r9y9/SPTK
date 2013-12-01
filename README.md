@@ -25,7 +25,7 @@ Waf integration to build [Speech Signal Processing Toolkit (SPTK) library](http:
 
 # About the SPTK
     
-see README.org
+see [README.org](README.org)
 
 # Platform
 
