@@ -1,0 +1,77 @@
+Version 3.6:
+ * add -o option to 'minmax' command to output maximum, minimum or both values.
+ * add -o 4 option to 'vstat' command to output medians.
+ * add options to 'vopr' command to deal with relational operators, arithmetic/geometric mean, and ceiling/flooring.
+ * add -T option to 'smcep' command to specifiy emphasized frequency.
+ * add -E option to 'gcep', 'mcep', 'mgcep', 'spec', 'smcep' and 'uels' command to specify floor in dB.
+ * add -F option to 'gmm' command to read initial GMM parameter file.
+ * add -L and -R option to 'wav2raw' command to deal with stereo wav file.
+ * add 'gseries', 'ifftr', 'mlsacheck', 'symmetrize' and 'transpose' command.
+ * change -f option of 'lbg' command into -F option.
+ * unify option to specify sampling frequency into -s option.
+ * fix 'x2x', 'dmp' and 'fd' command to read format string without space in front of '%'.
+ * bug fixes.
+
+Version 3.5:
+ * add 'dtw' command.
+ * add 'mfcc' command.
+ * add 'mgc2mgclsp' and 'mgclsp2mgc' command.
+ * add two pitch extraction algorithm, 'RAPT' and 'SWIPE' to 'pitch' command.
+ * add -R and -M option to 'delta' command, to skip the magic number during the calculation.
+ * unify data type for sampling frequency into float in kHz.
+ * fix options of 'psgr' and 'grlogsp' command to draw more large graph.
+ * fix 'wav2raw' to deal with IEEE float format.
+ * bug fixes.
+
+Version 3.4.1:
+ * add 'idct' command.
+ * remove all input/output data type except float from 'frame', 'snr', 'us16', and 'uscd' command.
+ * add input/output data type to many commands.
+ * show number of byte for all input/output data type in 'x2x' command.
+ * rename 'pcap' command to 'pcas' command.
+ * add new constant (octave and cent) to 'sopr' command.
+ * bug fixes.
+
+Version 3.4:
+ * add magic and MAGIC option to delete and substitute magic number to 'sopr' command.
+ * add flooring and clipping option to 'sopr' command.
+ * add clipping switch to 'x2x' command.
+ * add i3, I3, le, LE, and de option to 'x2x' command.
+ * add new paper size (A0, A1, A2, B0, B1, B2, B3) to 'psgr' command.
+ * add option for scaling factor to 'fig', 'fdrw', 'glogsp', 'grlogsp', and 'gwave' command.
+ * add option to select type of exception procedure to 'lbg' command.
+ * add option to specify random seed for centroid update to 'lbg' command.
+ * add option to specify minimum number of training vectors for each cell to 'lbg' command.
+ * add option to specify maximum number of iteration for centroid update to 'lbg' command.
+ * add output format for confidence interval via t-dist. to 'vstat' command.
+ * add output format for squared format to 'spec' and 'mgc2sp' command.
+ * add floating-point support of frame period to 'train' command.
+ * add option to 'gmm' command, to specify random seed for initialization of GMM using LBG algorithm.
+ * add full convariance switch to 'gmm' command. 
+ * add i and i3 (int and 3 byte int) option to 'swab' command.
+ * add 'wav2raw' command.
+ * bug fixes.
+
+Version 3.3:
+ * add 'pca', 'pcap', and 'raw2wav' commands.
+ * add FFT switch to 'dct' command.
+ * add transpose filter to 'glsadf' command.
+ * add inverse filter to 'glsadf', 'lmsadf', and 'mglsadf' commands.
+ * add flooring value for GMM weight to 'gmm' command.
+ * add LOG2 and POW2 option to 'sopr' command.
+ * add option to extend the distance between two consecutive LSPs to 'lspcheck' command.
+ * remove 'iglsadf' and 'imglsadf' commands.
+ * bug fixes.
+
+Version 3.2:
+ * released under the New and Simplified BSD license.
+ * add 'gmm', 'delta', and 'dct' commands.
+ * Command options are rearranged for improving consistency among related commands, e.g., mgcep, mglsa, etc.
+ * support Windows (except 'xgr').
+ * bug fixes.
+
+Version 3.1:
+ * change from K&R to ANSI C.
+ * add several commands
+ * release a Reference Manual written in English, and abandon Japanese manuals and web pages
+ * bug fixes.
