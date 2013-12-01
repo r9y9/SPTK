@@ -6,20 +6,20 @@ def configure(conf):
 
 def build(bld):
     src = [    
-        'mseq.c',
-        'movem.c',
-        'getfp.c',
-        'matrix.c',
-        'gexp.c',
-        'toeplitz.c',
-        'agexp.c',
-        'fileio.c',
-        'fillz.c',
-        'getmem.c',
-        'cholesky.c',
-        'glog.c',
-        'theq.c',
-        'invert.c',
+        'mseq.cpp',
+        'movem.cpp',
+        'getfp.cpp',
+        'matrix.cpp',
+        'gexp.cpp',
+        'toeplitz.cpp',
+        'agexp.cpp',
+        'fileio.cpp',
+        'fillz.cpp',
+        'getmem.cpp',
+        'cholesky.cpp',
+        'glog.cpp',
+        'theq.cpp',
+        'invert.cpp',
     ]
 
     bld.shlib(

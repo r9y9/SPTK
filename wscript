@@ -16,7 +16,7 @@ top = '.'
 out = 'build'
 
 def options(opt):
-    opt.load('compiler_cc')
+    opt.load('compiler_cxx')
     opt.add_option("--showenv",
                    action="store_true", dest="showenv", default=False,
                    help="show environmental variables")
@@ -24,25 +24,32 @@ def options(opt):
     opt.recurse(subdirs)
     
 def configure(conf):
-    conf.load('compiler_cc')
+    conf.load('compiler_cxx')
     
     conf.define('SPTK_VERSION', VERSION)
     conf.env['VERSION'] = VERSION
 
-    ver = conf.env.CC_VERSION
-    conf.env.append_unique(
-        'CFLAGS',
-        ['-O2', '-Wall', '-g', '-lm'])
+    if conf.env.CXX[0] == 'clang++':
+        conf.env.append_unique(
+            'CXXFLAGS',
+            ['-O2', '-Wall', '-g'])
+        conf.env.COMPILER_CXX = 'clang++' # TODO: other solution
+    elif conf.env.COMPILER_CXX == 'g++':
+        conf.env.append_unique(
+            'CXXFLAGS',
+            ['-O2', '-Wall', '-g', '-lm'])
+    else:
+        conf.fatal("Your need g++ or clang++.")
 
     conf.env.HPREFIX = conf.env.PREFIX + '/include/SPTK'
 
     # check headers
-    conf.check_cc(header_name = "fcntl.h")
-    conf.check_cc(header_name = "limits.h")
-    conf.check_cc(header_name = "stdlib.h")
-    conf.check_cc(header_name = "string.h")
-    conf.check_cc(header_name = "strings.h")
-    conf.check_cc(header_name = "sys/ioctl.h")
+    conf.check_cxx(header_name = 'fcntl.h')
+    conf.check_cxx(header_name = 'limits.h')
+    conf.check_cxx(header_name = 'stdlib.h')
+    conf.check_cxx(header_name = 'string.h')
+    conf.check_cxx(header_name = 'strings.h')
+    conf.check_cxx(header_name = 'sys/ioctl.h')
 
     conf.recurse(subdirs)
 
@@ -55,23 +62,23 @@ build (compile on):      %s
 host endian:             %s
 Compiler:                %s
 Compiler version:        %s
-CFLAGS:                %s
+CXXFLAGS:                %s
 """ % (
         APPNAME + '-' + VERSION,
         conf.env.DEST_CPU + '-' + conf.env.DEST_OS,
         sys.byteorder,
-        conf.env.COMPILER_CC,
+        conf.env.COMPILER_CXX,
         '.'.join(conf.env.CC_VERSION),
-        ' '.join(conf.env.CFLAGS)
+        ' '.join(conf.env.CXXFLAGS)
         )
 
     if conf.options.showenv:
         print conf.env
-    conf.write_config_header('src/SPTK-config.h')
+    conf.write_config_header('bin/SPTK-config.h')
             
 def build(bld):
     bld.install_files('${PREFIX}/include/SPTK', [
-        'src/SPTK-config.h',
+        'bin/SPTK-config.h',
     ])
     bld.recurse(subdirs)
 
