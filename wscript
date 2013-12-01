@@ -10,6 +10,7 @@ import waflib
 subdirs = [
     'bin',
     'lib',
+    'example',
 ]
 
 top = '.'
@@ -37,7 +38,7 @@ def configure(conf):
     elif conf.env.COMPILER_CXX == 'g++':
         conf.env.append_unique(
             'CXXFLAGS',
-            ['-O2', '-Wall', '-g', '-lm'])
+            ['-O2', '-Wall', '-g'])
     else:
         conf.fatal("Your need g++ or clang++.")
 

@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: @PACKAGE@
-Description: Speech signal processing library
+Description: Speech Signal Processing Toolkit (SPTK)
 Version: @VERSION@
 Cflags: -I${includedir}
 Libs: -L${libdir} @libs@
