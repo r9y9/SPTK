@@ -1,0 +1,16 @@
+def options(opt):
+    pass
+
+def configure(conf):
+    pass
+
+def build(bld):
+    bld.program(
+        source = 'hello.cpp',
+        target = 'hello',
+	use = ['SPTK', 'SPTKlib'], # if you use local library
+#	lib = ['SPTK', 'SPTKlib'], # if you use installed library
+        includes = ['../include']) # SPTK.h
+
+
+        
