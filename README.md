@@ -4,7 +4,7 @@
 
 # Description 
 
-Waf integration to build [Speech Signal Processing Toolkit (SPTK) library](http://sp-tk.sourceforge.net/) with C and C++ Compliers. 
+Waf integration to build [Speech Signal Processing Toolkit (SPTK) library](http://sp-tk.sourceforge.net/) with C and C++ compilers. 
 
 **SPTKを自分のコードから呼びたい人向けです。**
 
