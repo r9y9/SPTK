@@ -1,0 +1,14 @@
+.waf*
+.DS_Store
+.dropbox
+.lock-*
+build/
+*.[oa]
+*.log
+*.eps
+#*
+.#*
+*~
+*.~
+*.lib
+*.log
