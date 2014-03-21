@@ -305,3 +305,8 @@ double zerodf(double x, double *b, int m, double *d);
 double zerodft(double x, double *b, const int m, double *d);
 double zerodf1(double x, double *b, int m, double *d);
 double zerodf1t(double x, double *b, const int m, double *d);
+
+/**
+ * SWIPE - Fundamental frequency estimator
+ */
+void swipe(double *input, double *output, int length, double samplerate, int frame_shift, double min, double max, double st, int otype);

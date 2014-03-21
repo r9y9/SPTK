@@ -525,7 +525,7 @@ vector pitch(matrix S, vector pc, double st) {
 #if 0
 vector swipe(int fid, double min, double max, double st, double dt) {
 #else
-  void swipe(float_list *input, int length, double samplerate, int frame_shift, double min, double max, double st, int otype) {
+  void swipe(double *input, double *output, int length, double samplerate, int frame_shift, double min, double max, double st, int otype) {
 #endif
     int i; 
     double td = 0.;
@@ -535,7 +535,6 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     if (source == NULL || info.sections < 1) return(makev(0)); 
 #else
     double dt = (double) frame_shift / samplerate;
-    float_list *tmpf;
     vector x = makev(length);
     intvector ws;
     vector pc;
@@ -548,8 +547,8 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     double nyquist2 = samplerate;
     double nyquist16 = samplerate * 8.;
 
-    for (i = 0, tmpf = input; tmpf != NULL; i++, tmpf = tmpf->next) 
-      x.v[i] = tmpf->f / 32768.0; // normalized by max_short
+      for (i = 0; i < length; i++)
+	x.v[i] = input[i] / 32768.0; // normalized by max_short
 #endif
 #if 0
     double nyquist = info.samplerate / 2.;
@@ -634,19 +633,22 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     for (i = 0; i < p.x; i++) {
        switch(otype) {
           case 1:      /* f0 */
-             fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
+	    //fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
+	    output[i] = p.v[i];
              break;
           case 2:      /* log(f0) */
              if (p.v[i] != 0.0)
                 p.v[i] = log(p.v[i]);
              else
                 p.v[i] = -1.0E10;
-             fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
+             //fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
+	     output[i] = p.v[i];
              break;
           default:     /* pitch */
              if (p.v[i] != 0.0)
                 p.v[i] = samplerate / p.v[i];
-             fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
+             //fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
+	     output[i] = p.v[i];
              break;
        }
     }

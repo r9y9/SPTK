@@ -77,6 +77,8 @@ def build(bld):
         'lbg/_lbg.c',
         'mgcep/_mgcep.c',
         'poledf/_poledf.c',
+        'pitch/swipe/swipe.c',
+        'pitch/swipe/vector.c',
     ]
 
     bld.shlib(
