@@ -1,32 +1,9 @@
-def options(opt):
-    pass
-
 def configure(conf):
     pass
 
 def build(bld):
-    src = [    
-        'mseq.c',
-        'movem.c',
-        'getfp.c',
-        'matrix.c',
-        'gexp.c',
-        'toeplitz.c',
-        'agexp.c',
-        'fileio.c',
-        'fillz.c',
-        'getmem.c',
-        'cholesky.c',
-        'glog.c',
-        'theq.c',
-        'invert.c',
-    ]
-
     bld.shlib(
-        source = src,
+        source = bld.path.ant_glob('*.c'),
         target = 'SPTKlib',
         vnum = bld.env['VERSION'],
         includes = ['../include'])
-
-
-        

@@ -1,92 +1,17 @@
-def options(opt):
-    pass
-
 def configure(conf):
     pass
 
 def build(bld):
     bld.install_files('${HPREFIX}', '../include/SPTK.h')
 
-    src = [        
-        'clip/_clip.c',
-        'lpc2lsp/_lpc2lsp.c',
-        'b2mc/_b2mc.c',
-        'transpose/_transpose.c',
-        'fft/_fft.c',
-        'mgc2sp/_mgc2sp.c',
-        'lspcheck/_lspcheck.c',
-        'window/_window.c',
-        'uels/_uels.c',
-        'par2lpc/_par2lpc.c',
-        'vq/_vq.c',
-        'dfs/_dfs.c',
-        'lpc/_lpc.c',
-        'c2acr/_c2acr.c',
-        'rmse/_rmse.c',
-        'acep/_acep.c',
-        'average/_average.c',
-        'nrand/_nrand.c',
-        'lsp2lpc/_lsp2lpc.c',
-        'dct/_dct.c',
-        'ifft2/_ifft2.c',
-        'mglsadf/_mglsadf.c',
-        'norm0/_norm0.c',
-        'ivq/_ivq.c',
-        'mlpg/_mlpg.c',
-        'ifft/_ifft.c',
-        'fftcep/_fftcep.c',
-        'ulaw/_ulaw.c',
-        'lmadf/_lmadf.c',
-        'mgc2mgc/_mgc2mgc.c',
-        'root_pol/_root_pol.c',
-        'lpc2par/_lpc2par.c',
-        'gnorm/_gnorm.c',
-        'ignorm/_ignorm.c',
-        'lspdf/_lspdf.c',
-        'levdur/_levdur.c',
-        'grpdelay/_grpdelay.c',
-        'mc2b/_mc2b.c',
-        'ifftr/_ifftr.c',
-        'c2sp/_c2sp.c',
-        'fft2/_fft2.c',
-        'fftr2/_fftr2.c',
-        'mfcc/_mfcc.c',
-        'df2/_df2.c',
-        'fftr/_fftr.c',
-        'ltcdf/_ltcdf.c',
-        'phase/_phase.c',
-        'agcep/_agcep.c',
-        'freqt/_freqt.c',
-        'histogram/_histogram.c',
-        'gmm/_gmm.c',
-        'gc2gc/_gc2gc.c',
-        'mcep/_mcep.c',
-        'glsadf/_glsadf.c',
-        'gcep/_gcep.c',
-        'imsvq/_imsvq.c',
-        'lpc2c/_lpc2c.c',
-        'zcross/_zcross.c',
-        'mlsadf/_mlsadf.c',
-        'c2ir/_c2ir.c',
-        'msvq/_msvq.c',
-        'amcep/_amcep.c',
-        'smcep/_smcep.c',
-        'acorr/_acorr.c',
-        'reverse/_reverse.c',
-        'zerodf/_zerodf.c',
-        'lbg/_lbg.c',
-        'mgcep/_mgcep.c',
-        'poledf/_poledf.c',
+    swipe_src = [        
         'pitch/swipe/swipe.c',
         'pitch/swipe/vector.c',
     ]
 
     bld.shlib(
-        source = src,
+        source = bld.path.ant_glob('**/_*.c') + swipe_src,
         target = 'SPTK',
         vnum = bld.env['VERSION'],
         use = 'SPTKlib',
         includes = ['../include'])
-
-
-        

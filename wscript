@@ -17,12 +17,7 @@ out = 'build'
 
 def options(opt):
     opt.load('compiler_cc')
-    opt.add_option("--showenv",
-                   action="store_true", dest="showenv", default=False,
-                   help="show environmental variables")
-    
-    opt.recurse(subdirs)
-    
+        
 def configure(conf):
     conf.load('compiler_cc')
     
@@ -70,14 +65,9 @@ CFLAGS:                %s
         ' '.join(conf.env.CFLAGS)
         )
 
-    if conf.options.showenv:
-        print conf.env
     conf.write_config_header('src/SPTK-config.h')
             
 def build(bld):
-    bld.install_files('${PREFIX}/include/SPTK', [
-        'src/SPTK-config.h',
-    ])
     bld.recurse(subdirs)
 
     libs = []
@@ -85,11 +75,12 @@ def build(bld):
         if tasks == []:
             break
         for task in tasks:
-            if isinstance(task.generator, waflib.TaskGen.task_gen) and 'cxxshlib' in task.generator.features:
+            if isinstance(task.generator, waflib.TaskGen.task_gen) and 'cshlib' in task.generator.features:
                 libs.append(task.generator.target)
     ls = ''
     for l in set(libs):
         ls = ls + ' -l' + l
+    ls += ' -lm'
 
     bld(source = 'SPTK.pc.in',
         prefix = bld.env['PREFIX'],
