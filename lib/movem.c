@@ -61,8 +61,8 @@
 void movem(void *a, void *b, const size_t size, const int nitem)
 {
    long i;
-   char *c = (char*)a;
-   char *d = (char*)b;
+   char *c = a;
+   char *d = b;
 
    i = size * nitem;
    if (c > d)

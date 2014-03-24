@@ -242,7 +242,7 @@ void mfcc(double *in, double *mc, const double sampleFreq, const double alpha,
    for (k = 1; k <= n; k++)
       c0 += fb[k];
    c0 *= sqrt(2.0 / (double) n);
-   dct(fb + 1, dc, n, m, dftmode, (Boolean)0);
+   dct(fb + 1, dc, n, m, dftmode, 0);
 
    /* liftering */
    if (ceplift > 0)

@@ -10,7 +10,6 @@ import waflib
 subdirs = [
     'bin',
     'lib',
-    'example',
 ]
 
 top = '.'
@@ -18,9 +17,9 @@ out = 'build'
 
 def options(opt):
     opt.load('compiler_cc')
-
+        
 def configure(conf):
-    conf.load('compiler_cxx')
+    conf.load('compiler_cc')
     
     conf.define('SPTK_VERSION', VERSION)
     conf.env['VERSION'] = VERSION
@@ -38,12 +37,12 @@ def configure(conf):
     conf.env.HPREFIX = conf.env.PREFIX + '/include/SPTK'
 
     # check headers
-    conf.check_cxx(header_name = 'fcntl.h')
-    conf.check_cxx(header_name = 'limits.h')
-    conf.check_cxx(header_name = 'stdlib.h')
-    conf.check_cxx(header_name = 'string.h')
-    conf.check_cxx(header_name = 'strings.h')
-    conf.check_cxx(header_name = 'sys/ioctl.h')
+    conf.check_cc(header_name = "fcntl.h")
+    conf.check_cc(header_name = "limits.h")
+    conf.check_cc(header_name = "stdlib.h")
+    conf.check_cc(header_name = "string.h")
+    conf.check_cc(header_name = "strings.h")
+    conf.check_cc(header_name = "sys/ioctl.h")
 
     conf.recurse(subdirs)
 
@@ -56,14 +55,14 @@ build (compile on):      %s
 host endian:             %s
 Compiler:                %s
 Compiler version:        %s
-CXXFLAGS:                %s
+CFLAGS:                %s
 """ % (
         APPNAME + '-' + VERSION,
         conf.env.DEST_CPU + '-' + conf.env.DEST_OS,
         sys.byteorder,
-        conf.env.COMPILER_CXX,
+        conf.env.COMPILER_CC,
         '.'.join(conf.env.CC_VERSION),
-        ' '.join(conf.env.CXXFLAGS)
+        ' '.join(conf.env.CFLAGS)
         )
 
     conf.write_config_header('src/SPTK-config.h')

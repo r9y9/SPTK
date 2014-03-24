@@ -44,19 +44,20 @@
 
 /****************************************************************
 
-    $Id: _lmadf.c,v 1.16 2012/12/21 11:27:34 mataki Exp $
+    $Id: _mlsadf.c,v 1.17 2012/12/21 11:27:36 mataki Exp $
 
-    LMA Digital Filter
+    MLSA Digital Filter
 
-        double    lmadflt(x, c, m, pd, d)
+        double mlsadf(x, b, m, a, pd, d)
 
-        double    x     : input
-        double    *c    : cepstrum
-        int       m     : order of cepstrum
-        int       pd    : order of Pade approximation
-        double    *d    : delay
+        double x     : input
+        double *c    : MLSA filter coefficients
+        int    m     : order of cepstrum
+        double a     : all-pass constant
+        int    pd    : order of Pade approximation
+        double *d    : delay
 
-        return    value : filtered data
+        return value : filtered data
 
 *****************************************************************/
 
@@ -76,90 +77,41 @@ static double pade[] = { 1.0,
    1.0, 0.4999391, 0.1107098, 0.01369984, 0.0009564853, 0.00003041721
 };
 
-static double *ppade;
+double *ppade;
 
-/****************************************************************
-
-    double lmafir(x, c, d, m, m1, m2)
-
-    double x  : input
-    double *c : cepstrum
-    int    m  : order of cepstrum
-    double *d : delay
-    int    m1 : start order
-    int    m2 : end order
-
-*****************************************************************/
-
-static double lmafir(double x, double *c, const int m, double *d, const int m1,
-                     const int m2)
+static double mlsafir(double x, double *b, const int m, const double a,
+                      double *d)
 {
+   double y = 0.0, aa;
    int i;
 
-   for (i = m - 1; i >= 1; i--)
-      d[i] = d[i - 1];
+   aa = 1 - a * a;
+
    d[0] = x;
-   for (x = 0.0, i = m1; i <= m2; i++)
-      x += c[i] * d[i - 1];
+   d[1] = aa * d[0] + a * d[1];
 
-   return (x);
-}
-
-double lmadf(double x, double *c, const int m, const int pd, double *d)
-{
-   ppade = &pade[pd * (pd + 1) / 2];
-
-   x = lmadf1(x, c, m, d, 1, 1, pd);    /* D1(z) */
-   x = lmadf1(x, c, m, &d[(m + 1) * pd], 2, m, pd);     /* D2(z) */
-
-   return (x);
-}
-
-/****************************************************************
-
-    double lmadf1(x, c, m, d, m1, m2, pd)
-
-    double x  : input
-    double *c : cepstrum
-    int    m  : order of cepstrum
-    double *d : delay
-    int    m1 : start order
-    int    m2 : end order
-    int    pd : order of Pade approximation
-
-*****************************************************************/
-
-double lmadf1(double x, double *c, const int m, double *d, const int m1,
-              const int m2, const int pd)
-{
-   double y, t, *pt;
-   int i;
-
-   pt = &d[pd * m];
-   t = lmafir(pt[pd - 1], c, m, &d[(pd - 1) * m], m1, m2);
-   y = (t *= ppade[pd]);
-   x += (1 & pd) ? t : -t;
-   for (i = pd - 1; i >= 1; i--) {
-      pt[i] = t = lmafir(pt[i - 1], c, m, &d[(i - 1) * m], m1, m2);
-      y += (t *= ppade[i]);
-      x += (1 & i) ? t : -t;
+   for (i = 2; i <= m; i++) {
+      d[i] = d[i] + a * (d[i + 1] - d[i - 1]);
+      y += d[i] * b[i];
    }
-   y += (pt[0] = x);
+
+   for (i = m + 1; i > 1; i--)
+      d[i] = d[i - 1];
 
    return (y);
 }
 
-/* transpose */
-
-double lmadf1t(double x, double *b, const int pd, double *d)
+static double mlsadf1(double x, double *b, const double a,
+                      const int pd, double *d)
 {
-   double v, out = 0.0, *pt;
+   double v, out = 0.0, *pt, aa;
    int i;
 
+   aa = 1 - a * a;
    pt = &d[pd + 1];
 
    for (i = pd; i >= 1; i--) {
-      d[i] = pt[i - 1];
+      d[i] = aa * pt[i - 1] + a * d[i];
       pt[i] = d[i] * b[1];
       v = pt[i] * ppade[i];
 
@@ -173,33 +125,17 @@ double lmadf1t(double x, double *b, const int pd, double *d)
    return (out);
 }
 
-static double lmafirt(double x, double *b, const int m, double *d)
+static double mlsadf2(double x, double *b, const int m, const double a,
+                      const int pd, double *d)
 {
-   int i;
-   double y = 0.0;
-
-   y = d[0];
-
-   d[m] = b[m] * x;
-   for (i = m - 1; i > 1; i--)
-      d[i] += b[i] * x;
-   d[1] += 0;
-
-   for (i = 0; i < m; i++)
-      d[i] = d[i + 1];
-
-   return (y);
-}
-
-static double lmadf2t(double x, double *b, const int m, const int pd, double *d)
-{
-   double v, out = 0.0, *pt;
+   double v, out = 0.0, *pt, aa;
    int i;
 
+   aa = 1 - a * a;
    pt = &d[pd * (m + 2)];
 
    for (i = pd; i >= 1; i--) {
-      pt[i] = lmafirt(pt[i - 1], b, m, &d[(i - 1) * (m + 2)]);
+      pt[i] = mlsafir(pt[i - 1], b, m, a, &d[(i - 1) * (m + 2)]);
       v = pt[i] * ppade[i];
 
       x += (1 & i) ? v : -v;
@@ -212,12 +148,67 @@ static double lmadf2t(double x, double *b, const int m, const int pd, double *d)
    return (out);
 }
 
-double lmadft(double x, double *c, const int m, const int pd, double *d)
+double mlsadf(double x, double *b, const int m, const double a, const int pd,
+              double *d)
 {
    ppade = &pade[pd * (pd + 1) / 2];
 
-   x = lmadf1t(x, c, pd, d);
-   x = lmadf2t(x, c, m, pd, &d[2 * (pd + 1)]);
+   x = mlsadf1(x, b, a, pd, d);
+   x = mlsadf2(x, b, m, a, pd, &d[2 * (pd + 1)]);
+
+   return (x);
+}
+
+
+static double mlsafirt(double x, double *b, const int m, const double a,
+                       double *d)
+{
+   int i;
+   double y = 0.0;
+
+   y = (1.0 - a * a) * d[0];
+
+   d[m] = b[m] * x + a * d[m - 1];
+   for (i = m - 1; i > 1; i--)
+      d[i] += b[i] * x + a * (d[i - 1] - d[i + 1]);
+   d[1] += a * (d[0] - d[2]);
+
+   for (i = 0; i < m; i++)
+      d[i] = d[i + 1];
+
+   return (y);
+}
+
+static double mlsadf2t(double x, double *b, const int m, const double a,
+                       const int pd, double *d)
+{
+   double v, out = 0.0, *pt, aa;
+   int i;
+
+   aa = 1 - a * a;
+   pt = &d[pd * (m + 2)];
+
+   for (i = pd; i >= 1; i--) {
+      pt[i] = mlsafirt(pt[i - 1], b, m, a, &d[(i - 1) * (m + 2)]);
+      v = pt[i] * ppade[i];
+
+      x += (1 & i) ? v : -v;
+      out += v;
+   }
+
+   pt[0] = x;
+   out += x;
+
+   return (out);
+}
+
+double mlsadft(double x, double *b, const int m, const double a, const int pd,
+               double *d)
+{
+   ppade = &pade[pd * (pd + 1) / 2];
+
+   x = mlsadf1(x, b, a, pd, d);
+   x = mlsadf2t(x, b, m, a, pd, &d[2 * (pd + 1)]);
 
    return (x);
 }

@@ -60,7 +60,7 @@
 void fillz(void *ptr, const size_t size, const int nitem)
 {
    long n;
-   char *p = (char*)ptr;
+   char *p = ptr;
 
    n = size * nitem;
    while (n--)
