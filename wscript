@@ -17,30 +17,23 @@ top = '.'
 out = 'build'
 
 def options(opt):
-    opt.load('compiler_cxx')
-    opt.add_option("--showenv",
-                   action="store_true", dest="showenv", default=False,
-                   help="show environmental variables")
-    
-    opt.recurse(subdirs)
-    
+    opt.load('compiler_cc')
+
 def configure(conf):
     conf.load('compiler_cxx')
     
     conf.define('SPTK_VERSION', VERSION)
     conf.env['VERSION'] = VERSION
 
-    if conf.env.CXX[0] == 'clang++':
+    if conf.env.CC[0] == 'clang':
         conf.env.append_unique(
             'CXXFLAGS',
             ['-O2', '-Wall', '-g'])
-        conf.env.COMPILER_CXX = 'clang++' # TODO: other solution
-    elif conf.env.COMPILER_CXX == 'g++':
+        conf.env.COMPILER_CC = 'clang' # TODO: other solution
+    elif conf.env.COMPILER_CC == 'gcc':
         conf.env.append_unique(
             'CXXFLAGS',
             ['-O2', '-Wall', '-g'])
-    else:
-        conf.fatal("Your need g++ or clang++.")
 
     conf.env.HPREFIX = conf.env.PREFIX + '/include/SPTK'
 
@@ -73,14 +66,9 @@ CXXFLAGS:                %s
         ' '.join(conf.env.CXXFLAGS)
         )
 
-    if conf.options.showenv:
-        print conf.env
-    conf.write_config_header('bin/SPTK-config.h')
+    conf.write_config_header('src/SPTK-config.h')
             
 def build(bld):
-    bld.install_files('${PREFIX}/include/SPTK', [
-        'bin/SPTK-config.h',
-    ])
     bld.recurse(subdirs)
 
     libs = []
@@ -88,11 +76,12 @@ def build(bld):
         if tasks == []:
             break
         for task in tasks:
-            if isinstance(task.generator, waflib.TaskGen.task_gen) and 'cxxshlib' in task.generator.features:
+            if isinstance(task.generator, waflib.TaskGen.task_gen) and 'cshlib' in task.generator.features:
                 libs.append(task.generator.target)
     ls = ''
     for l in set(libs):
         ls = ls + ' -l' + l
+    ls += ' -lm'
 
     bld(source = 'SPTK.pc.in',
         prefix = bld.env['PREFIX'],
