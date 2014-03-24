@@ -13,15 +13,16 @@ Waf integration to build [Speech Signal Processing Toolkit (SPTK) library](http:
 * [waf](https://code.google.com/p/waf/)が使えます（速い、出力がキレイ）
 * 自分のC、C++コードからSPTKのメソッドを呼べます。
 * コマンドラインツールはインストールされません。
+* 一部API breakingが存在します（今のところ基本周波数推定のswipeのみ）
+* SPTKのバージョンは3.7です
    
 
-コマンドラインツールを使いたい人は、元のconfigure scriptを使えばOKです。
+コマンドラインツールを使いたい人は、オリジナルを使えばOKです。
 
 # Branches
 
-- master : c++ 向け
-- c: c向け
-- c++: c++向け（master にマージされる）
+- master : c向け
+- c++: c++向け（必要に迫られればアップデート）
 
 # About the SPTK
     
