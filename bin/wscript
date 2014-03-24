@@ -9,8 +9,10 @@ def build(bld):
         'pitch/swipe/vector.c',
     ]
 
+    hts_engine_src = bld.path.ant_glob('**/vc/hts_engine_API/*.c')
+
     bld.shlib(
-        source = bld.path.ant_glob('**/_*.c') + swipe_src,
+        source = bld.path.ant_glob('**/_*.c') + swipe_src + hts_engine_src,
         target = 'SPTK',
         vnum = bld.env['VERSION'],
         use = 'SPTKlib',
