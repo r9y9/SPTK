@@ -1,11 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 ##
-## $Id: Makefile.am,v 1.2 2012/06/06 12:10:25 mataki Exp $
+## $Id: Makefile.am,v 1.3 2013/11/15 06:23:05 mataki Exp $
 if USEXGR
 bin_PROGRAMS = xgr
 endif
 
-INCLUDES = -I$(top_srcdir)/include 
+AM_CPPFLAGS = -I$(top_srcdir)/include
 xgr_SOURCES = config.h \
 	gcdata.h \
 	plot.c \

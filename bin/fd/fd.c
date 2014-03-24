@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -69,7 +69,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: fd.c,v 1.27 2012/12/21 11:27:32 mataki Exp $";
+static char *rcs_id = "$Id: fd.c,v 1.30 2013/12/16 09:01:56 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -160,7 +160,7 @@ void usage(int status)
 long start = START, mod = MODULO;
 int is_int = 0, entry = ENTRY, is_char = 1, ff = 0;
 size_t size = sizeof(char);
-char adrsfmt = 'd', format[SIZE], form[SIZE], type = 'f';
+char adrsfmt = 'd', format[SIZE], form[SIZE], type = 'c';
 
 int main(int argc, char **argv)
 {
@@ -331,8 +331,11 @@ void fdump(FILE * fp)
          for (i = 0; (i < entry) && !feof(fp) && (n < mod); i++, n++) {
             switch (type) {
             case 'c':
-               s[i] = (((u.b & 0x7f) < 32) || (u.b == 0x7f)
-                       || (u.b >= 0xe0)) ? '.' : u.b;
+               if (isprint(u.b)) {
+                  s[i] = u.b;
+               } else {
+                  s[i] = '.';
+               }
                if (is_char)
                   printf("%02x ", u.b);
                else

@@ -1,3 +1,629 @@
+2013-12-24 19:27  mataki
+
+	* Makefile.mak: fix Makefile.mak to install files correctly.
+
+2013-12-23 23:27  uratec
+
+	* README, bin/Makefile.am, bin/ds/Makefile.am,
+	  bin/ds/titech/COPYING, bin/ds/titech/lpfcoef.7to4,
+	  bin/us/Makefile.am, bin/us/titech/COPYING,
+	  bin/us/titech/lpfcoef.3to5, bin/us/titech/lpfcoef.7to8: Fix
+	  copyrights of ds/us filter coefficients.
+
+2013-12-23 09:40  mataki
+
+	* README: fix README for COPYING.
+
+2013-12-23 09:37  mataki
+
+	* README: fix README for COPYING.
+
+2013-12-23 09:02  mataki
+
+	* bin/: mlsacheck/mlsacheck.c, symmetrize/symmetrize.c: fix source
+	  code to remove warning messages in compilation.
+
+2013-12-23 01:58  uratec
+
+	* NEWS, configure.ac, bin/Makefile.am, bin/ds/Makefile.am,
+	  bin/ds/ds.c, bin/us/Makefile.am, bin/us/us.c: Add filter
+	  coefficients for 7:4 down-sampling, 3:5 and 7:8 up-sampling.
+
+2013-12-19 11:47  mataki
+
+	* NEWS: fix NEWS for version 3.7.
+
+2013-12-19 11:28  mataki
+
+	* bin/: lspcheck/lspcheck.c, lspdf/lspdf.c: fix source code for
+	  compatibility of log gain.
+
+2013-12-19 11:07  mataki
+
+	* NEWS: update NEWS for version 3.7.
+
+2013-12-19 11:05  mataki
+
+	* bin/: lspcheck/lspcheck.c, lspdf/lspdf.c: change -l option to -L
+	  option to specify log gain.
+
+2013-12-19 08:36  mataki
+
+	* bin/vc/hts_engine_API/: COPYING, HTS_engine.h, HTS_hidden.h,
+	  HTS_misc.c, HTS_pstream.c, HTS_sstream.c: update source code and
+	  COPYING based on hts_engine_API-1.08.
+
+2013-12-18 13:13  mataki
+
+	* NEWS: update NEWS for version 3.7.
+
+2013-12-18 12:58  mataki
+
+	* bin/rmse/rmse.c: fix indentation of usage().
+
+2013-12-17 11:36  mataki
+
+	* NEWS: update NEWS for version 3.7.
+
+2013-12-17 10:49  mataki
+
+	* bin/: decimate/decimate.c, interpolate/interpolate.c: fix usage()
+	  and macro name.
+
+2013-12-16 23:42  mataki
+
+	* script/: glogsp.in, grlogsp.in: fix usage.
+
+2013-12-16 19:57  mataki
+
+	* bin/sopr/sopr.c: re-add constant semitone.
+
+2013-12-16 18:01  mataki
+
+	* COPYING, README, configure.ac, bin/acep/_acep.c, bin/acep/acep.c,
+	  bin/acorr/_acorr.c, bin/acorr/acorr.c, bin/agcep/_agcep.c,
+	  bin/agcep/agcep.c, bin/amcep/_amcep.c, bin/amcep/amcep.c,
+	  bin/average/_average.c, bin/average/average.c, bin/b2mc/_b2mc.c,
+	  bin/b2mc/b2mc.c, bin/bcp/bcp.c, bin/bcut/bcut.c,
+	  bin/c2acr/_c2acr.c, bin/c2acr/c2acr.c, bin/c2ir/_c2ir.c,
+	  bin/c2ir/c2ir.c, bin/c2sp/_c2sp.c, bin/c2sp/c2sp.c,
+	  bin/cat2/cat2.c, bin/cdist/cdist.c, bin/clip/_clip.c,
+	  bin/clip/clip.c, bin/da/da.h, bin/da/da.in, bin/da/dawrite.c,
+	  bin/da/winplay.c, bin/da/winplay.h, bin/dct/_dct.c,
+	  bin/dct/dct.c, bin/decimate/decimate.c, bin/delay/delay.c,
+	  bin/delta/delta.c, bin/df2/_df2.c, bin/df2/df2.c, bin/dfs/_dfs.c,
+	  bin/dfs/dfs.c, bin/dmp/dmp.c, bin/ds/ds.c, bin/dtw/dtw.c,
+	  bin/echo2/echo2.c, bin/excite/excite.c, bin/extract/extract.c,
+	  bin/fd/fd.c, bin/fft/_fft.c, bin/fft/fft.c, bin/fft2/_fft2.c,
+	  bin/fft2/fft2.c, bin/fftcep/_fftcep.c, bin/fftcep/fftcep.c,
+	  bin/fftr/_fftr.c, bin/fftr/fftr.c, bin/fftr2/_fftr2.c,
+	  bin/fftr2/fftr2.c, bin/fig+fdrw/fdrw.c, bin/fig+fdrw/fig.c,
+	  bin/fig+fdrw/fig.h, bin/fig+fdrw/fig0.c, bin/fig+fdrw/fig1.c,
+	  bin/fig+fdrw/plot.c, bin/fig+fdrw/plot.h, bin/fig+fdrw/plsub.c,
+	  bin/frame/frame.c, bin/freqt/_freqt.c, bin/freqt/freqt.c,
+	  bin/gc2gc/_gc2gc.c, bin/gc2gc/gc2gc.c, bin/gcep/_gcep.c,
+	  bin/gcep/gcep.c, bin/glsadf/_glsadf.c, bin/glsadf/glsadf.c,
+	  bin/gmm/_gmm.c, bin/gmm/gmm.c, bin/gmm/gmmp.c,
+	  bin/gnorm/_gnorm.c, bin/gnorm/gnorm.c, bin/grpdelay/_grpdelay.c,
+	  bin/grpdelay/grpdelay.c, bin/histogram/_histogram.c,
+	  bin/histogram/histogram.c, bin/idct/idct.c, bin/ifft/_ifft.c,
+	  bin/ifft/ifft.c, bin/ifft2/_ifft2.c, bin/ifft2/ifft2.c,
+	  bin/ifftr/_ifftr.c, bin/ifftr/ifftr.c, bin/ignorm/_ignorm.c,
+	  bin/ignorm/ignorm.c, bin/impulse/impulse.c, bin/imsvq/_imsvq.c,
+	  bin/imsvq/imsvq.c, bin/interpolate/interpolate.c, bin/ivq/_ivq.c,
+	  bin/ivq/ivq.c, bin/lbg/_lbg.c, bin/lbg/lbg.c,
+	  bin/levdur/_levdur.c, bin/levdur/levdur.c,
+	  bin/linear_intpl/linear_intpl.c, bin/lmadf/_lmadf.c,
+	  bin/lmadf/lmadf.c, bin/lpc/_lpc.c, bin/lpc/lpc.c,
+	  bin/lpc2c/_lpc2c.c, bin/lpc2c/lpc2c.c, bin/lpc2lsp/_lpc2lsp.c,
+	  bin/lpc2lsp/lpc2lsp.c, bin/lpc2par/_lpc2par.c,
+	  bin/lpc2par/lpc2par.c, bin/lsp2lpc/_lsp2lpc.c,
+	  bin/lsp2lpc/lsp2lpc.c, bin/lsp2sp/_lsp2sp.c, bin/lsp2sp/lsp2sp.c,
+	  bin/lspcheck/_lspcheck.c, bin/lspcheck/lspcheck.c,
+	  bin/lspdf/_lspdf.c, bin/lspdf/lspdf.c, bin/ltcdf/_ltcdf.c,
+	  bin/ltcdf/ltcdf.c, bin/mc2b/_mc2b.c, bin/mc2b/mc2b.c,
+	  bin/mcep/_mcep.c, bin/mcep/mcep.c, bin/merge/merge.c,
+	  bin/mfcc/_mfcc.c, bin/mfcc/mfcc.c, bin/mgc2mgc/_mgc2mgc.c,
+	  bin/mgc2mgc/mgc2mgc.c, bin/mgc2sp/_mgc2sp.c, bin/mgc2sp/mgc2sp.c,
+	  bin/mgcep/_mgcep.c, bin/mgcep/mgcep.c, bin/mglsadf/_mglsadf.c,
+	  bin/mglsadf/mglsadf.c, bin/minmax/minmax.c, bin/mlpg/_mlpg.c,
+	  bin/mlpg/mlpg.c, bin/mlsacheck/mlsacheck.c, bin/mlsadf/_mlsadf.c,
+	  bin/mlsadf/mlsadf.c, bin/msvq/_msvq.c, bin/msvq/msvq.c,
+	  bin/nan/nan.c, bin/norm0/_norm0.c, bin/norm0/norm0.c,
+	  bin/nrand/_nrand.c, bin/nrand/nrand.c, bin/par2lpc/_par2lpc.c,
+	  bin/par2lpc/par2lpc.c, bin/pca/pca.c, bin/pca/pcas.c,
+	  bin/phase/_phase.c, bin/phase/phase.c, bin/pitch/pitch.c,
+	  bin/pitch/snack/COPYING, bin/pitch/snack/jkGetF0.c,
+	  bin/pitch/snack/jkGetF0.h, bin/pitch/snack/sigproc.c,
+	  bin/pitch/swipe/COPYING, bin/pitch/swipe/swipe.c,
+	  bin/pitch/swipe/vector.c, bin/pitch/swipe/vector.h,
+	  bin/poledf/_poledf.c, bin/poledf/poledf.c, bin/psgr/dict.c,
+	  bin/psgr/eps.c, bin/psgr/plot.c, bin/psgr/psgr.c,
+	  bin/psgr/psgr.h, bin/ramp/ramp.c, bin/rawtowav/rawtowav.c,
+	  bin/reverse/_reverse.c, bin/reverse/reverse.c, bin/rmse/_rmse.c,
+	  bin/rmse/rmse.c, bin/root_pol/_root_pol.c,
+	  bin/root_pol/root_pol.c, bin/sin/sin.c, bin/smcep/_smcep.c,
+	  bin/smcep/smcep.c, bin/snr/snr.c, bin/sopr/sopr.c,
+	  bin/spec/spec.c, bin/step/step.c, bin/swab/swab.c,
+	  bin/symmetrize/symmetrize.c, bin/train/train.c,
+	  bin/transpose/_transpose.c, bin/transpose/transpose.c,
+	  bin/uels/_uels.c, bin/uels/uels.c, bin/ulaw/_ulaw.c,
+	  bin/ulaw/ulaw.c, bin/us/us.c, bin/us/us16.in, bin/us/uscd.in,
+	  bin/vopr/vopr.c, bin/vq/_vq.c, bin/vq/vq.c, bin/vstat/vstat.c,
+	  bin/vsum/vsum.c, bin/window/_window.c, bin/window/window.c,
+	  bin/x2x/x2x.c, bin/xgr/config.h, bin/xgr/gcdata.h,
+	  bin/xgr/plot.c, bin/xgr/window.c, bin/xgr/xgr.c, bin/xgr/xgr.h,
+	  bin/zcross/_zcross.c, bin/zcross/zcross.c, bin/zerodf/_zerodf.c,
+	  bin/zerodf/zerodf.c, include/SPTK.h, lib/agexp.c, lib/cholesky.c,
+	  lib/fileio.c, lib/fillz.c, lib/getfp.c, lib/getmem.c, lib/gexp.c,
+	  lib/glog.c, lib/invert.c, lib/matrix.c, lib/movem.c, lib/mseq.c,
+	  lib/theq.c, lib/toeplitz.c, script/bell.in, script/glogsp.in,
+	  script/grlogsp.in, script/gseries.in, script/gwave.in,
+	  script/mgc2mgclsp.in, script/mgclsp2mgc.in, script/raw2wav.in,
+	  script/wav2raw.in: update all documents for version 3.7.
+
+2013-12-15 16:36  mataki
+
+	* bin/gmm/_gmm.c, bin/lsp2sp/_lsp2sp.c, include/SPTK.h: fix the
+	  problem of multiple definition of constant macros.
+
+2013-12-15 02:30  mataki
+
+	* bin/da/Makefile.am: fix Makefile.am for correct installation.
+
+2013-12-14 22:11  mataki
+
+	* configure.ac: fix configure.ac to specify TARNAME explicitly.
+
+2013-12-14 20:30  mataki
+
+	* bin/vc/Makefile.am, bin/Makefile.mak, bin/vc/_vc.c,
+	  lib/Makefile.am: fix source code, Makefile.am and Makefile.mak to
+	  compile vc command.
+
+2013-12-13 18:19  mataki
+
+	* bin/gmm/Makefile.am: remove gmm.h.
+
+2013-12-13 18:02  mataki
+
+	* bin/gmm/gmmp.c: add -f option to specify full covariance.
+
+2013-12-11 16:20  mataki
+
+	* bin/vc/vc.c: remove unnecessary local variable.
+
+2013-12-11 14:27  mataki
+
+	* bin/vc/hts_engine_API/HTS_sstream.c: remove '#else' directives.
+
+2013-12-10 20:40  mataki
+
+	* bin/vc/: _vc.c, vc.c: fix order of arguments for getmem().
+
+2013-12-10 20:24  mataki
+
+	* bin/vc/vc.c: fix source code to avoid memory leak bug.
+
+2013-12-10 20:11  mataki
+
+	* bin/vc/vc.c: fix source code to avoid memory leak.
+
+2013-12-10 19:15  mataki
+
+	* bin/vc/: Makefile.am, hts_engine_API/HTS_engine.h,
+	  hts_engine_API/HTS_hidden.h, hts_engine_API/HTS_label.c,
+	  hts_engine_API/HTS_misc.c, hts_engine_API/HTS_model.c,
+	  hts_engine_API/HTS_pstream.c, hts_engine_API/HTS_sstream.c:
+	  remove HTS_label.c and HTS_model.c.
+
+2013-12-10 18:36  mataki
+
+	* bin/vc/.cvsignore: fix .cvsignore.
+
+2013-12-10 17:51  mataki
+
+	* bin/vc/hts_engine_API/COPYING: add COPYING for vc command.
+
+2013-12-10 17:49  mataki
+
+	* bin/vc/: .cvsignore, hts_engine_API/HTS_engine.h,
+	  hts_engine_API/HTS_hidden.h: add vc command.
+
+2013-12-10 17:44  mataki
+
+	* bin/vc/: .cvsignore, _vc.c: fix comment part of _vc.c to insert
+	  rcs_id and fix .cvsignore to add hts_engine_API.
+
+2013-12-10 17:36  mataki
+
+	* configure.ac, bin/Makefile.am, bin/decimate/decimate.c,
+	  bin/lpc2lsp/lpc2lsp.c, bin/lsp2lpc/lsp2lpc.c, bin/vc/.cvsignore,
+	  bin/vc/Makefile.am, bin/vc/_vc.c, bin/vc/vc.c,
+	  bin/vc/hts_engine_API/HTS_label.c,
+	  bin/vc/hts_engine_API/HTS_misc.c,
+	  bin/vc/hts_engine_API/HTS_model.c,
+	  bin/vc/hts_engine_API/HTS_pstream.c,
+	  bin/vc/hts_engine_API/HTS_sstream.c, include/SPTK.h: add vc
+	  command.
+
+2013-12-10 17:09  mataki
+
+	* bin/gmm/_gmm.c, bin/gmm/gmm.c, bin/gmm/gmmp.c, include/SPTK.h,
+	  bin/gmm/gmm.h: remove gmm.h.
+
+2013-12-10 15:11  mataki
+
+	* bin/gmm/_gmm.c, bin/gmm/gmm.c, bin/gmm/gmmp.c, include/SPTK.h: -
+	  integrate fillz_gmm() and fillz_gmmf() into fillz_GMM().  -
+	  integrate log_wgd() and log_wgdf() into new log_wgd().  - use
+	  'TR' to specify value of 'full' as member of GMM structure.
+
+2013-12-09 18:04  mataki
+
+	* bin/gmm/_gmm.c, bin/gmm/gmm.c, bin/gmm/gmmp.c, include/SPTK.h:
+	  fix GMM structure and its related modules to remove redundant
+	  arguments.
+
+2013-12-09 14:37  uratec
+
+	* script/: mgc2mgclsp.in, mgclsp2mgc.in: Change log gain option for
+	  mgc2mgclsp and mgclsp2mgc
+
+2013-12-09 14:33  uratec
+
+	* bin/: gcep/gcep.c, mgcep/mgcep.c: Fix source code format
+
+2013-12-02 13:11  mataki
+
+	* bin/gmm/_gmm.c: fix load_GMM() to set number of mixtures.
+
+2013-11-26 13:46  artk0816
+
+	* script/mgc2mgclsp.in: modify mgc2mgclsp about -h option
+
+2013-11-26 11:06  mataki
+
+	* bin/da/Makefile.am, bin/da/da.in, bin/rawtowav/Makefile.am,
+	  bin/us/Makefile.am, script/Makefile.am, script/raw2wav.in: put
+	  all .sh files, dawrite and rawtowav into
+	  "install_dir/share/SPTK".
+
+2013-11-26 10:49  artk0816
+
+	* bin/mlsacheck/mlsacheck.c: add options for modification by
+	  scaling and specifying threshold to mlsacheck
+
+2013-11-22 14:36  mataki
+
+	* bin/: dct/dct.c, idct/idct.c: fix typo.
+
+2013-11-18 21:11  mataki
+
+	* bin/da/Makefile.am, bin/da/da.in, bin/rawtowav/Makefile.am,
+	  script/raw2wav.in: make rawtowav and dawrite hidden binaries.
+
+2013-11-18 20:47  artk0816
+
+	* script/mgc2mgclsp.in: add mgc2mgclsp to -d, -n and -p options.
+
+2013-11-18 19:00  mataki
+
+	* bin/merge/merge.c: apply patch code provided by Giulio Paci.
+
+2013-11-15 16:16  mataki
+
+	* bin/us/Makefile.am: Apply patch code provided by Giulio Paci.
+
+2013-11-15 16:05  mataki
+
+	* configure.ac: Apply patch code provided by Giulio Paci except
+	  that 'no-installinfo' and 'no-installman' are removed. This is
+	  because these options are disallowed by GNU standards.
+
+2013-11-15 15:22  mataki
+
+	* bin/: acep/Makefile.am, acorr/Makefile.am, agcep/Makefile.am,
+	  amcep/Makefile.am, average/Makefile.am, b2mc/Makefile.am,
+	  bcp/Makefile.am, bcut/Makefile.am, c2acr/Makefile.am,
+	  c2ir/Makefile.am, c2sp/Makefile.am, cat2/Makefile.am,
+	  cdist/Makefile.am, clip/Makefile.am, da/Makefile.am,
+	  dct/Makefile.am, decimate/Makefile.am, delay/Makefile.am,
+	  delta/Makefile.am, df2/Makefile.am, dfs/Makefile.am,
+	  dmp/Makefile.am, ds/Makefile.am, dtw/Makefile.am,
+	  echo2/Makefile.am, excite/Makefile.am, extract/Makefile.am,
+	  fd/Makefile.am, fft/Makefile.am, fft2/Makefile.am,
+	  fftcep/Makefile.am, fftr/Makefile.am, fftr2/Makefile.am,
+	  fig+fdrw/Makefile.am, frame/Makefile.am, freqt/Makefile.am,
+	  gc2gc/Makefile.am, gcep/Makefile.am, glsadf/Makefile.am,
+	  gmm/Makefile.am, gnorm/Makefile.am, grpdelay/Makefile.am,
+	  histogram/Makefile.am, idct/Makefile.am, ifft/Makefile.am,
+	  ifft2/Makefile.am, ifftr/Makefile.am, ignorm/Makefile.am,
+	  impulse/Makefile.am, imsvq/Makefile.am, interpolate/Makefile.am,
+	  ivq/Makefile.am, lbg/Makefile.am, levdur/Makefile.am,
+	  linear_intpl/Makefile.am, lmadf/Makefile.am, lpc/Makefile.am,
+	  lpc2c/Makefile.am, lpc2lsp/Makefile.am, lpc2par/Makefile.am,
+	  lsp2lpc/Makefile.am, lspcheck/Makefile.am, lspdf/Makefile.am,
+	  ltcdf/Makefile.am, mc2b/Makefile.am, mcep/Makefile.am,
+	  merge/Makefile.am, mfcc/Makefile.am, mgc2mgc/Makefile.am,
+	  mgc2sp/Makefile.am, mgcep/Makefile.am, mglsadf/Makefile.am,
+	  minmax/Makefile.am, mlpg/Makefile.am, mlsacheck/Makefile.am,
+	  mlsadf/Makefile.am, msvq/Makefile.am, nan/Makefile.am,
+	  norm0/Makefile.am, nrand/Makefile.am, par2lpc/Makefile.am,
+	  pca/Makefile.am, phase/Makefile.am, pitch/Makefile.am,
+	  poledf/Makefile.am, psgr/Makefile.am, ramp/Makefile.am,
+	  rawtowav/Makefile.am, reverse/Makefile.am, rmse/Makefile.am,
+	  root_pol/Makefile.am, sin/Makefile.am, smcep/Makefile.am,
+	  snr/Makefile.am, sopr/Makefile.am, spec/Makefile.am,
+	  step/Makefile.am, swab/Makefile.am, symmetrize/Makefile.am,
+	  train/Makefile.am, transpose/Makefile.am, uels/Makefile.am,
+	  ulaw/Makefile.am, vopr/Makefile.am, vq/Makefile.am,
+	  vstat/Makefile.am, vsum/Makefile.am, window/Makefile.am,
+	  x2x/Makefile.am, xgr/Makefile.am, zcross/Makefile.am,
+	  zerodf/Makefile.am: apply patch code provided by Giulio Paci.
+
+2013-11-12 13:17  artk0816
+
+	* script/gseries.in: fix gseries.in to allow input data to exceed
+	  range of short.
+
+2013-11-12 13:16  artk0816
+
+	* script/gwave.in: fix gwave.in to allow input data to exceed range
+	  of short.
+
+2013-10-17 15:09  mataki
+
+	* bin/delta/delta.c: fix get_coef() to calculate regression
+	  coefficients from regression polynomial of arbitrary order.
+
+2013-09-10 11:52  artk0816
+
+	* bin/lsp2sp/Makefile.in: [no log message]
+
+2013-09-10 11:42  artk0816
+
+	* bin/lsp2sp/.cvsignore: Add command 'LSP2SP' that calculates the
+	  spectrum from the line spectral pairs(LSP).
+
+2013-09-09 15:50  artk0816
+
+	* configure.ac, bin/Makefile.am, bin/lsp2sp/Makefile.am,
+	  bin/lsp2sp/Makefile.in, bin/lsp2sp/_lsp2sp.c,
+	  bin/lsp2sp/lsp2sp.c, include/SPTK.h, lib/Makefile.am: Add command
+	  'LSP2SP' that calculates the spectrum from the line spectral
+	  pairs(LSP).
+
+2013-09-07 17:20  mataki
+
+	* lib/getmem.c: change variable name in ddgetmem().
+
+2013-09-07 17:03  mataki
+
+	* include/SPTK.h, lib/getmem.c: add ddgetmem() to allocate a double
+	  type matrix.
+
+2013-09-06 12:50  artk0816
+
+	* script/: gseries.in, gwave.in: Fix the error that arises when
+	  input data is over the range of type 'short'.
+
+2013-09-05 19:23  mataki
+
+	* bin/gmm/_gmm.c, bin/gmm/gmm.c, bin/gmm/gmmp.c, include/SPTK.h: -
+	  add -M, -c1, and -c2 options to specify the structure of the
+	  covariace matrix.  - add alloc_gmm(), load_gmm(), save_gmm(), and
+	  free_gmm() in _gmm.c .
+
+2013-09-04 10:45  artk0816
+
+	* bin/: lpc2lsp/lpc2lsp.c, lsp2lpc/lsp2lpc.c: Change -l option into
+	  -L option
+
+2013-09-04 10:16  artk0816
+
+	* bin/vsum/vsum.c: Conform VSUM's options to VSTAT's -l, -n, and -t
+	  option.
+
+2013-08-23 15:04  mataki
+
+	* bin/symmetrize/symmetrize.c: fix source code to use freadf and
+	  fwritef.
+
+2013-08-16 08:15  artk0816
+
+	* bin/: sopr/sopr.c, rmse/rmse.c: fix source code not to use
+	  capital letter in variable name
+
+2013-08-16 06:42  mataki
+
+	* bin/delta/delta.c: fix source code not to use capital letter in
+	  variable name.
+
+2013-08-15 00:37  artk0816
+
+	* bin/sopr/sopr.c: add -p -POWX -LOGX option
+
+2013-08-14 11:05  artk0816
+
+	* bin/rmse/rmse.c: change rmse
+
+2013-08-13 13:46  mataki
+
+	* bin/delta/delta.c: fix source code not to use capital letter at
+	  the beginning of variable name.
+
+2013-08-12 17:20  mataki
+
+	* bin/delta/delta.c: -fix a bug that all static features in output
+	  are 0 in all frames containing magic number.	-fix souce code not
+	  to use calloc and malloc.
+
+2013-06-13 11:35  uratec
+
+	* bin/pitch/snack/jkGetF0.c: Fix a downsampling error in snack F0
+	  estimator.
+
+2013-06-12 07:35  mataki
+
+	* script/wav2raw.in: fix source code not to read unnecessary
+	  chunks.
+
+2013-05-07 10:25  mataki
+
+	* bin/spec/spec.c: fix typo.
+
+2013-05-06 15:35  mataki
+
+	* bin/lspcheck/lspcheck.c: Add a few options to check gain value.
+
+2013-04-30 14:30  mataki
+
+	* bin/pitch/swipe/: swipe.c, vector.c: Merge patch code by Pieter
+	  Scholtz : Fix memory leak of 'SWIPE.
+
+2013-04-22 17:26  mataki
+
+	* bin/fd/fd.c: fix source code to use isprint().
+
+2013-04-22 15:52  mataki
+
+	* bin/c2ir/c2ir.c: fix '-L' option name; from '-L' to '-l'.
+
+2013-03-24 15:54  okdtmhr
+
+	* bin/: smcep/_smcep.c, smcep/smcep.c, uels/_uels.c, uels/uels.c:
+	  unify the description of periodogram
+
+2013-03-24 15:19  okdtmhr
+
+	* bin/mgcep/: _mgcep.c, mgcep.c: unify the description of
+	  periodogram
+
+2013-03-24 15:14  okdtmhr
+
+	* bin/mcep/: _mcep.c, mcep.c: unify the description of periodogram
+
+2013-03-24 15:05  okdtmhr
+
+	* bin/gcep/: _gcep.c, gcep.c: unify the description of periodogram
+
+2013-03-23 15:20  mataki
+
+	* bin/fd/fd.c: fix default data type.
+
+2013-02-27 09:45  okdtmhr
+
+	* script/grlogsp.in: add the type of scale
+
+2013-02-27 09:39  okdtmhr
+
+	* script/glogsp.in: add the type of scale
+
+2013-02-27 09:13  okdtmhr
+
+	* bin/sopr/sopr.c: enable to use semitone
+
+2013-02-27 09:06  okdtmhr
+
+	* bin/interpolate/interpolate.c: enable to use vector with -l
+	  option
+
+2013-02-27 08:57  okdtmhr
+
+	* bin/decimate/decimate.c: enable to use vector with -l option
+
+2013-02-27 00:46  uratec
+
+	* bin/mlsacheck/mlsacheck.c: Fix option parsing part in mlsacheck.
+
+2013-02-20 13:03  mataki
+
+	* include/SPTK.h, bin/rawtowav/rawtowav.c, lib/fileio.c: add new
+	  fuction fwrite_little_endian() and fix rawtowav.c to use it.
+
+2013-02-19 18:41  mataki
+
+	* bin/mlsacheck/mlsacheck.c: remove unnecessary memory allocation.
+
+2013-02-15 17:13  mataki
+
+	* bin/rawtowav/rawtowav.c: fix source code to make WAVE header
+	  properly on both 32bit and 64bit machine.
+
+2013-02-15 12:12  mataki
+
+	* bin/mlsacheck/mlsacheck.c: bug fix for stabilization process.
+
+2013-02-15 11:50  mataki
+
+	* script/: glogsp.in, grlogsp.in, gseries.in, gwave.in,
+	  mgc2mgclsp.in, mgclsp2mgc.in: fix scripts to accept file name
+	  containing white space.
+
+2013-02-13 17:35  mataki
+
+	* script/raw2wav.in: fix script to accept samping frequency written
+	  in floating point.
+
+2013-02-03 00:10  mataki
+
+	* script/raw2wav.in: fix a bug when -n option is specified.
+
+2013-02-03 00:03  mataki
+
+	* bin/dfs/dfs.c: fix a bug when -a and/or -b option is not
+	  specified.
+
+2013-01-18 17:06  mataki
+
+	* bin/transpose/: _transpose.c, transpose.c: fix source codes not
+	  to use rewind().
+
+2013-01-16 21:06  mataki
+
+	* script/wav2raw.in: fix script to read extra format in "fmt "
+	  chunk.
+
+2013-01-15 20:54  okdtmhr
+
+	* bin/vstat/vstat.c: Error which happen when inputted from stdin is
+	  corrected.
+
+2013-01-15 18:53  mataki
+
+	* script/: raw2wav.in, wav2raw.in: remove trailing whitespace from
+	  source scripts and fix them to accept input filename containing
+	  whitespace.
+
+2013-01-10 21:24  mataki
+
+	* bin/rawtowav/rawtowav.c: fix source code not to break RIFF header
+	  on both 32bit and 64bit machine.
+
+2013-01-10 20:48  mataki
+
+	* script/raw2wav.in: fix script not to accept too large sampling
+	  frequency.
+
+2013-01-10 14:51  mataki
+
+	* bin/mlsacheck/mlsacheck.c: fix a bug in calculating gain factor.
+
+2013-01-08 20:24  mataki
+
+	* bin/dfs/dfs.c: fix indent of source code.
+
+2013-01-08 20:20  mataki
+
+	* bin/dfs/dfs.c: fix source code to remove limitation of the order
+	  of filter coefficients.
+
+2013-01-03 14:55  okdtmhr
+
+	* bin/symmetrize/symmetrize.c: Error which happen when inputted
+	  from stdin is corrected.
+
 2012-12-24 23:08  mataki
 
 	* script/: raw2wav.in, wav2raw.in: fix usage.

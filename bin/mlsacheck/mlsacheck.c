@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -54,9 +54,23 @@
 *               -m m     :  order of mel-cepstrum               [25]    *
 *               -a a     :  all-pass constant                   [0.35]  *
 *               -l L     :  FFT length                          [256]   *
-*               -c       :  modify MLSA filter coef.            [N/A]   *
-*               -r R     :  stable condition for MLSA filter    [0]     *
+*               -c C     :  modify MLSA filter coefficients     [0]     *
+*                           of unstable frames                          *
+*                             0 : no modification                       *
+*                             1 : clipping                              *
+*                             2 : scaling                               *
+*               -r r     :  stable condition for MLSA filter    [0]     *
+*                             0 : keeping log approximation error       *
+*                                 not exceeding 0.24 dB (P=4)           *
+*                                 or 0.2735 dB (P=5)                    *
+*                             1 : keeing MLSA filter stable             *
 *               -P P     :  order of Pade approximation         [4]     *
+*               -R R     :  threshold value for modification    [N/A]   *
+*                           if this option wasn't specified,            *
+*                             r=0,P=4 : R=4.5                           *
+*                             r=1,P=4 : R=6.2                           *
+*                             r=0,P=5 : R=6.0                           *
+*                             r=1,P=5 : R=7.65                          *
 *       infile:                                                         *
 *               mel cepstral coefficients                               *
 *       stdout:                                                         *
@@ -66,7 +80,8 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: mlsacheck.c,v 1.8 2012/12/21 07:25:56 mataki Exp $";
+static char *rcs_id =
+    "$Id: mlsacheck.c,v 1.15 2013/12/23 00:02:41 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -82,6 +97,7 @@ static char *rcs_id = "$Id: mlsacheck.c,v 1.8 2012/12/21 07:25:56 mataki Exp $";
 #  endif
 #endif
 
+#include <ctype.h>
 #include <math.h>
 
 #if defined(WIN32)
@@ -101,8 +117,6 @@ static char *rcs_id = "$Id: mlsacheck.c,v 1.8 2012/12/21 07:25:56 mataki Exp $";
 #define PADE5_THRESH2 7.65
 #define STABLE1       0
 #define STABLE2       1
-
-char *BOOL[] = { "FALSE", "TRUE" };
 
 /*  Command Name  */
 char *cmnd;
@@ -128,20 +142,28 @@ void usage(int status)
            "       -l L  : FFT length                            [%d]\n",
            FFTLENGTH);
    fprintf(stderr,
-           "       -c    : modify MLSA filter coefficients of    [N/A]\n");
+           "       -c C  : modify MLSA filter coefficients of    [0]\n");
    fprintf(stderr, "               unstable frames \n");
+   fprintf(stderr, "                 0 : no modification\n");
+   fprintf(stderr, "                 1 : clipping\n");
+   fprintf(stderr, "                 2 : scaling\n");
    fprintf(stderr,
-           "       -r R  : stability condion for MLSA filter        [%d]\n",
+           "       -r r  : stability condion for MLSA filter     [%d]\n",
            STABLE1);
-   fprintf(stderr, "               check whether the following stability\n");
-   fprintf(stderr, "               condition is satisfied or not.\n");
    fprintf(stderr, "                 0 : keeping log approximation error\n");
    fprintf(stderr, "                     not exceeding 0.24 dB (P=4)\n");
    fprintf(stderr, "                     or 0.2735 dB (P=5) \n");
-   fprintf(stderr, "                 1 : keeping MLSA filter is stable\n");
+   fprintf(stderr, "                 1 : keeping MLSA filter stable\n");
    fprintf(stderr,
            "       -P P  : order of Pade approximation           [%d]\n",
            PADEORDER);
+   fprintf(stderr,
+           "       -R R  : threshold value for modification      [N/A]\n");
+   fprintf(stderr, "               if this option wasn't specified, \n");
+   fprintf(stderr, "                 r=0,P=4 : R=4.5\n");
+   fprintf(stderr, "                 r=1,P=4 : R=6.2\n");
+   fprintf(stderr, "                 r=0,P=5 : R=6.0\n");
+   fprintf(stderr, "                 r=1,P=5 : R=7.65\n");
    fprintf(stderr, "       -h    : print this message\n");
    fprintf(stderr, "  infile:\n");
    fprintf(stderr,
@@ -164,16 +186,14 @@ void usage(int status)
 }
 
 void mlsacheck(double *mcep, int m, int fftlen, int frame,
-               double a, double r1, double r2,
-               Boolean modify_filter, int stable_condition)
+               double a, double r1, double r2, int c, int stable_condition)
 {
    int i;
-   double gain, r, *x, *y, *mag;
+   double gain, r, *x, *y, mag, max = 0.0, tmp = 1.0;
    Boolean ascii_report = FA;
 
    x = dgetmem(fftlen);
    y = dgetmem(fftlen);
-   mag = dgetmem(fftlen / 2);
 
    fillz(x, sizeof(*x), fftlen);
    fillz(y, sizeof(*y), fftlen);
@@ -181,7 +201,7 @@ void mlsacheck(double *mcep, int m, int fftlen, int frame,
    /* calculate gain factor */
    for (i = 0, gain = 0.0; i < m + 1; i++) {
       x[i] = mcep[i];
-      gain += x[i] * pow(a, i);
+      gain += x[i] * pow(-a, i);
    }
 
    /* gain normalization */
@@ -190,32 +210,69 @@ void mlsacheck(double *mcep, int m, int fftlen, int frame,
    fftr(x, y, fftlen);
 
    /* check stability */
-   for (i = 0; i < fftlen / 2; i++) {
-      mag[i] = x[i] * x[i] + y[i] * y[i];
-      mag[i] = sqrt(mag[i]);
+   for (i = 0; i < fftlen / 2 + 1; i++) {
+      mag = x[i] * x[i] + y[i] * y[i];
+      mag = sqrt(mag);
 
       switch (stable_condition) {
       case STABLE1:
-         if (mag[i] > r1) {
+         if (mag > r1) {
             ascii_report = TR;
-            if (modify_filter == TR) {
-               r = r1 / mag[i];
+            if (c == 2) {
+               if (mag > max)
+                  max = mag;
+            }
+            if (c == 1) {
+               r = r1 / mag;
                x[i] *= r;
                y[i] *= r;
-               x[fftlen - 1 - i] *= r;
-               y[fftlen - 1 - i] *= r;
+               if (i != 0 && i != fftlen / 2) {
+                  x[fftlen - i] *= r;
+                  y[fftlen - i] *= r;
+               }
             }
          }
          break;
       case STABLE2:
-         if (mag[i] > r2) {
+         if (mag > r2) {
             ascii_report = TR;
-            if (modify_filter == TR) {
-               r = r2 / mag[i];
+            if (c == 2) {
+               if (mag > max)
+                  max = mag;
+            }
+            if (c == 1) {
+               r = r2 / mag;
                x[i] *= r;
                y[i] *= r;
-               x[fftlen - 1 - i] *= r;
-               y[fftlen - 1 - i] *= r;
+               if (i != 0 && i != fftlen / 2) {
+                  x[fftlen - i] *= r;
+                  y[fftlen - i] *= r;
+               }
+            }
+         }
+      }
+   }
+
+   if (c == 2) {
+      switch (stable_condition) {
+      case STABLE1:
+         tmp = r1 / max;
+         break;
+      case STABLE2:
+         tmp = r2 / max;
+         break;
+      }
+      if (tmp < 1.0) {
+         for (i = 0; i < fftlen; i++) {
+            switch (stable_condition) {
+            case STABLE1:
+               x[i] *= tmp;
+               y[i] *= tmp;
+               break;
+            case STABLE2:
+               x[i] *= tmp;
+               y[i] *= tmp;
+               break;
             }
          }
       }
@@ -223,14 +280,12 @@ void mlsacheck(double *mcep, int m, int fftlen, int frame,
 
    ifft(x, y, fftlen);
 
-   /* revert gain factor */
    x[0] += gain;
 
    fwritef(x, sizeof(*x), m + 1, stdout);
 
    free(x);
    free(y);
-   free(mag);
 
    /* output ascii report */
    if (ascii_report == TR) {
@@ -241,9 +296,8 @@ void mlsacheck(double *mcep, int m, int fftlen, int frame,
 int main(int argc, char **argv)
 {
    int m = ORDER, pd = PADEORDER, fftlen = FFTLENGTH, stable_condition =
-       STABLE1, frame = 0;
-   double *mcep, a = ALPHA, r1 = PADE4_THRESH1, r2 = PADE4_THRESH2;
-   Boolean modify_filter = FA;
+       STABLE1, frame = 0, c = 0;
+   double *mcep, a = ALPHA, r1 = PADE4_THRESH1, r2 = PADE4_THRESH2, R = 0.0;
    FILE *fp = stdin;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL) {
@@ -271,20 +325,31 @@ int main(int argc, char **argv)
             --argc;
             break;
          case 'c':
-            modify_filter = TR;
+            c = atoi(*++argv);
+            if ((c != 0 && c != 1 && c != 2) || isdigit(**argv) == 0) {
+               fprintf(stderr,
+                       "%s : '-c' option must be specified with 0, 1 or 2.\n",
+                       cmnd);
+               usage(1);
+            }
+            --argc;
             break;
          case 'r':
-            switch (**(argv + 1)) {
-            case '0':
-               stable_condition = STABLE1;
-               break;
-            case '1':
-               stable_condition = STABLE2;
-               break;
-            default:
+            stable_condition = atoi(*++argv);
+            if (stable_condition != STABLE1 && stable_condition != STABLE2) {
                fprintf(stderr,
                        "%s : '-r' option must be specified with %d or %d.\n",
                        cmnd, STABLE1, STABLE2);
+               usage(1);
+            }
+            --argc;
+            break;
+         case 'R':
+            R = atof(*++argv);
+            if (isdigit(**argv) == 0) {
+               fprintf(stderr,
+                       "%s : '-R' option must be specified by real number !\n",
+                       cmnd);
                usage(1);
             }
             --argc;
@@ -314,13 +379,16 @@ int main(int argc, char **argv)
               cmnd);
       usage(1);
    }
+   if (R != 0.0) {
+      r1 = R;
+      r2 = R;
+   }
 
    mcep = dgetmem(m + 1);
 
    /* check stability of MLSA filter and output */
    while (freadf(mcep, sizeof(*mcep), m + 1, fp) == m + 1) {
-      mlsacheck(mcep, m, fftlen, frame, a, r1, r2,
-                modify_filter, stable_condition);
+      mlsacheck(mcep, m, fftlen, frame, a, r1, r2, c, stable_condition);
       frame++;
    }
 

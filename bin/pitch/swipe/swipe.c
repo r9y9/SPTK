@@ -31,7 +31,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -67,7 +67,7 @@
 
 /****************************************************************
 
-    $Id: swipe.c,v 1.8 2012/12/22 12:25:38 mataki Exp $
+    $Id: swipe.c,v 1.10 2013/12/16 09:02:02 mataki Exp $
 
 *****************************************************************/
 
@@ -192,6 +192,8 @@ void La(matrix L, vector f, vector fERBs,
       fo[j][0] = fi_tmp[j];
       fo[j][1] = fo_tmp[j];
     }
+    free(fi_tmp);
+    free(fo_tmp);
 
 #endif
 #if 0
@@ -525,7 +527,7 @@ vector pitch(matrix S, vector pc, double st) {
 #if 0
 vector swipe(int fid, double min, double max, double st, double dt) {
 #else
-  void swipe(double *input, double *output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype) {
+  void swipe(float_list *input, int length, double samplerate, int frame_shift, double min, double max, double st, int otype) {
 #endif
     int i; 
     double td = 0.;
@@ -534,7 +536,8 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     SNDFILE* source = sf_open_fd(fid, SFM_READ, &info, TRUE);
     if (source == NULL || info.sections < 1) return(makev(0)); 
 #else
-    double dt = (double) frame_shift / (double) samplerate;
+    double dt = (double) frame_shift / samplerate;
+    float_list *tmpf;
     vector x = makev(length);
     intvector ws;
     vector pc;
@@ -544,11 +547,11 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     matrix S;
     vector p;
     double nyquist = samplerate / 2.;
-    double nyquist2 = (double)samplerate;
+    double nyquist2 = samplerate;
     double nyquist16 = samplerate * 8.;
 
-      for (i = 0; i < length; i++)
-	x.v[i] = input[i] / 32768.0; // normalized by max_short
+    for (i = 0, tmpf = input; tmpf != NULL; i++, tmpf = tmpf->next) 
+      x.v[i] = tmpf->f / 32768.0; // normalized by max_short
 #endif
 #if 0
     double nyquist = info.samplerate / 2.;
@@ -633,22 +636,19 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     for (i = 0; i < p.x; i++) {
        switch(otype) {
           case 1:      /* f0 */
-	    //fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
-	    output[i] = p.v[i];
+             fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
              break;
           case 2:      /* log(f0) */
              if (p.v[i] != 0.0)
                 p.v[i] = log(p.v[i]);
              else
                 p.v[i] = -1.0E10;
-             //fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
-	     output[i] = p.v[i];
+             fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
              break;
           default:     /* pitch */
              if (p.v[i] != 0.0)
-	       p.v[i] = (double)samplerate / p.v[i];
-             //fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
-	     output[i] = p.v[i];
+                p.v[i] = samplerate / p.v[i];
+             fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout);
              break;
        }
     }

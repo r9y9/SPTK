@@ -49,7 +49,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_ds_OBJECTS = ds-ds.$(OBJEXT)
 ds_OBJECTS = $(am_ds_OBJECTS)
 ds_DEPENDENCIES = $(top_builddir)/lib/libSPTK.a
-DEFAULT_INCLUDES = -I.@am__isrc@
+DEFAULT_INCLUDES = 
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -111,6 +111,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 POW_LIB = @POW_LIB@
@@ -174,16 +175,16 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-INCLUDES = -I$(top_srcdir)/include
 lpcoefdir = $(datarootdir)/SPTK
 ds_SOURCES = ds.c 
 ds_LDADD = $(top_builddir)/lib/libSPTK.a
-ds_CPPFLAGS = -DLIB=\"$(lpcoefdir)\"
+ds_CPPFLAGS = -DLIB=\"$(lpcoefdir)\" -I$(top_srcdir)/include
 dist_lpcoef_DATA = lpfcoef.2to1 \
 	lpfcoef.3to2 \
 	lpfcoef.4to3 \
 	lpfcoef.5to2dn \
-	lpfcoef.5to2up 
+	lpfcoef.5to2up \
+	titech/lpfcoef.7to4
 
 all: all-am
 

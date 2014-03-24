@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /****************************************************************
-*  $Id: _ifft2.c,v 1.15 2012/12/21 11:27:34 mataki Exp $       *
+*  $Id: _ifft2.c,v 1.16 2013/12/16 09:01:58 mataki Exp $       *
 *  ifft2 : two dimensional inverse fast Fourier                 *
 *      transform                                                *
 *                                                               *

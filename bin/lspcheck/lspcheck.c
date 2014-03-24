@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -56,16 +56,19 @@
 *               -k       :  input & output gain         [FALSE]         *
 *               -i i     :  input format                [0]             *
 *               -o o     :  output format               [i]             *
-*                             0 (normalized frequency <0...pi>)         *   
+*                             0 (normalized frequency <0...pi>)         *
 *                             1 (normalized frequency <0...0.5>)        *
 *                             2 (frequency (kHz))                       *
 *                             3 (frequency (Hz))                        *
 *               -c       :  rearrange LSP               [N/A]           *
 *                           distance between two consecutive LSPs       *
-*                                                       [r]             *
 *                           extend the distance (if it is smaller       *
 *                           than R*pi/m)    s.t. (0 <= R <= 1)          *
 *               -r R     :  threshold of rearrangement  [0.0]           *
+*               -g       :  modify gain value           [N/A]           *
+*                           check whether gain is less than G or not    *
+*               -L       :  regard input as log gain    [N/A]           *
+*               -G G     :  min. value of gain s.t. G > 0 [1.0E-10]     *
 *       infile:                                                         *
 *               LSP                                                     *
 *                       , f(1), ..., f(m),                              *
@@ -76,7 +79,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: lspcheck.c,v 1.33 2012/12/21 10:04:42 mataki Exp $";
+static char *rcs_id = "$Id: lspcheck.c,v 1.37 2013/12/19 02:28:27 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -92,6 +95,7 @@ static char *rcs_id = "$Id: lspcheck.c,v 1.33 2012/12/21 10:04:42 mataki Exp $";
 #  endif
 #endif
 
+#include <math.h>
 
 #if defined(WIN32)
 #  include "SPTK.h"
@@ -106,6 +110,8 @@ static char *rcs_id = "$Id: lspcheck.c,v 1.33 2012/12/21 10:04:42 mataki Exp $";
 #define SAMPLING 10.0
 #define ARRANGE  0
 #define GAIN  TR
+#define LOGGAIN  FA
+#define GAIN_MIN 1.0E-10
 #define ALPHA 0.0
 
 char *BOOL[] = { "FALSE", "TRUE" };
@@ -122,30 +128,52 @@ void usage(int status)
    fprintf(stderr, "  usage:\n");
    fprintf(stderr, "       %s [ options ] [ infile ] > stdout\n", cmnd);
    fprintf(stderr, "  options:\n");
-   fprintf(stderr, "       -m m  : order of LPC        [%d]\n", ORDER);
-   fprintf(stderr, "       -s s  : sampling frequency  [%g]\n", SAMPLING);
-   fprintf(stderr, "       -k    : input & output gain [%s]\n", BOOL[GAIN]);
-   fprintf(stderr, "       -i i  : input format        [%d]\n", ITYPE);
-   fprintf(stderr, "       -o o  : output format       [i]\n");
+   fprintf(stderr,
+           "       -m m  : order of LPC                               [%d]\n",
+           ORDER);
+   fprintf(stderr,
+           "       -s s  : sampling frequency                         [%g]\n",
+           SAMPLING);
+   fprintf(stderr,
+           "       -k    : input & output gain                        [%s]\n",
+           BOOL[GAIN]);
+   fprintf(stderr,
+           "       -i i  : input format                               [%d]\n",
+           ITYPE);
+   fprintf(stderr,
+           "       -o o  : output format                              [i]\n");
    fprintf(stderr, "                 0 (normalized frequency <0...pi>)\n");
    fprintf(stderr, "                 1 (normalized frequency <0...0.5>)\n");
    fprintf(stderr, "                 2 (frequency (kHz))\n");
    fprintf(stderr, "                 3 (frequency (Hz))\n");
-   fprintf(stderr, "       -c    : rearrange LSP       [N/A]\n");
    fprintf(stderr,
-           "               check the distance between two consecutive LSPs\n");
+           "       -c    : rearrange LSP                              [N/A]\n");
+   fprintf(stderr, "               check the distance between two\n");
+   fprintf(stderr, "               consecutive LSPs and extend the distance\n");
+   fprintf(stderr, "               (if it is smaller than R*pi/m)\n");
    fprintf(stderr,
-           "               and extend the distance (if it is smaller than R*pi/m)\n");
-   fprintf(stderr, "       -r R  : threshold of rearrangement of LSP [%.1f]\n",
+           "       -r R  : threshold of rearrangement of LSP          [%.1f]\n",
            ALPHA);
    fprintf(stderr, "               s.t. 0 <= R <= 1\n");
+   fprintf(stderr,
+           "       -g    : modify gain value if gain is less than G   [N/A]\n");
+   fprintf(stderr,
+           "       -L    : regard input as log gain                   [%s]\n",
+           BOOL[LOGGAIN]);
+   fprintf(stderr,
+           "       -G G  : min. value of gain                         [%g]\n",
+           GAIN_MIN);
+   fprintf(stderr, "               s.t. G > 0\n");
    fprintf(stderr, "       -h    : print this message\n");
    fprintf(stderr, "  infile:\n");
-   fprintf(stderr, "       LSP (%s)                 [stdin]\n", FORMAT);
+   fprintf(stderr,
+           "       LSP (%s)                                        [stdin]\n",
+           FORMAT);
    fprintf(stderr, "  stdout:\n");
    fprintf(stderr,
-           "       LSP (%s) or rearranged LSP (%s) if -r option is specified\n",
+           "       LSP (%s) or rearranged LSP (%s) if -r option \n",
            FORMAT, FORMAT);
+   fprintf(stderr, "       is specified\n");
    fprintf(stderr, "  stderr:\n");
    fprintf(stderr, "       irregular LSP and its frame number\n");
 #ifdef PACKAGE_VERSION
@@ -161,9 +189,9 @@ void usage(int status)
 int main(int argc, char **argv)
 {
    int m = ORDER, itype = ITYPE, otype = OTYPE, i, num;
-   Boolean arrange = ARRANGE, gain = GAIN;
+   Boolean arrange = ARRANGE, gain = GAIN, modify_gain = FA, loggain = LOGGAIN;
    FILE *fp = stdin;
-   double *lsp, alpha = ALPHA, sampling = SAMPLING, min;
+   double *lsp, alpha = ALPHA, sampling = SAMPLING, min, gain_min = GAIN_MIN;
    void lsparrange(double *lsp, const int ord, double min);
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL)
@@ -200,6 +228,17 @@ int main(int argc, char **argv)
          case 'k':
             gain = 1 - gain;
             break;
+         case 'l':
+         case 'L':
+            loggain = 1 - loggain;
+            break;
+         case 'g':
+            modify_gain = 1 - modify_gain;
+            break;
+         case 'G':
+            gain_min = atof(*++argv);
+            --argc;
+            break;
          case 'c':
             arrange = 1 - arrange;
             break;
@@ -234,6 +273,25 @@ int main(int argc, char **argv)
    }
 
    while (freadf(lsp, sizeof(*lsp), m + gain, fp) == m + (int) gain) {
+      if (gain) {
+         if (loggain) {
+            if (lsp[0] < log(gain_min)) {
+               fprintf(stderr, "[No. %d] log gain %g is less than %g\n",
+                       num, lsp[0], log(gain_min));
+               if (modify_gain) {
+                  lsp[0] = log(gain_min);
+               }
+            }
+         } else {
+            if (lsp[0] < gain_min) {
+               fprintf(stderr, "[No. %d] gain %g is less than %g\n",
+                       num, lsp[0], gain_min);
+               if (modify_gain) {
+                  lsp[0] = gain_min;
+               }
+            }
+         }
+      }
       switch (itype) {
       case 0:
          for (i = gain; i < m + (int) gain; i++)

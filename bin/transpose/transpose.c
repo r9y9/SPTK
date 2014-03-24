@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -70,7 +70,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: transpose.c,v 1.4 2012/12/22 11:58:50 mataki Exp $";
+static char *rcs_id = "$Id: transpose.c,v 1.6 2013/12/16 09:02:04 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -96,6 +96,10 @@ static char *rcs_id = "$Id: transpose.c,v 1.4 2012/12/22 11:58:50 mataki Exp $";
 /*   Command Name  */
 char *cmnd;
 
+typedef struct _float_list {
+   float *f;
+   struct _float_list *next;
+} float_list;
 
 void usage(void)
 {
@@ -123,12 +127,12 @@ void usage(void)
 
 int main(int argc, char *argv[])
 {
-   int m = 0, n = 0;
-   int elnum;
+   int i = 0, m = 0, n = 0, elnum = 0, count = 0;
    char *s, c;
-   float *buf;
+   double *buf, *dat;
    FILE *fp = stdin;
-   void transpose(float *, int, int);
+   void transpose(double *, int, int);
+   float_list *top = NULL, *prev = NULL, *cur = NULL;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL)
       cmnd = argv[0];
@@ -166,18 +170,31 @@ int main(int argc, char *argv[])
 
    elnum = m * n;
 
-   buf = fgetmem(elnum);
+   top = prev = (float_list *) getmem(1, sizeof(float_list));
+   prev->next = NULL;
+   dat = dgetmem(1);
+   count = 0;
+   while (freadf(dat, sizeof(*dat), 1, fp) == 1) {
+      cur = (float_list *) getmem(1, sizeof(float_list));
+      cur->f = fgetmem(1);
+      cur->f[0] = (float) dat[0];
+      count++;
+      prev->next = cur;
+      cur->next = NULL;
+      prev = cur;
+   }
 
-   if (fread(buf, sizeof(float), elnum, fp) < (size_t) elnum) {
+   if (count < elnum) {
       fprintf(stderr, "%s : input data is smaller than defined!!\n", cmnd);
       usage();
    }
 
-   rewind(fp);
-
-   while (fread(buf, sizeof(float), elnum, fp) == (size_t) elnum) {
-      transpose(buf, m, n);
+   buf = dgetmem(count);
+   for (i = 0, cur = top->next; i < count; i++, cur = cur->next) {
+      buf[i] = (double) cur->f[0];
    }
+
+   transpose(buf, m, n);
 
    return (0);
 }

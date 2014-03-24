@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -46,7 +46,8 @@
 *                                                                                            *
 *    Delta Calculation                                                                       *
 *                                                                                            *
-*                                      2008.6 H.Zen                                          *
+*                                                                   2008.6 H.Zen             *
+*                                                                   2013.10 Akira Tamamori   *
 *       usage:                                                                               *
 *               delta [ options ] [ infile ] > stdout                                        *
 *       options:                                                                             *
@@ -54,9 +55,10 @@
 *               -l L                   : length of vector                             [m+1]  *
 *               -d fn                  : filename of delta coefficients               [N/A]  *
 *               -d coef [coef...]      : delta coefficients                           [N/A]  *
-*               -r n w1 [w2]           : number and width of regression coefficients  [N/A]  *
-*               -R n Wf1 Wb1 [Wf2 Wb2] : number and width of regression coefficients  [N/A]  *
+*               -r n w1 [w2]           : order and width of regression coefficients   [N/A]  *
+*               -R n Wf1 Wb1 [Wf2 Wb2] : order and width of regression coefficients   [N/A]  *
 *               -M magic               : magic number                                 [N/A]  *
+*               -n N                   : order of regression polynomial               [N/A]  *
 *       infile:                                                                              *
 *              static feature sequence                                                       *
 *                      x_1(1), ..., x_1(L), x_2(1), ..., x_2(L), x_3(1), ...                 *
@@ -66,7 +68,7 @@
 *                                                                                            *
 **********************************************************************************************/
 
-static char *rcs_id = "$Id: delta.c,v 1.15 2012/12/21 11:27:32 mataki Exp $";
+static char *rcs_id = "$Id: delta.c,v 1.20 2013/12/16 09:01:55 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -95,6 +97,8 @@ static char *rcs_id = "$Id: delta.c,v 1.15 2012/12/21 11:27:32 mataki Exp $";
 #define  LENG  25
 #define  T     -1
 #define MAGIC_FLAG FA
+#define POLYNOMIAL_ORDER -1
+#define POLY_FLAG FA
 
 char *BOOL[] = { "FALSE", "TRUE" };
 
@@ -102,8 +106,11 @@ char *BOOL[] = { "FALSE", "TRUE" };
 char *cmnd;
 
 /* magic number */
-Boolean MAGIC = MAGIC_FLAG;
+Boolean magic_flag = MAGIC_FLAG;
 double magic;
+
+/* polynomial order */
+Boolean poly_flag = POLY_FLAG;
 
 /*  Other Definitions  */
 #ifdef DOUBLE
@@ -126,31 +133,43 @@ void usage(int status)
    fprintf(stderr, "       %s [ options ] [ infile ] > stdout\n", cmnd);
    fprintf(stderr, "  options:\n");
    fprintf(stderr,
-           "       -m M                   : order of vector                              [%d]\n",
+           "       -m M                       : order of vector                 [%d]\n",
            LENG - 1);
    fprintf(stderr,
-           "       -l L                   : length of vector                             [m+1]\n");
+           "       -l L                       : length of vector                [m+1]\n");
    fprintf(stderr,
-           "       -t T                   : number of input vectors                      [EOF]\n");
+           "       -t T                       : number of input vectors         [EOF]\n");
    fprintf(stderr,
-           "       -d coef [coef...]      : delta coefficients                           [N/A]\n");
+           "       -d coef [coef...]          : delta coefficients              [N/A]\n");
    fprintf(stderr,
-           "       -r n t1 [t2]           : number and width of regression coefficients  [N/A]\n");
+           "       -r n t1 [t2]               : order and width of regression   [N/A]\n");
+   fprintf(stderr, "                                    coefficients\n");
    fprintf(stderr,
-           "       -R n Wf1 Wb1 [Wf2 Wb2] : number and width of regression coefficients  [N/A]\n");
+           "       -R n Wf1 Wb1 [Wf2 Wb2] ... : order and width of regression   [N/A]\n");
+   fprintf(stderr, "                                    coefficients\n");
    fprintf(stderr,
-           "                                Combining -M option, magic number is skipped\n");
+           "                                    Combining -M option, magic\n");
    fprintf(stderr,
-           "                                during the delta calculation.\n");
-
+           "                                    number is skipped during\n");
    fprintf(stderr,
-           "       -M magic               : magic number                                 [N/A]\n");
+           "                                    the delta calculation.\n");
    fprintf(stderr,
-           "                                valid only when -R option is specified.\n");
-   fprintf(stderr, "       -h     : print this message\n");
+           "                                    Order n can be greater than 2.\n");
+   fprintf(stderr,
+           "       -M magic                   : magic number                    [N/A]\n");
+   fprintf(stderr,
+           "                                    valid only when -R option is\n");
+   fprintf(stderr, "                                    specified.\n");
+   fprintf(stderr,
+           "       -n N                       : order of regression polynomial  [N/A]\n");
+   fprintf(stderr,
+           "                                    Order must be less than or\n");
+   fprintf(stderr,
+           "                                    equal to the max of (Wfn + Wbn).\n");
+   fprintf(stderr, "       -h                         : print this message\n");
    fprintf(stderr, "  infile:\n");
    fprintf(stderr,
-           "       static feature vectors                                           [stdin]\n");
+           "       static feature vectors                                       [stdin]\n");
    fprintf(stderr, "  stdout:\n");
    fprintf(stderr, "       static and dynamic feature vectors\n");
 #ifdef PACKAGE_VERSION
@@ -162,120 +181,150 @@ void usage(int status)
    exit(status);
 }
 
-/* calculate regression quadratic polynomial coefficients */
+/* calculate regression polynomial coefficients */
 void get_coef(double *input, double *output, int dw_num,
-              int *position, int TOTAL, int total, int length,
-              int *win_size_forward, int *win_size_backward)
+              int *position, int non_magic_frame, int total, int length,
+              int *win_size_forward, int *win_size_backward, int poly_order)
 {
-   int i, j, l, t, d, index, width;
-   double T0, T1, T2, T3, T4, b[3], b0, b1, b2;
-   double **Matrix = (double **) malloc(sizeof(double *) * 3),
-       **Inverse = (double **) malloc(sizeof(double) * 3);
-   double *tmpMat = dgetmem(3 * 3), *tmpInv = dgetmem(3 * 3);
+   int i, j, k, l, t, d, ind = 0, index = 0, width = 0, input_val = 0,
+       num_points = 0, num_order = 0, max_points = 0,
+       max_degrees = 0, factorial = 1;
+   double *poly_coef = NULL, *b = NULL, **p = NULL, *tmpvec = NULL,
+       **inverse = NULL, **AA = NULL, **A = NULL;
    Boolean boundary_begin = FA, boundary_end = FA;
 
-   for (i = 0, j = 0; i < 3; i++, j += 3) {
-      Matrix[i] = tmpMat + j;
-      Inverse[i] = tmpInv + j;
+   max_points = win_size_forward[0] + win_size_backward[0] + 1;
+   for (d = 1; d < dw_num - 1; d++) {
+      if (max_points < win_size_forward[d] + win_size_backward[d] + 1) {
+         max_points = win_size_forward[d] + win_size_backward[d] + 1;
+      }
    }
 
+   /* memory allocation */
+   max_degrees = max_points - 1;
+   AA = ddgetmem(max_degrees + 1, max_degrees + 1);
+   A = ddgetmem(max_points, max_degrees + 1);
+   inverse = ddgetmem(max_degrees + 1, max_degrees + 1);
+   poly_coef = dgetmem(max_degrees + 1);
+   b = dgetmem(max_points);
+   p = ddgetmem(total, max_points + 1);
+   tmpvec = dgetmem(max_degrees + 1);
+
    for (d = 0; d < dw_num - 1; d++) {
-      if (MAGIC == TR) {
-         for (t = 0; t < TOTAL; t++) {
+      if (magic_flag == TR) {
+         /* fill magic number in output stream */
+         for (t = 0; t < non_magic_frame; t++) {
             for (l = 0; l < length; l++) {
                if (d == 0) {
+                  output[dw_num * length * t + l] = magic;
                   output[dw_num * length * t + length + l] = magic;
-               } else if (d == 1) {
-                  output[dw_num * length * t + length * 2 + l] = magic;
+               } else {
+                  output[dw_num * length * t + (d + 1) * length + l] = magic;
                }
             }
          }
       }
+
+      /* decide number of points and order of regression polynomial from window size */
+      num_points = win_size_forward[d] + win_size_backward[d] + 1;
+      if (poly_flag == FA) {    /* order is not specified */
+         num_order = num_points - 1;
+      } else {
+         num_order = poly_order;
+      }
+
+      /* calculate regression coefficients for each frame */
       for (t = 0; t < total; t++) {
-         T0 = T1 = T2 = T3 = T4 = 0.0;
          boundary_begin = boundary_end = FA;
          for (i = -win_size_backward[d]; i <= win_size_forward[d]; i++) {
             index = t + i;
             if (index < 0) {
                boundary_begin = TR;
-               width = (int) (-1.0E30); /* point at infinity */
+               width = i;
             } else if (index >= total) {
                boundary_end = TR;
-               width = (int) (1.0E30);  /* point at infinity */
+               width = i;
             } else {
                width = position[index] - position[t];
             }
-            T0++;
-            T1 += width;
-            T2 += pow(width, 2);
-            T3 += pow(width, 3);
-            T4 += pow(width, 4);
+            p[t][i + win_size_backward[d]] = width;
          }
-         Matrix[0][0] = T0;
-         Matrix[0][1] = T1;
-         Matrix[0][2] = T2;
-         Matrix[1][0] = T1;
-         Matrix[1][1] = T2;
-         Matrix[1][2] = T3;
-         Matrix[2][0] = T2;
-         Matrix[2][1] = T3;
-         Matrix[2][2] = T4;
-         invert(Matrix, Inverse, 3);
-         for (l = 0; l < length; l++) {
-            b[0] = 0.0;
-            b[1] = 0.0;
-            b[2] = 0.0;
-            for (i = -win_size_backward[d]; i <= win_size_forward[d]; i++) {
-               int tmp;
-               if (t + i < 0) {
-                  tmp = position[0];
-                  width = position[0] - position[t];
-               } else if (t + i > total) {
-                  tmp = position[total - 1];
-                  width = position[total - 1] - position[t];
-               } else {
-                  tmp = position[t + i];
-                  width = position[t + i] - position[t];
+
+         for (i = 0; i < num_points; i++) {
+            for (j = 0; j < num_order + 1; j++) {
+               A[i][j] = pow(p[t][i], j);
+            }
+         }
+         for (i = 0; i < num_order + 1; i++) {
+            for (j = 0; j < num_order + 1; j++) {
+               AA[i][j] = 0.0;
+               for (k = 0; k < num_points; k++) {
+                  AA[i][j] += A[k][i] * A[k][j];
                }
-               b[0] += input[length * (tmp) + l];
-               b[1] += width * input[length * (tmp) + l];
-               b[2] += pow(width, 2) * input[length * (tmp) + l];
             }
-            for (i = 0, b0 = 0.0, b1 = 0.0, b2 = 0.0; i < 3; i++) {
-               b0 += Inverse[0][i] * b[i];
-               b1 += Inverse[1][i] * b[i];
-               b2 += Inverse[2][i] * b[i];
+         }
+
+         invert(AA, inverse, num_order + 1);
+
+         /* for each dimension of feature vector */
+         for (l = 0; l < length; l++) {
+            for (i = -win_size_backward[d]; i <= win_size_forward[d]; i++) {
+               index = t + i;
+               if (index < 0) {
+                  input_val = input[length * position[0] + l];
+               } else if (index >= total) {
+                  input_val = input[length * position[total - 1] + l];
+               } else {
+                  input_val = input[length * position[index] + l];
+               }
+               b[i + win_size_backward[d]] = input_val;
             }
-            b[0] = b0;
-            b[1] = b1;
-            b[2] = b2;
+
+            fillz(tmpvec, sizeof(*tmpvec), num_order + 1);
+            for (i = 0; i < num_order + 1; i++) {
+               for (j = 0; j < num_points; j++) {
+                  tmpvec[i] += A[j][i] * b[j];
+               }
+            }
+            fillz(poly_coef, sizeof(*poly_coef), num_order + 1);
+            for (i = 0; i < num_order + 1; i++) {
+               for (j = 0; j < num_order + 1; j++) {
+                  poly_coef[i] += inverse[i][j] * tmpvec[j];
+               }
+            }
+
             if (d == 0) {
                /* output static */
-               output[dw_num * length * position[t] + l] =
-                   input[length * position[t] + l];
+               ind = dw_num * length * position[t] + l;
+               output[ind] = input[length * position[t] + l];
                /* output delta */
+               ind += length;
                if (boundary_begin == TR && win_size_backward[d] == 1) {
-                  output[dw_num * length * position[t] + length + l]
+                  output[ind]
                       = (input[length * position[t + 1] + l]
                          - input[length * position[t] + l])
                       / (position[t + 1] - position[t]);
                } else if (boundary_end == TR && win_size_forward[d] == 1) {
-                  output[dw_num * length * position[t] + length + l]
+                  output[ind]
                       = (input[length * position[t] + l]
                          - input[length * position[t - 1] + l])
                       / (position[t] - position[t - 1]);
                } else {
-                  output[dw_num * length * position[t] + length + l] = b[1];
+                  output[ind] = poly_coef[1];
                }
-            } else if (d == 1) {
-               /* output delta-delta */
+            } else {
+               /* output delta-delta or higher order (greater than 2) dynamic feature */
+               ind = dw_num * length * position[t] + (d + 1) * length + l;
                if (boundary_begin == TR && win_size_backward[d] == 1) {
-                  output[dw_num * length * position[t] + length * 2 + l] = 0.0;
+                  output[ind] = 0.0;
                } else if (boundary_end == TR && win_size_forward[d] == 1) {
-                  output[dw_num * length * position[t] + length * 2 + l] = 0.0;
+                  output[ind] = 0.0;
                } else {
-                  output[dw_num * length * position[t] + length * 2 + l] =
-                      2 * b[2];
+                  /* calculate factorial */
+                  for (i = 1, factorial = 1; i <= d + 1; i++) {
+                     factorial *= i;
+                  }
+                  output[ind] = (double) factorial *poly_coef[d + 1];
                }
             }
          }
@@ -285,15 +334,17 @@ void get_coef(double *input, double *output, int dw_num,
 
 int main(int argc, char *argv[])
 {
-   FILE *fp = stdin, *fpc;
+   FILE *fp = stdin, *fpc = NULL;
    char *coef = NULL;
    double *x = NULL, *dx = NULL, **dw_coef = NULL;
-   int i, j, l, d, t, tj, fsize, leng = LENG, total = T;
+   int i, j, l, d, t, tj, fsize, leng = LENG, total = T, win_buf = 0,
+       poly_order = POLYNOMIAL_ORDER;
    int dw_num = 1, **dw_width = NULL, dw_calccoef = -1, dw_coeflen = 1,
        dw_leng = 1;
-   char **dw_fn = (char **) calloc(sizeof(char *), argc);
-   int non_magic_num, win_size_forward[2], win_size_backward[2];
-   float_list *top, *cur, *prev, *tmpf;
+   char **dw_fn = (char **) getmem(argc, sizeof(char *));
+   int non_magic_num, win_size_forward[2] = { 1, 1 }, win_size_backward[2] = {
+   1, 1};
+   float_list *top = NULL, *cur = NULL, *prev = NULL, *tmpf = NULL;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL)
       cmnd = argv[0];
@@ -387,12 +438,6 @@ int main(int argc, char *argv[])
             dw_calccoef = 2;
             dw_num = atoi(*++argv) + 1;
             --argc;
-            if ((dw_num != 2) && (dw_num != 3)) {
-               fprintf(stderr,
-                       "%s : Number of delta parameter should be 1 or 2!\n",
-                       cmnd);
-               return (1);
-            }
             if (argc <= 1) {
                fprintf(stderr,
                        "%s : Window size for delta-delta parameter required!\n",
@@ -400,21 +445,69 @@ int main(int argc, char *argv[])
                return (1);
             }
 
-            sscanf(*++argv, "%d", &win_size_forward[0]);
-            --argc;
-            sscanf(*++argv, "%d", &win_size_backward[0]);
-            --argc;
-            if (dw_num > 2) {
-               sscanf(*++argv, "%d", &win_size_forward[1]);
-               --argc;
-               sscanf(*++argv, "%d", &win_size_backward[1]);
-               --argc;
+            for (d = 0; d < dw_num - 1; d++) {
+               if (*(argv + 1) != NULL) {
+                  if (sscanf(*++argv, "%d", &win_buf) < 1) {
+                     fprintf(stderr,
+                             "%s : Failure of reading window coefficient!\n",
+                             cmnd);
+                     return (1);
+                  } else {
+                     win_size_forward[d] = win_buf;
+                     --argc;
+                  }
+               } else {
+                  fprintf(stderr, "%s : Window coefficient is lacked!\n", cmnd);
+                  return (1);
+               }
+               if (*(argv + 1) != NULL) {
+                  if (sscanf(*++argv, "%d", &win_buf) < 1) {
+                     fprintf(stderr,
+                             "%s : Failure of reading window coefficient!\n",
+                             cmnd);
+                     return (1);
+                  } else {
+                     win_size_backward[d] = win_buf;
+                     --argc;
+                  }
+               } else {
+                  fprintf(stderr, "%s : Window coefficient is lacked!\n", cmnd);
+                  return (1);
+               }
             }
             break;
          case 'M':
-            sscanf(*++argv, "%lf", &magic);
-            MAGIC = TR;
-            --argc;
+            if (*(argv + 1) != NULL) {
+               if (sscanf(*++argv, "%lf", &magic) < 1) {
+                  fprintf(stderr, "%s : Failure of raeding magic number!\n",
+                          cmnd);
+                  return (1);
+               } else {
+                  magic_flag = TR;
+                  --argc;
+               }
+            } else {
+               fprintf(stderr, "%s : Magic number is lacked!\n", cmnd);
+               return (1);
+            }
+            break;
+         case 'n':
+            if (*(argv + 1) != NULL) {
+               if (sscanf(*++argv, "%d", &poly_order) < 1) {
+                  fprintf(stderr,
+                          "%s : Failure of reading regression polynomial order!\n",
+                          cmnd);
+                  return (1);
+               } else {
+                  poly_flag = TR;
+                  --argc;
+               }
+            } else {
+               fprintf(stderr,
+                       "%s : Order of regression polynomial is lacked!\n",
+                       cmnd);
+               return (1);
+            }
             break;
          case 'h':
             usage(0);
@@ -426,18 +519,37 @@ int main(int argc, char *argv[])
          fp = getfp(*argv, "rb");
    }
 
+   /* check order of regression polynomial */
+   if (dw_calccoef == 2) {
+      if (poly_flag == TR) {
+         for (d = 0; d < dw_num - 1; d++) {
+            if (poly_order > win_size_forward[d] + win_size_backward[d]) {
+               fprintf(stderr,
+                       "%s : Order of regression polynomial is too large!\n",
+                       cmnd);
+               usage(1);
+            } else if (poly_order <= 0) {
+               fprintf(stderr,
+                       "%s : Order of regression polynomial must be larger than 0!\n",
+                       cmnd);
+               usage(1);
+            }
+         }
+      }
+   }
+
    /* parse window files */
    /* memory allocation */
-   if ((dw_width = (int **) calloc(dw_num, sizeof(int *))) == NULL) {
+   if ((dw_width = (int **) getmem(dw_num, sizeof(int *))) == NULL) {
       fprintf(stderr, "%s : Cannot allocate memory!\n", cmnd);
       exit(1);
    }
    for (i = 0; i < dw_num; i++)
-      if ((dw_width[i] = (int *) calloc(2, sizeof(int))) == NULL) {
+      if ((dw_width[i] = (int *) getmem(2, sizeof(int))) == NULL) {
          fprintf(stderr, "%s : Cannot allocate memory!\n", cmnd);
          exit(1);
       }
-   if ((dw_coef = (double **) calloc(dw_num, sizeof(double *))) == NULL) {
+   if ((dw_coef = (double **) getmem(dw_num, sizeof(double *))) == NULL) {
       fprintf(stderr, "%s : Cannot allocate memory!\n", cmnd);
       exit(1);
    }
@@ -508,13 +620,13 @@ int main(int argc, char *argv[])
 
    /* -- Count number of input vectors and read -- */
    x = dgetmem(leng);
-   top = prev = (float_list *) malloc(sizeof(float_list));
-   top->f = (float *) malloc(sizeof(float) * leng);
+   top = prev = (float_list *) getmem(1, sizeof(float_list));
+   top->f = fgetmem(leng);
    total = 0;
    prev->next = NULL;
    while (freadf(x, sizeof(*x), leng, fp) == leng) {
-      cur = (float_list *) malloc(sizeof(float_list));
-      cur->f = (float *) malloc(sizeof(float) * leng);
+      cur = (float_list *) getmem(1, sizeof(float_list));
+      cur->f = fgetmem(leng);
       for (i = 0; i < leng; i++) {
          cur->f[i] = (float) x[i];
       }
@@ -554,10 +666,10 @@ int main(int argc, char *argv[])
       fwritef(dx, sizeof(*dx), dw_num * total * leng, stdout);
 
    } else if (dw_calccoef == 2) {
-      int *position = (int *) malloc(sizeof(int) * total);
+      int *position = (int *) getmem(total, sizeof(int));
 
       /* skip magic number */
-      if (MAGIC == TR) {
+      if (magic_flag == TR) {
          for (t = 0, non_magic_num = 0; t < total; t++) {
             for (l = 0; l < leng; l++) {
                if (x[leng * t + l] == magic) {
@@ -579,9 +691,9 @@ int main(int argc, char *argv[])
 
       /* calculate delta and delta-delta */
       get_coef(x, dx, dw_num, position, total, non_magic_num, leng,
-               win_size_forward, win_size_backward);
+               win_size_forward, win_size_backward, poly_order);
 
-      /* output static, delta, delta-delta */
+      /* output static, delta and delta-delta */
       fwritef(dx, sizeof(*dx), dw_num * total * leng, stdout);
    }
 

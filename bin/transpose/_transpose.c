@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /************************************************************************
 
-  $Id: _transpose.c,v 1.3 2012/12/21 11:27:37 mataki Exp $
+  $Id: _transpose.c,v 1.5 2013/12/16 09:02:04 mataki Exp $
 
   Transpose a matrix
       transpose(float* buf, int m, int n)
@@ -63,15 +63,13 @@
 #  include <SPTK.h>
 #endif
 
-void transpose(float *buf, const int m, const int n)
+void transpose(double *buf, const int m, const int n)
 {
    int i, j;
 
    for (i = 0; i < n; i++) {
       for (j = 0; j < m; j++) {
-
-         fwrite(&buf[i + j * n], sizeof(float), 1, stdout);
-
+         fwritef(&buf[i + j * n], *buf, 1, stdout);
       }
    }
 

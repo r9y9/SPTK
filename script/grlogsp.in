@@ -9,7 +9,7 @@
 #                           Interdisciplinary Graduate School of    #
 #                           Science and Engineering                 #
 #                                                                   #
-#                1996-2012  Nagoya Institute of Technology          #
+#                1996-2013  Nagoya Institute of Technology          #
 #                           Department of Computer Science          #
 #                                                                   #
 # All rights reserved.                                              #
@@ -52,12 +52,13 @@
 #                                               1996.6  K.Koishida      #
 #                                               1998.7  M.Tamura        #
 #                                               2010.6  T.Sawada        #
+#                                               2013.2  T.Okada         #
 #                                                                       #
 #########################################################################
 
 set path    = ( @binpath@ $path )
 set sptkver = '@sptk_version@'
-set cvsid   = '$Id: grlogsp.in,v 1.16 2012/12/21 09:44:06 mataki Exp $'
+set cvsid   = '$Id: grlogsp.in,v 1.20 2013/12/16 14:42:40 mataki Exp $'
 
 set cmnd = $0
 set cmnd = $cmnd:t
@@ -97,7 +98,18 @@ set xname = ( "Normalized frequency" \
               "" \
               "Frequency (kHz)" \
               "" \
+              "Frequency (kHz)" \
+              "" "" "" "" "" \
+              "Frequency (kHz)" \
+              "" "" "" "" "" \
+              "Frequency (kHz)" \
+              "" \
+              "Frequency (kHz)" \
+              "" "" "" "" "" "" "" "" \
+              "" "" "" "" "" "" "" "" \
+              "" "" "" "" "" "" "" \
               "Frequency (kHz)" )
+
 set xs = ( "0 0.25 0.5" \
            0\ \'1.57\ \"\\pi/2\"\ \'3.14\ \"\\pi\" \
            "" \
@@ -107,16 +119,66 @@ set xs = ( "0 0.25 0.5" \
            "" \
            "0 2 4 6 8" \
            "" \
-           "0 2 4 6 8 10" )
-set xx = ("0 0.5" "0 3.14" "" "0 4" "0 5" "0 6" "" "0 8" "" "0 10")
-set xl = (0.5 3.14 "" 4 5 6 "" 8 "" 10)
+           "0 2 4 6 8 10" \
+           "" "" "" "" "" \
+           "0 4 8 12 16" \
+           "" "" "" "" "" \
+           "0 11 22" \
+           "" \
+           "0 6 12 18 24" \
+           "" "" "" "" "" "" "" "" \
+           "" "" "" "" "" "" "" "" \
+           "" "" "" "" "" "" "" \
+           "0 16 32 48" )
+
+set xx = ( "0 0.5" \
+           "0 3.14" \
+           "" \
+           "0 4" \
+           "0 5" \
+           "0 6" \
+           "" \
+           "0 8" \
+           "" \
+           "0 10" \
+           "" "" "" "" "" \
+           "0 16" \
+           "" "" "" "" "" \
+           "0 22" \
+           "" \
+           "0 24" \
+           "" "" "" "" "" "" "" "" \
+           "" "" "" "" "" "" "" "" \
+           "" "" "" "" "" "" "" \
+           "0 48" )
+
+set xl = ( 0.5 \
+           3.14 \
+           "" \
+           4 \
+           5 \
+           6 \
+           "" \
+           8 \
+           "" \
+           10 \
+           "" "" "" "" "" \
+           16 \
+           "" "" "" "" "" \
+           22 \
+           "" \
+           24 \
+           "" "" "" "" "" "" "" "" \
+           "" "" "" "" "" "" "" "" \
+           "" "" "" "" "" "" "" \
+           48 )
 
 set on_x = (25 60 95 130 165 200 235 270 305 340)
 
 @ i = 0
 while ($i < $#argv)
         @ i++
-        switch ($argv[$i])
+        switch ("$argv[$i]")
         case -t:
                 set trans = 1
                 breaksw
@@ -229,8 +291,8 @@ while ($i < $#argv)
                 goto usage
                 breaksw
         default:
-                set file = $argv[$i]
-                if ( ! -f $file ) then
+                set file = "$argv[$i]"
+                if ( ! -f "$file" ) then
                         echo2 "${cmnd} : Cannot open file ${file}\!"
                         set exit_status = 1
                         goto usage
@@ -238,6 +300,13 @@ while ($i < $#argv)
                 breaksw
         endsw
 end
+
+# when input stream is stdin
+if ("$file" == "") then
+    cat > /tmp/grlogsp
+    set file=/tmp/grlogsp
+endif
+
 goto main
 
 usage:
@@ -266,12 +335,16 @@ if ( $help ) then
 endif
         echo2 '       -x   x         : x scale                      [1]'
 if ( $help ) then
-        echo2 '                         1  (Normalized frequency <0, 0.5>)'
-        echo2 '                         2  (Normalized frequency <0, pi/2, pi>)'
-        echo2 '                         4  (Frequency <0, 1, 2, 3, 4     kHz>)'
-        echo2 '                         5  (Frequency <0, 1, 2, 3, 4, 5  kHz>)'
-        echo2 '                         8  (Frequency <0, 2, 4, 6, 8     kHz>)'
-        echo2 '                         10 (Frequency <0, 2, 4, 6, 8, 10 kHz>)'
+        echo2 '                       1  (Normalized frequency <0, 0.5>)'
+        echo2 '                       2  (Normalized frequency <0, pi/2, pi>)'
+        echo2 '                       4  (Frequency <0,  1,  2,  3,  4      kHz>)'
+        echo2 '                       5  (Frequency <0,  1,  2,  3,  4,  5  kHz>)'
+        echo2 '                       8  (Frequency <0,  2,  4,  6,  8      kHz>)'
+        echo2 '                       10 (Frequency <0,  2,  4,  6,  8, 10  kHz>)'
+        echo2 '                       16 (Frequency <0,  4,  8, 12, 16      kHz>)'
+        echo2 '                       22 (Frequency <0, 11, 22              kHz>)'
+        echo2 '                       24 (Frequency <0,  6, 12, 18, 24      kHz>)'
+        echo2 '                       48 (Frequency <0, 16, 32, 48          kHz>)'        
 endif
         echo2 '       -y   ymin      : y minimum                    [-100]'
         echo2 '       -yy  yy        : y scale           <dB/10mm>  [100]'
@@ -292,7 +365,7 @@ if ( $help ) then
         echo2 '       -W   W         : width of the graph  <100mm>  [0.25]'
         echo2 '       -H   H         : height of the graph <100mm>  [1.5]'
         echo2 '       -z   z         : moving width           <mm>  [False]'
-        echo2 '                       (if -z option does not exist, z is the same as F)'                        
+        echo2 '                       (if -z option does not exist, z is the same as F)'
         echo2 '       -o   xo yo     : origin of the graph          [30, 65]'
         echo2 '                       (if -o option exists, -O is not effective)'
         echo2 '       -g   g         : type of the graph            [0]'
@@ -381,8 +454,8 @@ EOF
 endif
 
 fig $T -W $w -H $h -o $xo $yo -g $g -F $F<< EOF
-        x        $xx[$x] 
-        xscale        $xs[$x] 
+        x        $xx[$x]
+        xscale        $xs[$x]
         xname "$xname[$x]"
 EOF
 
@@ -410,6 +483,10 @@ endif
 
 if ($trans) set T = "-t -1"
 
-bcut +f -s $s $ee $file|\
+bcut +f -s $s $ee "$file" |\
 fdrw $T -W $ww -o $xo $yo -g 0 -y $yy -n $lhi -p $p -m $ln -z $z -F $F
 
+# when input stream is stdin
+if ("$file" == "") then
+    /bin/rm -f /tmp/grlogsp
+endif

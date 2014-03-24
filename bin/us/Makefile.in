@@ -53,7 +53,7 @@ us_OBJECTS = $(am_us_OBJECTS)
 us_DEPENDENCIES = $(top_builddir)/lib/libSPTK.a
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
-DEFAULT_INCLUDES = -I.@am__isrc@
+DEFAULT_INCLUDES = 
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -115,6 +115,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 POW_LIB = @POW_LIB@
@@ -178,18 +179,19 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-INCLUDES = -I$(top_srcdir)/include
 bin_SCRIPTS = us16.sh uscd.sh
 us_SOURCES = us.c 
 us_LDADD = $(top_builddir)/lib/libSPTK.a
 lpcoefdir = $(datarootdir)/SPTK
-us_CPPFLAGS = -DLIB=\"$(lpcoefdir)\"
+us_CPPFLAGS = -DLIB=\"$(lpcoefdir)\" -I$(top_srcdir)/include
 dist_lpcoef_DATA = lpfcoef.2to3f \
 	lpfcoef.2to3s \
 	lpfcoef.3to4 \
+	titech/lpfcoef.3to5 \
 	lpfcoef.4to5 \
 	lpfcoef.5to7 \
-	lpfcoef.5to8
+	lpfcoef.5to8 \
+	titech/lpfcoef.7to8
 
 EXTRA_DIST = us16.in uscd.in
 CLEANFILES = $(bin_PROGRAMS) $(bin_SCRIPTS)
@@ -506,19 +508,19 @@ install-binSCRIPTS: $(bin_SCRIPTS)
 	  if test -f $$d$$p; then \
 	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
 	    echo " $(binSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(bindir)/$$f'"; \
-	    $(binSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(bindir)/$$f"; \
+	    $(binSCRIPT_INSTALL) "$$d$$p" "$(datarootdir)/SPTK/$$f"; \
 	  else :; fi; \
 	  p2=`basename $$p .sh`; \
 	  rm -f "$(DESTDIR)$(bindir)/$$p2"; \
-	  (cd $(DESTDIR)$(bindir); $(LN_S) $$p  $$p2) \
+	  (cd $(DESTDIR)$(bindir); $(LN_S) "$(datarootdir)/SPTK/$$p"  $$p2) \
 	done
 
 uninstall-binSCRIPTS:
 	@$(NORMAL_UNINSTALL)
 	@list='$(bin_SCRIPTS)'; for p in $$list; do \
 	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
-	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
+	  echo " rm -f '$(datarootdir)/SPTK/$$f'"; \
+	  rm -f "$(datarootdir)/SPTK/$$f"; \
 	  p2=`basename $$p .sh`; \
 	  rm -f "$(DESTDIR)$(bindir)/$$p2"; \
 	done

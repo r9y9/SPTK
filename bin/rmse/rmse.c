@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -47,11 +47,20 @@
 *    Calculation of Root Mean Squared Error                             *
 *                                                                       *
 *                                     1996.3  K.Koishida                *
+*                                     2013.7  T.Aritake                 *
 *                                                                       *
 *       usage:                                                          *
 *               rmse [ options ] file1 [ infile ] > stdout              *
 *       options:                                                        *
-*               -l l     :  frame length        [0]                     *
+*               -l l         :  length of vector    [0]                 *
+*               -n n         :  order of vector     [l-1]               *
+*               -t t         :  number of vector    [EOD]               *
+*               -magic magic :  remove magic number                     *
+*               -MAGIC MAGIC :  replace magic number by MAGIC           *
+*                               if -magic option is not given,          *
+*                               return error                            *
+*                               if -magic or -MAGIC option              *
+*                               is given multiple times, return error   *
 *       infile:                                                         *
 *               data sequence                                           *
 *                       , x(0), x(1), ..., x(l-1),                      *
@@ -65,7 +74,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: rmse.c,v 1.23 2012/12/21 11:27:37 mataki Exp $";
+static char *rcs_id = "$Id: rmse.c,v 1.27 2013/12/18 03:58:38 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -82,6 +91,7 @@ static char *rcs_id = "$Id: rmse.c,v 1.23 2012/12/21 11:27:37 mataki Exp $";
 #endif
 
 #include <math.h>
+#include <ctype.h>
 
 #if defined(WIN32)
 #  include "SPTK.h"
@@ -91,6 +101,8 @@ static char *rcs_id = "$Id: rmse.c,v 1.23 2012/12/21 11:27:37 mataki Exp $";
 
 /*  Default Values  */
 #define LENG 0
+#define MAGIC 0
+#define REP 0
 
 /*  Command Name  */
 char *cmnd;
@@ -104,10 +116,19 @@ void usage(int status)
    fprintf(stderr, "  usage:\n");
    fprintf(stderr, "       %s [ options ] file1 [ infile ] > stdout\n", cmnd);
    fprintf(stderr, "  options:\n");
-   fprintf(stderr, "      -l l  : frame length       [%d]\n", LENG);
-   fprintf(stderr, "      -h    : print this message\n");
+   fprintf(stderr, "       -l l         : length of vector    [%d]\n", LENG);
+   fprintf(stderr, "       -n n         : order of vector     [l-1]\n");
+   fprintf(stderr, "       -t t         : number of vector    [EOD]\n");
+   fprintf(stderr, "       -magic magic : remove magic number\n");
+   fprintf(stderr, "       -MAGIC MAGIC : replace magic number by MAGIC\n");
+   fprintf(stderr, "                      if -magic option is not given\n");
+   fprintf(stderr, "                      return error\n");
+   fprintf(stderr, "                      if -magic or -MAGIC option\n");
+   fprintf(stderr,
+           "                      is given multiple times, return error\n");
+   fprintf(stderr, "       -h           : print this message\n");
    fprintf(stderr, "  infile:\n");
-   fprintf(stderr, "      data sequence (%s)      [stdin]\n", FORMAT);
+   fprintf(stderr, "      data sequence (%s)               [stdin]\n", FORMAT);
    fprintf(stderr, "  file1:\n");
    fprintf(stderr, "      data sequence (%s)\n", FORMAT);
    fprintf(stderr, "  stdout:\n");
@@ -125,9 +146,11 @@ void usage(int status)
 
 int main(int argc, char **argv)
 {
-   int l = LENG, num = 0;
+   int l = LENG, num = 0, i = 0, break_flag = 0, tv = -1;
    FILE *fp = stdin, *fp1 = NULL;
    double *x, *y, x1, y1, sub, z = 0.0;
+   double magic = 0.0, rep = 0.0;
+   int magic_flag = 0, magic_count = MAGIC, rep_count = REP;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL)
       cmnd = argv[0];
@@ -140,8 +163,81 @@ int main(int argc, char **argv)
             l = atoi(*++argv);
             --argc;
             break;
+         case 'n':
+            l = atoi(*++argv) + 1;
+            --argc;
+            break;
+         case 't':
+            tv = atoi(*++argv);
+            --argc;
+            break;
          case 'h':
             usage(0);
+         case 'm':
+            if (magic_count > 0) {
+               fprintf(stderr,
+                       "%s : Cannot specify -magic option multiple times!\n",
+                       cmnd);
+               usage(1);
+            }
+            if ((*(argv + 1)) == NULL) {        /* No magic number */
+               fprintf(stderr,
+                       "%s : -magic option need magic number !\n", cmnd);
+               usage(1);
+            }
+
+            if (isdigit(**(argv + 1)) == 0) {   /* Check the magic number is correct */
+               if (**(argv + 1) != '+' && **(argv + 1) != '-') {
+                  fprintf(stderr,
+                          "%s : -magic option need numerical number !\n", cmnd);
+                  usage(1);
+               } else if (isdigit(*(*(argv + 1) + 1)) == 0) {
+                  fprintf(stderr,
+                          "%s : -magic option need numerical number !\n", cmnd);
+                  usage(1);
+               }
+            }
+
+            magic = atof(*++argv);
+            magic_flag = 1;
+            magic_count++;
+            --argc;
+            break;
+         case 'M':
+            if (rep_count > 0) {
+               fprintf(stderr,
+                       "%s : Cannot specify -MAGIC option multiple times!\n",
+                       cmnd);
+               usage(1);
+            }
+            if (magic_flag == 0) {
+               fprintf(stderr,
+                       "%s : Cannot find -magic option before -MAGIC option!\n",
+                       cmnd);
+               usage(1);
+            }
+            if ((*(argv + 1)) == NULL) {        /* No magic number */
+               fprintf(stderr,
+                       "%s : -MAGIC option need magic number !\n", cmnd);
+               usage(1);
+            }
+
+            if (isdigit(**(argv + 1)) == 0) {   /* Check the MAGIC number is correct */
+               if (**(argv + 1) != '+' && **(argv + 1) != '-') {
+                  fprintf(stderr,
+                          "%s : -MAGIC option need numerical number !\n", cmnd);
+                  usage(1);
+               } else if (isdigit(*(*(argv + 1) + 1)) == 0) {
+                  fprintf(stderr,
+                          "%s : -MAGIC option need numerical number !\n", cmnd);
+                  usage(1);
+               }
+            }
+
+            rep = atof(*++argv);
+            rep_count++;
+            --argc;
+            break;
          default:
             fprintf(stderr, "%s : Invalid option '%c'!\n", cmnd, *(*argv + 1));
             usage(1);
@@ -156,19 +252,50 @@ int main(int argc, char **argv)
       y = x + l;
       while (freadf(x, sizeof(*x), l, fp) == l &&
              freadf(y, sizeof(*y), l, fp1) == l) {
+         break_flag = 0;
+         if (magic_count)
+            for (i = 0; i < l; i++) {
+               if (rep_count == 0) {
+                  if (x[i] == magic || y[i] == magic)
+                     break_flag = 1;
+               } else {
+                  if (x[i] == magic)
+                     x[i] = rep;
+                  if (y[i] == magic)
+                     y[i] = rep;
+               }
+            }
+         if (break_flag == 1)
+            continue;
+
          z = rmse(x, y, l);
          fwritef(&z, sizeof(z), 1, stdout);
+
+         tv--;
+         if (tv == 0)
+            break;
       }
    } else {
       while (freadf(&x1, sizeof(x1), 1, fp) == 1 &&
              freadf(&y1, sizeof(y1), 1, fp1) == 1) {
+         if (magic_count)
+            if (x1 == magic || y1 == magic) {
+               if (rep_count) {
+                  if (x1 == magic)
+                     x1 = rep;
+                  if (y1 == magic)
+                     y1 = rep;
+               } else {
+                  return (0);
+               }
+            }
          sub = x1 - y1;
          z += sub * sub;
-
          num++;
       }
       z = sqrt(z /= num);
       fwritef(&z, sizeof(z), 1, stdout);
+
    }
 
    return (0);

@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /***************************************************************
-  $Id: _histogram.c,v 1.17 2012/12/21 11:27:33 mataki Exp $
+  $Id: _histogram.c,v 1.18 2013/12/16 09:01:57 mataki Exp $
    histogram
       histogram(x, size, min, max, step, h);
       Naohiro Isshiki      Feb. 1996

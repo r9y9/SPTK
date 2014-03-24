@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -88,7 +88,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: vstat.c,v 1.33 2012/12/21 11:27:38 mataki Exp $";
+static char *rcs_id = "$Id: vstat.c,v 1.35 2013/12/16 09:02:06 mataki Exp $";
 
 
 /*  Standard C Libralies  */
@@ -128,7 +128,6 @@ char *BOOL[] = { "FALSE", "TRUE" };
 
 /*  Command Name  */
 char *cmnd;
-
 
 void usage(int status)
 {
@@ -387,6 +386,81 @@ int main(int argc, char *argv[])
    mean = dgetmem(leng + leng);
 
    x = mean + leng;
+
+   if (outmed) {
+
+      if (nv == -1) {
+         typedef struct _float_list {
+            float *f;
+            struct _float_list *next;
+         } float_list;
+
+         float_list *top = NULL, *prev = NULL, *cur = NULL;
+         top = prev = (float_list *) getmem(1, sizeof(float_list));
+         prev->next = NULL;
+         while (freadf(x, sizeof(*x), leng, fp) == leng) {
+            cur = (float_list *) getmem(1, sizeof(float_list));
+            cur->f = fgetmem(leng);
+            for (i = 0; i < leng; i++) {
+               cur->f[i] = (float) x[i];
+            }
+            count++;
+            prev->next = cur;
+            cur->next = NULL;
+            prev = cur;
+         }
+         k = count;
+
+         mtmp = (double **) getmem(leng, sizeof(*mtmp));
+         mtmp[0] = dgetmem(leng * k);
+         for (i = 1; i < leng; i++)
+            mtmp[i] = mtmp[i - 1] + k;
+
+         med = dgetmem(leng);
+
+         for (j = 0, cur = top->next; j < k; j++, cur = cur->next) {
+            for (i = 0; i < leng; i++) {
+               mtmp[i][j] = (double) cur->f[i];
+            }
+         }
+      } else {
+
+         k = nv;
+
+         mtmp = (double **) getmem(leng, sizeof(*mtmp));
+         mtmp[0] = dgetmem(leng * k);
+         for (i = 1; i < leng; i++)
+            mtmp[i] = mtmp[i - 1] + k;
+
+         med = dgetmem(leng);
+
+         for (j = 0; j < k; j++) {
+            for (i = 0; i < leng; i++) {
+               freadf(&mtmp[i][j], sizeof(**mtmp), 1, fp);
+            }
+         }
+      }
+
+      if (k % 2 == 0) {
+         fprintf(stderr, "%s : warning: the number of vectors is even!\n",
+                 cmnd);
+      }
+
+      for (i = 0; i < leng; i++) {
+         quicksort(mtmp[i], 0, k - 1);
+         if (k % 2 == 1) {
+            med[i] = mtmp[i][k / 2];
+         } else {
+            med[i] = ((mtmp[i][k / 2] + mtmp[i][k / 2 - 1]) / 2);
+         }
+      }
+
+      fwritef(med, sizeof(*med), leng, stdout);
+
+      return (0);
+
+   }
+
    if (outcov) {
       if (!diagc) {
          cov = (double **) getmem(leng, sizeof(*cov));
@@ -409,45 +483,11 @@ int main(int argc, char *argv[])
       lower = dgetmem(leng);
    }
 
-   if (outmed) {
-      if (nv == -1) {
-         while (!feof(fp)) {
-            for (lp = nv; lp;) {
-               if (freadf(x, sizeof(*x), leng, fp) != leng)
-                  break;
-               --lp;
-            }
-         }
-         k = -lp - 1;
-         rewind(fp);
-      } else {
-         while (!feof(fp)) {
-            if (freadf(x, sizeof(*x), leng, fp) != leng)
-               break;
-            ++count;
-         }
-         count = count / nv;
-         k = nv;
-         rewind(fp);
-      }
 
-      if (k % 2 == 0) {
-         fprintf(stderr, "%s : warning: the number of vectors is even!\n",
-                 cmnd);
-      }
-
-      mtmp = (double **) getmem(leng, sizeof(*mtmp));
-      mtmp[0] = dgetmem(leng * k);
-      for (i = 1; i < leng; i++)
-         mtmp[i] = mtmp[i - 1] + k;
-
-      med = dgetmem(leng);
-   }
 
    while (!feof(fp)) {
       for (i = 0; i < leng; i++) {
-         if (!outmed)
-            mean[i] = 0.0;
+         mean[i] = 0.0;
          if (outcov) {
             if (!diagc)
                for (j = 0; j < leng; j++)
@@ -458,144 +498,108 @@ int main(int argc, char *argv[])
          if (outconf) {
             var[i] = 0.0;
          }
-         if (outmed) {
-            for (j = 0; j < k; j++) {
-               mtmp[i][j] = 0.0;
-            }
-            med[i] = 0.0;
-         }
       }
 
-      if (outmed) {
-         for (j = 0; j < k; j++) {
-            if (freadf(x, sizeof(*x), leng, fp) != leng)
-               break;
-            for (i = 0; i < leng; i++) {
-               mtmp[i][j] = x[i];
-            }
-            if (j == k - 1) {
-               count--;
-               if (count <= 0) {
-                  while (!feof(fp)) {
-                     freadf(x, sizeof(*x), leng, fp);
-                  }
-               }
-            }
-         }
-      } else {
-
-         for (lp = nv; lp;) {
-            if (freadf(x, sizeof(*x), leng, fp) != leng)
-               break;
-            for (i = 0; i < leng; i++) {
-               mean[i] += x[i];
-               if (outcov) {
-                  if (!diagc)
-                     for (j = i; j < leng; j++)
-                        cov[i][j] += x[i] * x[j];
-                  else
-                     var[i] += x[i] * x[i];
-               }
-               if (outconf) {
-                  var[i] += x[i] * x[i];
-               }
-            }
-            --lp;
-         }
-      }
-
-      if (!outmed) {
-         if (lp == 0 || nv == -1) {
-            if (nv > 0)
-               k = nv;
-            else
-               k = -lp - 1;
-            for (i = 0; i < leng; i++)
-               mean[i] /= k;
+      for (lp = nv; lp;) {
+         if (freadf(x, sizeof(*x), leng, fp) != leng)
+            break;
+         for (i = 0; i < leng; i++) {
+            mean[i] += x[i];
             if (outcov) {
                if (!diagc)
-                  for (i = 0; i < leng; i++)
-                     for (j = i; j < leng; j++)
-                        cov[j][i] = cov[i][j] =
-                            cov[i][j] / k - mean[i] * mean[j];
+                  for (j = i; j < leng; j++)
+                     cov[i][j] += x[i] * x[j];
                else
-                  for (i = 0; i < leng; i++)
-                     var[i] = var[i] / k - mean[i] * mean[i];
+                  var[i] += x[i] * x[i];
             }
             if (outconf) {
-               for (i = 0; i < leng; i++) {
-                  var[i] = (var[i] - k * mean[i] * mean[i]) / (k - 1);
-               }
-               t = t_percent(conf / 100, k - 1);
-               for (i = 0; i < leng; i++) {
-                  err = t * sqrt(var[i] / k);
-                  upper[i] = mean[i] + err;
-                  lower[i] = mean[i] - err;
-               }
-            }
-
-            if (corr) {
-               for (i = 0; i < leng; i++)
-                  for (j = i + 1; j < leng; j++)
-                     cov[j][i] = cov[i][j] =
-                         cov[i][j] / sqrt(cov[i][i] * cov[j][j]);
-               for (i = 0; i < leng; i++)
-                  cov[i][i] = 1.0;
-            }
-
-            if (outmean)
-               fwritef(mean, sizeof(*mean), leng, stdout);
-
-            if (outcov) {
-               if (!diagc) {
-                  if (inv) {
-                     for (i = 0; i < leng; i++) {
-                        for (j = i + 1; j < leng; j++) {
-                           cov[j][i] /= cov[i][i];
-                           for (m = i + 1; m < leng; m++)
-                              cov[j][m] -= cov[i][m] * cov[j][i];
-                        }
-                     }
-
-                     for (m = 0; m < leng; m++) {
-                        for (i = 0; i < leng; i++) {
-                           if (i == m)
-                              invcov[i][m] = 1.0;
-                           else
-                              invcov[i][m] = 0.0;
-                        }
-                        for (i = 0; i < leng; i++) {
-                           for (j = i + 1; j < leng; j++)
-                              invcov[j][m] -= invcov[i][m] * cov[j][i];
-                        }
-                        for (i = leng - 1; i >= 0; i--) {
-                           for (j = i + 1; j < leng; j++)
-                              invcov[i][m] -= cov[i][j] * invcov[j][m];
-                           invcov[i][m] /= cov[i][i];
-                        }
-                     }
-                     fwritef(invcov[0], sizeof(*invcov[0]), leng * leng,
-                             stdout);
-                  } else
-                     fwritef(cov[0], sizeof(*cov[0]), leng * leng, stdout);
-               } else
-                  fwritef(var, sizeof(*var), leng, stdout);
-            }
-            if (outconf) {
-               fwritef(upper, sizeof(*upper), leng, stdout);
-               fwritef(lower, sizeof(*lower), leng, stdout);
+               var[i] += x[i] * x[i];
             }
          }
-      } else {
-         for (i = 0; i < leng; i++) {
-            quicksort(mtmp[i], 0, k - 1);
-            if (k % 2 == 1)
-               med[i] = mtmp[i][k / 2];
-            else
-               med[i] = ((mtmp[i][k / 2] + mtmp[i][k / 2 - 1]) / 2);
-         }
-         fwritef(med, sizeof(*med), leng, stdout);
+         --lp;
       }
+
+      if (lp == 0 || nv == -1) {
+         if (nv > 0)
+            k = nv;
+         else
+            k = -lp - 1;
+         for (i = 0; i < leng; i++)
+            mean[i] /= k;
+         if (outcov) {
+            if (!diagc)
+               for (i = 0; i < leng; i++)
+                  for (j = i; j < leng; j++)
+                     cov[j][i] = cov[i][j] = cov[i][j] / k - mean[i] * mean[j];
+            else
+               for (i = 0; i < leng; i++)
+                  var[i] = var[i] / k - mean[i] * mean[i];
+         }
+         if (outconf) {
+            for (i = 0; i < leng; i++) {
+               var[i] = (var[i] - k * mean[i] * mean[i]) / (k - 1);
+            }
+            t = t_percent(conf / 100, k - 1);
+            for (i = 0; i < leng; i++) {
+               err = t * sqrt(var[i] / k);
+               upper[i] = mean[i] + err;
+               lower[i] = mean[i] - err;
+            }
+         }
+
+         if (corr) {
+            for (i = 0; i < leng; i++)
+               for (j = i + 1; j < leng; j++)
+                  cov[j][i] = cov[i][j] =
+                      cov[i][j] / sqrt(cov[i][i] * cov[j][j]);
+            for (i = 0; i < leng; i++)
+               cov[i][i] = 1.0;
+         }
+
+         if (outmean)
+            fwritef(mean, sizeof(*mean), leng, stdout);
+
+         if (outcov) {
+            if (!diagc) {
+               if (inv) {
+                  for (i = 0; i < leng; i++) {
+                     for (j = i + 1; j < leng; j++) {
+                        cov[j][i] /= cov[i][i];
+                        for (m = i + 1; m < leng; m++)
+                           cov[j][m] -= cov[i][m] * cov[j][i];
+                     }
+                  }
+
+                  for (m = 0; m < leng; m++) {
+                     for (i = 0; i < leng; i++) {
+                        if (i == m)
+                           invcov[i][m] = 1.0;
+                        else
+                           invcov[i][m] = 0.0;
+                     }
+                     for (i = 0; i < leng; i++) {
+                        for (j = i + 1; j < leng; j++)
+                           invcov[j][m] -= invcov[i][m] * cov[j][i];
+                     }
+                     for (i = leng - 1; i >= 0; i--) {
+                        for (j = i + 1; j < leng; j++)
+                           invcov[i][m] -= cov[i][j] * invcov[j][m];
+                        invcov[i][m] /= cov[i][i];
+                     }
+                  }
+                  fwritef(invcov[0], sizeof(*invcov[0]), leng * leng, stdout);
+               } else
+                  fwritef(cov[0], sizeof(*cov[0]), leng * leng, stdout);
+            } else
+               fwritef(var, sizeof(*var), leng, stdout);
+         }
+         if (outconf) {
+            fwritef(upper, sizeof(*upper), leng, stdout);
+            fwritef(lower, sizeof(*lower), leng, stdout);
+         }
+      }
+
    }
+
    return (0);
 }

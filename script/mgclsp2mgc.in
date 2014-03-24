@@ -9,7 +9,7 @@
 #                           Interdisciplinary Graduate School of    #
 #                           Science and Engineering                 #
 #                                                                   #
-#                1996-2012  Nagoya Institute of Technology          #
+#                1996-2013  Nagoya Institute of Technology          #
 #                           Department of Computer Science          #
 #                                                                   #
 # All rights reserved.                                              #
@@ -53,7 +53,7 @@
 
 set path    = ( @binpath@ $path )
 set sptkver = '@sptk_version@'
-set cvsid   = '$Id: mgclsp2mgc.in,v 1.3 2012/12/21 09:44:07 mataki Exp $'
+set cvsid   = '$Id: mgclsp2mgc.in,v 1.6 2013/12/16 09:02:07 mataki Exp $'
 
 set cmnd = $0
 set cmnd = $cmnd:t
@@ -69,7 +69,7 @@ set file
 @ i = 0
 while ($i < $#argv)
 	@ i++
-	switch ($argv[$i])
+	switch ("$argv[$i]")
 	case -a:
                 @ i++
 		set a = $argv[$i]
@@ -87,7 +87,8 @@ while ($i < $#argv)
 		set m = $argv[$i]
 		breaksw
 	case -l:
-		set lg = "-l"
+	case -L:
+		set lg = "-L"
 		breaksw
 	case -i:
 		@ i++
@@ -102,8 +103,8 @@ while ($i < $#argv)
 		goto usage
 		breaksw
         default:
-                set file = $argv[$i]
-                if ( ! -f $file ) then
+                set file = "$argv[$i]"
+                if ( ! -f "$file" ) then
                         echo2 "${cmnd} : Cannot open file ${file}\!"
                         set exit_status = 1
                         goto usage
@@ -112,6 +113,12 @@ while ($i < $#argv)
         endsw
 
 end
+
+# when input stream is stdin
+if ("$file" == "") then
+    cat > /tmp/mgclsp2mgc
+    set file=/tmp/mgclsp2mgc
+endif
 
 goto main
 
@@ -132,7 +139,7 @@ usage:
 	echo2 '                       2 (frequency [kHz])'
 	echo2 '                       3 (frequency [Hz])'
 	echo2 '       -s s          : sampling frequency                              [10kHz]'
-	echo2 '       -l            : regard output aslog gain rater than linear gain [FALSE]'
+	echo2 '       -L            : regard output aslog gain rater than linear gain [FALSE]'
 	echo2 '       -h            : print this message'
 	echo2 '  infile(s):'
 	echo2 "       mgc-lsp (float)                                        [stdin]"
@@ -147,9 +154,14 @@ exit $exit_status
 main:
 
 if ($?c) then
-        lsp2lpc -m $m -s $s -i $in $lg $file |\
+        lsp2lpc -m $m -s $s -i $in $lg "$file" |\
         mgc2mgc -m $m -M $m -a $a -A $a -c $c -C $c -n -u
 else
-        lsp2lpc -m $m -s $s -i $in $lg $file |\
+        lsp2lpc -m $m -s $s -i $in $lg "$file" |\
         mgc2mgc -m $m -M $m -a $a -A $a -g $g -G $g -n -u
+endif
+
+# when input stream is stdin
+if ("$file" == "") then
+    /bin/rm -f /tmp/mgclsp2mgc
 endif

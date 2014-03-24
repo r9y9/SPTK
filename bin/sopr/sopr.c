@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -51,6 +51,7 @@
 *                                     2000.5  T.Kobayashi                      *
 *                                     2010.6  A.Tamamori                       *
 *                                     2010.12 T.Sawada                         *
+*                                     2013.3  T.Okada                          *
 *       usage:                                                                 *
 *               sopr [ options ] [ infile ] > stdout                           *
 *       options:                                                               *
@@ -58,6 +59,7 @@
 *               -s s         :  subtraction          (in - s)                  *
 *               -m m         :  multiplication       (in * m)                  *
 *               -d d         :  division             (in / d)                  *
+*               -p p         :  power                (in ^ p)                  *
 *               -f f         :  flooring             (in < f -> f)             *
 *               -c c         :  ceiling              (in > f -> f)             *
 *               -ABS         :  absolute             (abs(in))                 *
@@ -65,12 +67,14 @@
 *               -P           :  square               (in * in)                 *
 *               -R           :  root                 (sqrt(in))                *
 *               -SQRT        :  root                 (sqrt(in))                *
-*               -LN          :  logarithm            (log(in))                 *
-*               -LOG2        :  logarithm            (log2(in))                *
-*               -LOG10       :  logarithm            (log10(in))               *
+*               -LN          :  logarithm natural    (log(in))                 *
+*               -LOG2        :  logarithm to base 2  (log2(in))                *
+*               -LOG10       :  logarithm to base 10 (log10(in))               *
+*               -LOGX X      :  logarithm to base X  (logX(in))                *
 *               -EXP         :  exponential          (exp(in))                 *
 *               -POW2        :  power of 2           (2^(in))                  *
 *               -POW10       :  power of 10          (10^(in))                 *
+*               -POWX X      :  power of X           (X^(in))                  *
 *               -FIX         :  round                ((int)in)                 *
 *               -UNIT        :  unit step            (u(in))                   *
 *               -CLIP        :  clipping             (in * u(in)               *
@@ -95,7 +99,7 @@
 *                                                                              *
 *******************************************************************************/
 
-static char *rcs_id = "$Id: sopr.c,v 1.38 2012/12/21 11:27:37 mataki Exp $";
+static char *rcs_id = "$Id: sopr.c,v 1.43 2013/12/16 10:57:25 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -141,6 +145,7 @@ void usage(int status)
    fprintf(stderr, "       -s s         : subtraction          (in - s)\n");
    fprintf(stderr, "       -m m         : multiplication       (in * m)\n");
    fprintf(stderr, "       -d d         : division             (in / d)\n");
+   fprintf(stderr, "       -p p         : power                (in ^ p)\n");
    fprintf(stderr,
            "       -f f         : flooring             (f if in < f)\n");
    fprintf(stderr,
@@ -154,11 +159,11 @@ void usage(int status)
    fprintf(stderr, "       return error\n");
    fprintf(stderr, "\n");
    fprintf(stderr,
-           "       if the argument of the above operation option is `dB', `cent'\n");
+           "       if the argument of the above operation option is `dB', `cent',\n");
    fprintf(stderr,
-           "       or `octave', then the value 20/log_e(10), 1200/log_e(2)\n");
+           "       `semitone' or `octave', then the value 20/log_e(10), 1200/log_e(2),\n");
    fprintf(stderr,
-           "       or 1/log_e(2) is assigned, respectively. Also if `pi' or\n");
+           "       12/log_e(2) or 1/log_e(2) is assigned, respectively. Also if `pi' or\n");
    fprintf(stderr,
            "       `ln(x)',`exp(x)',`sqrt(x)' such as `ln2',`exp10',`sqrt30' \n");
    fprintf(stderr,
@@ -170,12 +175,14 @@ void usage(int status)
    fprintf(stderr, "       -P           : square               (in * in)\n");
    fprintf(stderr, "       -R           : root                 (sqrt(in))\n");
    fprintf(stderr, "       -SQRT        : root                 (sqrt(in))\n");
-   fprintf(stderr, "       -LN          : logarithm            (log(in))\n");
-   fprintf(stderr, "       -LOG2        : logarithm            (log2(in))\n");
-   fprintf(stderr, "       -LOG10       : logarithm            (log10(in))\n");
+   fprintf(stderr, "       -LN          : logarithm natural    (log(in))\n");
+   fprintf(stderr, "       -LOG2        : logarithm to base 2  (log2(in))\n");
+   fprintf(stderr, "       -LOG10       : logarithm to base 10 (log10(in))\n");
+   fprintf(stderr, "       -LOGX X      : logarithm to base X  (logX(in))\n");
    fprintf(stderr, "       -EXP         : exponential          (exp(in))\n");
    fprintf(stderr, "       -POW2        : power of 2           (2^(in))\n");
    fprintf(stderr, "       -POW10       : power of 10          (10^(in))\n");
+   fprintf(stderr, "       -POWX X      : power of X           (X^(in))\n");
    fprintf(stderr, "       -FIX         : round                ((int)in)\n");
    fprintf(stderr, "       -UNIT        : unit step            (u(in))\n");
    fprintf(stderr, "       -CLIP        : clipping             (in * u(in))\n");
@@ -217,7 +224,7 @@ static double mem[MEMSIZE];
 
 int main(int argc, char *argv[])
 {
-   int magic_count = 0, MAGIC_COUNT = 0;
+   int magic_count = 0, rep_count = 0;
    FILE *fp;
    char *s, c;
    char *infile = NULL;
@@ -248,11 +255,50 @@ int main(int argc, char *argv[])
          case 'c':
          case 'd':
          case 'f':
+         case 'p':
+         case 'P':
          case 'm':
          case 's':
          case 'r':
          case 'w':
          case 'M':
+         case 'L':
+            if (c == 'P') {
+               if (strncmp("POWX\0", s, 5) == 0) {
+                  strncpy(optbl[nopr].op, "POWX", 4);
+                  s = *++argv;
+                  if (s == NULL) {
+                     fprintf(stderr,
+                             "%s : numerical argument is also needed !\n",
+                             cmnd);
+                     usage(1);
+                  }
+                  --argc;
+               } else {
+                  strncpy(optbl[nopr].op, s, 4);
+               }
+            }
+            if (c == 'L') {
+               if (strncmp("LOGX\0", s, 5) == 0) {
+                  strncpy(optbl[nopr].op, "LOGX", 4);
+                  s = *++argv;
+                  if (s == NULL) {
+                     fprintf(stderr,
+                             "%s : numerical argument is also needed !\n",
+                             cmnd);
+                     usage(1);
+                  }
+                  if (atof(s) <= 0) {
+                     fprintf(stderr,
+                             "%s : base of a logarithm must be positive number !\n",
+                             cmnd);
+                     usage(1);
+                  }
+                  --argc;
+               } else {
+                  strncpy(optbl[nopr].op, s, 4);
+               }
+            }
             if ((c == 'm') && strncmp("agic", s, 4) == 0) {
                if (magic_count > 0) {
                   fprintf(stderr,
@@ -272,7 +318,7 @@ int main(int argc, char *argv[])
                --argc;
             }
             if (c == 'M') {
-               if (MAGIC_COUNT > 0) {
+               if (rep_count > 0) {
                   fprintf(stderr,
                           "%s : Cannot specify -MAGIC option multiple times!\n",
                           cmnd);
@@ -286,7 +332,7 @@ int main(int argc, char *argv[])
                } else {
                   optbl[nopr].magic = 1 - MAGIC;
                   optbl[nopr].ifrep = 1 - REP;
-                  MAGIC_COUNT++;
+                  rep_count++;
                   s = *++argv;
                   if (s == NULL) {      /* No magic number */
                      fprintf(stderr,
@@ -302,6 +348,8 @@ int main(int argc, char *argv[])
                optbl[nopr].d = 1200 / log(2.0);
             else if (strncmp("octave", s, 6) == 0)
                optbl[nopr].d = 1.0 / log(2.0);
+            else if (strncmp("semitone", s, 8) == 0)
+               optbl[nopr].d = 12.0 / log(2.0);
             else if (strncmp("pi", s, 2) == 0)
                optbl[nopr].d = PI;
             else if (strncmp("ln", s, 2) == 0)
@@ -326,21 +374,34 @@ int main(int argc, char *argv[])
                   c = '*';
                else if (c == 's')
                   c = '-';
-            } else
+               else if (c == 'p')
+                  c = '^';
+            } else {
+               if (isdigit(*s) == 0 && strncmp(optbl[nopr].op, s, 4) != 0) {    /* Check the value is correct */
+                  if ((*s) != '+' && (*s) != '-') {
+                     fprintf(stderr,
+                             "%s : %s option need numerical number !\n", cmnd,
+                             *(argv - 1));
+                     usage(1);
+                  } else if (isdigit(*(s + 1)) == 0) {
+                     fprintf(stderr,
+                             "%s : %s option need numerical number !\n", cmnd,
+                             *(argv - 1));
+                     usage(1);
+                  }
+               }
                optbl[nopr].d = atof(s);
+            }
          case 'A':
          case 'C':
          case 'E':
          case 'F':
          case 'I':
-         case 'L':
-         case 'P':
          case 'R':
          case 'S':
          case 'T':
          case 'U':
-            if ((c == 'A') || (c == 'C') || (c == 'L') ||
-                (c == 'P') || (c == 'S'))
+            if ((c == 'A') || (c == 'C') || (c == 'S'))
                strncpy(optbl[nopr].op, s, 4);
             else
                optbl[nopr].op[0] = c;
@@ -358,6 +419,7 @@ int main(int argc, char *argv[])
    if (infile) {
       fp = getfp(infile, "rb");
       sopr(fp);
+      infile = NULL;
    } else
       sopr(stdin);
 
@@ -404,6 +466,9 @@ int sopr(FILE * fp)
             case '/':
                x /= mem[(int) y];
                break;
+            case '^':
+               x = pow(x, mem[(int) y]);
+               break;
             case 'a':
                x += y;
                break;
@@ -415,6 +480,9 @@ int sopr(FILE * fp)
                break;
             case 'd':
                x /= y;
+               break;
+            case 'p':
+               x = pow(x, y);
                break;
             case 'f':
                x = (x < y) ? y : x;
@@ -443,6 +511,8 @@ int sopr(FILE * fp)
                   x = pow(10.0, x);
                else if (optbl[k].op[1] == 'O' && optbl[k].op[3] == '2')
                   x = pow(2.0, x);
+               else if (optbl[k].op[1] == 'O' && optbl[k].op[3] == 'X')
+                  x = pow(y, x);
                else
                   x *= x;
                break;
@@ -459,7 +529,11 @@ int sopr(FILE * fp)
                x = exp(x);
                break;
             case 'L':
-               if (optbl[k].op[3] == '1')
+               if (x <= 0)
+                  fprintf(stderr, "WARNING: LOG of zero or negative value !\n");
+               if (optbl[k].op[3] == 'X')
+                  x = log(x) / log(y);
+               else if (optbl[k].op[3] == '1')
                   x = log10(x);
                else if (optbl[k].op[3] == '2')
                   x = LOG2(x);

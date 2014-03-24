@@ -1,3 +1,24 @@
+Version 3.7:
+ * add 'vc' command to perform GMM-based voice conversion.
+ * add 'lsp2sp' command to transform LSP coefficients to spectrum.
+ * add -R option to 'mlsacheck' command to specify threshold value.
+ * add -f option to 'gmmp' command to specify full covariance matrix.
+ * add -M, -c1 and -c2 option to 'gmm' command to specify block size and structure of covariance matrix.
+ * add -n option to 'delta' command to specify order of regression polynomial.
+ * add -magic and -MAGIC option to 'rmse' command to delete and substitute magic number.
+ * add -n and -t option to 'rmse' command to specify order and number of vector, respectively.
+ * add -POWX, -LOGX option, and new constant (semitone) to 'sopr' command.
+ * add -l option to 'decimate' and 'interpolate' command to specify length of vector.
+ * add -g and -G option to 'lspcheck' command to check value of gain.
+ * add -L option to 'lspcheck' command to specify log gain.
+ * add -n option to 'mgc2mgclsp' command to specify split number of unit circle.
+ * add -p and -d to 'mgc2mgclsp' command to specify maximum number and end condition of interpolation.
+ * add -x 16, 22, 24 and 48 option of 'glogsp' and 'grlogsp' command to specify more x-axis scales.
+ * add filter coefficients for 7:4 down-sampling, 3:5 and 7:8 up-sampling.
+ * unify option to specify log gain into -L option.
+ * fix -c option of 'mlsacheck' command to specify the type of modification of filter coefficients.
+ * bug fixes.
+
 Version 3.6:
  * add -o option to 'minmax' command to output maximum, minimum or both values.
  * add -o 4 option to 'vstat' command to output medians.

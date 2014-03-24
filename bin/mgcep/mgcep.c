@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -75,7 +75,7 @@
 *                -j j     :  maximum iteration                 [30]     *
 *                -d d     :  end condition                     [0.001]  *
 *                -p p     :  order of recursions               [l-1]    *
-*                -e e     :  small value added to periodgram   [0]      *
+*                -e e     :  small value added to periodogram  [0]      *
 *                -E E     :  floor in db calculated per frame  [N/A]    *
 *                -f f     :  mimimum value of the determinant           *
 *                            of the normal matrix            [0.000001] *
@@ -95,7 +95,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: mgcep.c,v 1.37 2012/12/21 11:27:35 mataki Exp $";
+static char *rcs_id = "$Id: mgcep.c,v 1.40 2013/12/16 09:02:00 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -175,7 +175,7 @@ void usage(const int status)
    fprintf(stderr, "       -d d  : end condition                     [%g]\n",
            END);
    fprintf(stderr, "       -p p  : order of recursions               [l-1]\n");
-   fprintf(stderr, "       -e e  : small value added to periodgram   [%g]\n",
+   fprintf(stderr, "       -e e  : small value added to periodogram  [%g]\n",
            EPS);
    fprintf(stderr, "       -E E  : floor in db calculated per frame  [N/A]\n");
    fprintf(stderr, "       -f f  : mimimum value of the determinant  [%g]\n",

@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -52,20 +52,20 @@
 *       usage:                                                          *
 *               uels [ options ] [ infile ] > stdout                    *
 *       options:                                                        *
-*               -m m     :  order of cepstrum               [25]        *
-*               -l l     :  frame length                    [256]       *
-*               -q q     :  Input format                    [0]         *
+*               -m m     :  order of cepstrum                [25]       *
+*               -l l     :  frame length                     [256]      *
+*               -q q     :  Input format                     [0]        *
 *                             0 (windowed data sequence)                *
 *                             1 (20*log|f(w)|)                          *
 *                             2 (ln|f(w)|)                              *
 *                             3 (|f(w)|)                                *
 *                             4 (|f(w)|^2)                              *
 *               (level 2)                                               *
-*               -i i     :  minimum iteration               [2]         *
-*               -j j     :  maximum iteration               [30]        *
-*               -d d     :  end condition                   [0.001]     *
-*               -e e     :  small value added to periodgram [0]         *
-*               -E E     :  floor in db calculated per frame[N/A]       *
+*               -i i     :  minimum iteration                [2]        *
+*               -j j     :  maximum iteration                [30]       *
+*               -d d     :  end condition                    [0.001]    *
+*               -e e     :  small value added to periodogram [0]        *
+*               -E E     :  floor in db calculated per frame [N/A]      *
 *       infile:                                                         *
 *               data sequence                                           *
 *                       , x(0), x(1), ..., x(L-1),                      *
@@ -80,7 +80,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: uels.c,v 1.28 2012/12/21 11:27:38 mataki Exp $";
+static char *rcs_id = "$Id: uels.c,v 1.30 2013/12/16 09:02:05 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -144,7 +144,7 @@ void usage(int status)
            MAXITR);
    fprintf(stderr, "       -d d  : end condition                    [%g]\n",
            END);
-   fprintf(stderr, "       -e e  : small value added to periodgram  [%g]\n",
+   fprintf(stderr, "       -e e  : small value added to periodogram [%g]\n",
            EPS);
    fprintf(stderr, "       -E E  : floor in db calculated per frame [N/A]\n");
    fprintf(stderr, "       -h    : print this message\n");

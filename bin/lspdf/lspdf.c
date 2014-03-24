@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -55,7 +55,7 @@
 *               -p p     :  frame period                  [100]         *
 *               -i i     :  interpolation period          [1]           *
 *               -k       :  filtering without gain        [FALSE]       *
-*               -l       :  regard input gain as log gain [FALSE]       *
+*               -L       :  regard input gain as log gain [FALSE]       *
 *       infile:                                                         *
 *               coefficients                                            *
 *                       , K, f(1), ..., f(m),                           *
@@ -70,7 +70,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: lspdf.c,v 1.26 2012/12/21 11:27:35 mataki Exp $";
+static char *rcs_id = "$Id: lspdf.c,v 1.29 2013/12/19 02:28:27 mataki Exp $";
 
 
 /*  Standard C Libralies  */
@@ -124,7 +124,7 @@ void usage(int status)
            IPERIOD);
    fprintf(stderr, "       -k    : filtering without gain        [%s]\n",
            BOOL[NGAIN]);
-   fprintf(stderr, "       -l    : regard input gain as log gain [%s]\n",
+   fprintf(stderr, "       -L    : regard input gain as log gain [%s]\n",
            BOOL[LOGGAIN]);
    fprintf(stderr, "       -h    : print this message\n");
    fprintf(stderr, "  infile:\n");
@@ -176,6 +176,7 @@ int main(int argc, char **argv)
             ngain = 1 - ngain;
             break;
          case 'l':
+         case 'L':
             loggain = 1 - loggain;
             break;
          case 'h':

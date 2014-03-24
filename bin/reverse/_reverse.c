@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /************************************************************************
 
-  $Id: _reverse.c,v 1.13 2012/12/21 11:27:37 mataki Exp $
+  $Id: _reverse.c,v 1.14 2013/12/16 09:02:03 mataki Exp $
 
   Reverse the order of data in sequence
       reverse(real* p, int l)

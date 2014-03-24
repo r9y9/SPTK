@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -67,7 +67,7 @@
 *               -i i     :  minimum iteration                [3]        *
 *               -j j     :  maximum iteration                [30]       *
 *               -d d     :  end condition                    [0.001]    *
-*               -e e     :  small value added to periodgram  [0]        *
+*               -e e     :  small value added to periodogram [0]        *
 *               -E E     :  floor in db calculated per frame [N/A]      *
 *               -f f     :  mimimum value of the determinant            *
 *                           of the normal matrix             [0.000001] *
@@ -86,7 +86,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: gcep.c,v 1.32 2012/12/21 11:27:33 mataki Exp $";
+static char *rcs_id = "$Id: gcep.c,v 1.35 2013/12/16 09:01:57 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -159,7 +159,7 @@ void usage(int status)
            MAXITR);
    fprintf(stderr, "       -d d  : end condition                    [%g]\n",
            END);
-   fprintf(stderr, "       -e e  : small value added to periodgram  [%g]\n",
+   fprintf(stderr, "       -e e  : small value added to periodogram [%g]\n",
            EPS);
    fprintf(stderr, "       -E E  : floor in db calculated per frame [N/A]\n");
    fprintf(stderr, "       -f f  : mimimum value of the determinant [%g]\n",

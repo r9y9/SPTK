@@ -23,7 +23,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -57,7 +57,7 @@
 /* POSSIBILITY OF SUCH DAMAGE.                                       */
 /* ----------------------------------------------------------------- */
 
-/* $Id: jkGetF0.h,v 1.4 2012/12/21 11:27:36 mataki Exp $ */
+/* $Id: jkGetF0.h,v 1.5 2013/12/16 09:02:02 mataki Exp $ */
 
 
 /* f0.h */

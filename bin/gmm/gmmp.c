@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -62,7 +62,7 @@
  *                                                                       *
  ************************************************************************/
 
-static char *rcs_id = "$Id: gmmp.c,v 1.10 2012/12/21 11:27:33 mataki Exp $";
+static char *rcs_id = "$Id: gmmp.c,v 1.16 2013/12/16 09:01:57 mataki Exp $";
 
 /*  Standard C Libraries  */
 #include <stdio.h>
@@ -85,13 +85,12 @@ static char *rcs_id = "$Id: gmmp.c,v 1.10 2012/12/21 11:27:33 mataki Exp $";
 #  include <SPTK.h>
 #endif
 
-#include "gmm.h"
-
 /*  Default Values  */
 
 #define DEF_L  26
 #define DEF_M  16
 #define DEF_A  FA
+#define FULL   FA
 
 char *BOOL[] = { "FALSE", "TRUE" };
 
@@ -111,6 +110,8 @@ void usage(int status)
            DEF_L);
    fprintf(stderr, "       -m m  : number of Gaussian components      [%d]\n",
            DEF_M);
+   fprintf(stderr, "       -f    : full covariance                    [%s]\n",
+           BOOL[FULL]);
    fprintf(stderr, "       -a    : output average log-probability     [%s]\n",
            BOOL[DEF_A]);
    fprintf(stderr, "       -h    : print this message\n");
@@ -136,8 +137,8 @@ int main(int argc, char **argv)
    FILE *fp = stdin, *fgmm = NULL;
    GMM gmm;
    double logp, ave_logp, *x;
-   int m, M = DEF_M, L = DEF_L, T;
-   Boolean aflag = DEF_A;
+   int M = DEF_M, L = DEF_L, T;
+   Boolean aflag = DEF_A, full = FULL;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL)
       cmnd = argv[0];
@@ -159,6 +160,9 @@ int main(int argc, char **argv)
             M = atoi(*++argv);
             --argc;
             break;
+         case 'f':
+            full = TR - full;
+            break;
          case 'a':
             aflag = TR;
             break;
@@ -174,27 +178,14 @@ int main(int argc, char **argv)
 
    /* Read GMM parameters */
    if (fgmm == NULL) {
-      fprintf(stderr, "%s : GMM file name required !\n", cmnd);
+      fprintf(stderr, "%s: GMM file must be specified!\n", cmnd);
       usage(1);
    }
 
-   gmm.weight = dgetmem(M);
-   gmm.gauss = (Gauss *) getmem(M, sizeof(Gauss));
+   alloc_GMM(&gmm, M, L, full);
+   load_GMM(&gmm, fgmm);
 
-   for (m = 0; m < M; m++) {
-      gmm.gauss[m].mean = dgetmem(L);
-      gmm.gauss[m].var = dgetmem(L);
-   }
-
-   freadf(gmm.weight, sizeof(double), M, fgmm);
-   for (m = 0; m < M; m++) {
-      freadf(gmm.gauss[m].mean, sizeof(double), L, fgmm);
-      freadf(gmm.gauss[m].var, sizeof(double), L, fgmm);
-   }
    fclose(fgmm);
-
-   for (m = 0; m < M; m++)
-      gmm.gauss[m].gconst = cal_gconst(gmm.gauss[m].var, L);
 
    /* Calculate and output log-probability */
    T = 0;
@@ -202,10 +193,10 @@ int main(int argc, char **argv)
    x = dgetmem(L);
    while (freadf(x, sizeof(*x), L, fp) == L) {
       if (!aflag) {
-         logp = log_outp(&gmm, x, M, L);
+         logp = log_outp(&gmm, L, x);
          fwritef(&logp, sizeof(double), 1, stdout);
       } else {
-         ave_logp += log_outp(&gmm, x, M, L);
+         ave_logp += log_outp(&gmm, L, x);
          T++;
       }
    }

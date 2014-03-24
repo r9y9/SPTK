@@ -38,8 +38,7 @@ install::
         cd bin
         copy *.exe $(INSTALLDIR)\bin
         cd ..
-        @if not exist "$(INSTALLDIR)\include" mkdir
-        "$(INSTALLDIR)\include"
+        @if not exist "$(INSTALLDIR)\include" mkdir "$(INSTALLDIR)\include"
         cd include
         copy *.h $(INSTALLDIR)\include
         cd ..

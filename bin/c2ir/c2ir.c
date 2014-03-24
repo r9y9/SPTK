@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -53,7 +53,7 @@
 *       options:                                                        *
 *               -m m    :  order of cepstrum            [25]            *
 *               -M M    :  order of impulse response    [255]           *
-*               -L L    :  length of impulse responce   [256]           *
+*               -l l    :  length of impulse responce   [256]           *
 *               -i      :  input minimum phase sequence [FALSE]         *
 *       infile:                                                         *
 *               stdin for default                                       *
@@ -61,7 +61,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: c2ir.c,v 1.25 2012/12/21 11:27:31 mataki Exp $";
+static char *rcs_id = "$Id: c2ir.c,v 1.27 2013/12/16 09:01:54 mataki Exp $";
 
 
 /* Standard C Libraries */
@@ -103,7 +103,7 @@ void usage(int status)
    fprintf(stderr, "       -m m  : order of cepstrum            [%d]\n", ORDER);
    fprintf(stderr, "       -M M  : order of impulse response    [%d]\n",
            LENG - 1);
-   fprintf(stderr, "       -L L  : length of impulse response   [%d]\n", LENG);
+   fprintf(stderr, "       -l l  : length of impulse response   [%d]\n", LENG);
    fprintf(stderr, "       -i    : input minimum phase sequence [FALSE]\n");
    fprintf(stderr, "       -h    : print this message\n\n");
    fprintf(stderr, "  infile:\n");
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
          case 'M':
             leng = atoi(s) + 1;
             break;
-         case 'L':
+         case 'l':
             leng = atoi(s);
             break;
          case 'h':

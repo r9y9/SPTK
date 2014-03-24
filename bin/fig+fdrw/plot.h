@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /****************************************************************
-* $Id: plot.h,v 1.16 2012/12/21 11:27:33 mataki Exp $          *  
+* $Id: plot.h,v 1.17 2013/12/16 09:01:56 mataki Exp $          *  
 * HEADER for XY-PLOTTER library                                 *
 *                                                               *
 *    Following commands are valid for the xy plotter FP5301     *

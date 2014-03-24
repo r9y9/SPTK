@@ -1,11 +1,11 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.59)
-AC_INIT(SPTK, 3.6, http://sourceforge.net/projects/sp-tk/)
+AC_INIT(SPTK, 3.7, http://sourceforge.net/projects/sp-tk/, SPTK)
 AC_CONFIG_AUX_DIR([config])
 AC_COPYRIGHT(Copyright 1984-2007 Tokyo Institute of Technology)
-AC_COPYRIGHT(Copyright 1996-2012 Nagoya Institute of Technology)
-AM_INIT_AUTOMAKE(SPTK, 3.6, nostdinc no-installinfo no-installman)
+AC_COPYRIGHT(Copyright 1996-2013 Nagoya Institute of Technology)
+AM_INIT_AUTOMAKE([nostdinc])
 AC_SUBST(PACKAGE_NAME)
 AC_SUBST(PACKAGE_VERSION)
 
@@ -75,7 +75,7 @@ IO_FORMAT='float'
 AC_ARG_ENABLE(double,
 	      [  --enable-double         deal with data in double (default=no)],
 	      [ if test "$enable_double" = "yes"; then
-	       		use_double=yes
+			use_double=yes
 			IO_SYMBOL='d'
 			IO_FORMAT='double'
 			AC_DEFINE(DOUBLE)
@@ -210,6 +210,7 @@ AC_CONFIG_FILES([Makefile
                  bin/lpc2lsp/Makefile
                  bin/lpc2par/Makefile
                  bin/lsp2lpc/Makefile
+                 bin/lsp2sp/Makefile
                  bin/lspcheck/Makefile
                  bin/lspdf/Makefile
                  bin/ltcdf/Makefile
@@ -253,6 +254,7 @@ AC_CONFIG_FILES([Makefile
                  bin/uels/Makefile
                  bin/ulaw/Makefile
                  bin/us/Makefile
+                 bin/vc/Makefile 
                  bin/vopr/Makefile
                  bin/vq/Makefile
                  bin/vstat/Makefile

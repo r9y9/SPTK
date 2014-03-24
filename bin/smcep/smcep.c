@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -51,27 +51,27 @@
 *       usage:                                                          *
 *               smcep [ options ] [infile] > stdout                     *
 *       options:                                                        *
-*               -a a     :  all-pass constant                [0.35]     *
-*               -t t     :  emphasized frequency t*pi(rad)   [0]        *
-*               -T T     :  emphasized frequency(Hz)         [0]        *
-*               -m m     :  order of mel cepstrum            [25]       *
-*               -l l     :  frame length                     [256]      *
-*               -s s     :  sampling frequency(kHz)          [10.0]     *
-*               -L L     :  ifft size for making matrices    [1024]     *
-*               -q q     :  Input format                     [0]        *
+*               -a a     :  all-pass constant                 [0.35]    *
+*               -t t     :  emphasized frequency t*pi(rad)    [0]       *
+*               -T T     :  emphasized frequency(Hz)          [0]       *
+*               -m m     :  order of mel cepstrum             [25]      *
+*               -l l     :  frame length                      [256]     *
+*               -s s     :  sampling frequency(kHz)           [10.0]    *
+*               -L L     :  ifft size for making matrices     [1024]    *
+*               -q q     :  Input format                      [0]       *
 *                             0 (windowed data sequence)                *
 *                             1 (20*log|f(w)|)                          *
 *                             2 (ln|f(w)|)                              *
 *                             3 (|f(w)|)                                *
 *                             4 (|f(w)|^2)                              *
 *               (level 2)                                               *
-*               -i i     :  minimum iteration                [2]        *
-*               -j j     :  maximum iteration                [30]       *
-*               -d d     :  end condition                    [0.001]    *
-*               -e e     :  initial value for log-periodgram [0]        *
-*               -E E     :  floor in db calculated per frame [N/A]      *
+*               -i i     :  minimum iteration                 [2]       *
+*               -j j     :  maximum iteration                 [30]      *
+*               -d d     :  end condition                     [0.001]   *
+*               -e e     :  initial value for log-periodogram [0]       *
+*               -E E     :  floor in db calculated per frame  [N/A]     *
 *               -f f     :  mimimum value of the determinant            *
-*                           of the normal matrix            [0.000001]  *  
+*                           of the normal matrix             [0.000001] *  
 *      infile:                                                          *
 *              data sequence                                            *
 *                      , x(0), x(1), ..., x(L-1),                       *
@@ -88,7 +88,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: smcep.c,v 1.32 2012/12/21 11:27:37 mataki Exp $";
+static char *rcs_id = "$Id: smcep.c,v 1.34 2013/12/16 09:02:03 mataki Exp $";
 
 
 /*  Standard C Libralies  */
@@ -142,21 +142,21 @@ void usage(int status)
    fprintf(stderr, "  usage:\n");
    fprintf(stderr, "       %s [ options ] [ infile ] > stdout\n", cmnd);
    fprintf(stderr, "  options:\n");
-   fprintf(stderr, "       -a a  : all-pass constant                [%g]\n",
+   fprintf(stderr, "       -a a  : all-pass constant                 [%g]\n",
            ALPHA);
-   fprintf(stderr, "       -t t  : emphasized frequency  t*pi(rad)  [%g]\n",
+   fprintf(stderr, "       -t t  : emphasized frequency  t*pi(rad)   [%g]\n",
            THETA);
-   fprintf(stderr, "       -T T  : emphasized frequency (Hz)        [%g]\n",
+   fprintf(stderr, "       -T T  : emphasized frequency (Hz)         [%g]\n",
            EMPHHZ);
-   fprintf(stderr, "       -m m  : order of mel cepstrum            [%d]\n",
+   fprintf(stderr, "       -m m  : order of mel cepstrum             [%d]\n",
            ORDER);
-   fprintf(stderr, "       -l l  : frame length                     [%d]\n",
+   fprintf(stderr, "       -l l  : frame length                      [%d]\n",
            FLENG);
-   fprintf(stderr, "       -s s  : sampling frequency (kHz)         [%g]\n",
+   fprintf(stderr, "       -s s  : sampling frequency (kHz)          [%g]\n",
            SAMPLEF);
-   fprintf(stderr, "       -L L  : ifft size for making matrices    [%d]\n",
+   fprintf(stderr, "       -L L  : ifft size for making matrices     [%d]\n",
            FFTSZ);
-   fprintf(stderr, "       -q q  : input format                     [%d]\n",
+   fprintf(stderr, "       -q q  : input format                      [%d]\n",
            ITYPE);
    fprintf(stderr, "                 0 (windowed sequence\n");
    fprintf(stderr, "                 1 (20*log|f(w)|)\n");
@@ -165,16 +165,16 @@ void usage(int status)
    fprintf(stderr, "                 4 (|f(w)|)^2\n");
    fprintf(stderr, "       -h    : print this message\n");
    fprintf(stderr, "     (level 2)\n");
-   fprintf(stderr, "       -i i  : minimum iteration                [%d]\n",
+   fprintf(stderr, "       -i i  : minimum iteration                 [%d]\n",
            MINITR);
-   fprintf(stderr, "       -j j  : maximum iteration                [%d]\n",
+   fprintf(stderr, "       -j j  : maximum iteration                 [%d]\n",
            MAXITR);
-   fprintf(stderr, "       -d d  : end condition                    [%g]\n",
+   fprintf(stderr, "       -d d  : end condition                     [%g]\n",
            END);
-   fprintf(stderr, "       -e e  : initial value for log-periodgram [%g]\n",
+   fprintf(stderr, "       -e e  : initial value for log-periodogram [%g]\n",
            EPS);
    fprintf(stderr, "       -E E  : floor in db calculated per frame [N/A]\n");
-   fprintf(stderr, "       -f f  : mimimum value of the determinant [%g]\n",
+   fprintf(stderr, "       -f f  : mimimum value of the determinant  [%g]\n",
            MINDET);
    fprintf(stderr, "               of the normal matrix\n");
    fprintf(stderr, "  infile:\n");

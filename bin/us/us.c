@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -55,9 +55,11 @@
 *                         23F up-sampling by 2:3                        *
 *                         23S up-sampling by 2:3                        *
 *                         34  up-sampling by 3:4                        *
+*                         35  up-sampling by 3:5                        *
 *                         45  up-sampling by 4:5                        *
 *                         57  up-sampling by 5:7                        *
 *                         58  up-sampling by 5:8                        *
+*                         78  up-sampling by 7:8                        *
 *               -c c  :  filename of low pass filter coef.     [Default]*
 *               -u u  :  up-sampling ratio                     [N/A]    *
 *               -d d  :  down-sampling ratio                   [N/A]    *
@@ -65,16 +67,18 @@
 *               data sequence                                  [stdin]  *
 *       notice:                                                         *
 *               Default LPF coefficients File                           *
-*                2:3 -> /usr/local/cmnd/lib/lpfcoef.2to3f               *
-*                2:3 -> /usr/local/cmnd/lib/lpfcoef.2to3s               *
-*                3:4 -> /usr/local/cmnd/lib/lpfcoef.3to4                *
-*                4:5 -> /usr/local/cmnd/lib/lpfcoef.4to5                *
-*                5:7 -> /usr/local/cmnd/lib/lpfcoef.5to7                *
-*                5:8 -> /usr/local/cmnd/lib/lpfcoef.5to8                *
+*                2:3 -> /usr/local/share/SPTK/lpfcoef.2to3f             *
+*                2:3 -> /usr/local/share/SPTK/lpfcoef.2to3s             *
+*                3:4 -> /usr/local/share/SPTK/lpfcoef.3to4              *
+*                3:5 -> /usr/local/share/SPTK/lpfcoef.3to5              *
+*                4:5 -> /usr/local/share/SPTK/lpfcoef.4to5              *
+*                5:7 -> /usr/local/share/SPTK/lpfcoef.5to7              *
+*                5:8 -> /usr/local/share/SPTK/lpfcoef.5to8              *
+*                7:8 -> /usr/local/share/SPTK/lpfcoef.7to8              *
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: us.c,v 1.27 2012/12/21 11:27:38 mataki Exp $";
+static char *rcs_id = "$Id: us.c,v 1.29 2013/12/22 16:58:56 uratec Exp $";
 
 
 /* Standard C Libraries */
@@ -112,16 +116,18 @@ void firinit(void);
 
 
 #ifndef LIB
-#define LIB "/usr/local/SPTK/lib"
+#define LIB "/usr/local/share/SPTK"
 #endif
 
 
 #define COEF23F LIB "/lpfcoef.2to3f"
 #define COEF23S LIB "/lpfcoef.2to3s"
 #define COEF34 LIB "/lpfcoef.3to4"
+#define COEF35 LIB "/lpfcoef.3to5"
 #define COEF45 LIB "/lpfcoef.4to5"
 #define COEF57 LIB "/lpfcoef.5to7"
 #define COEF58 LIB "/lpfcoef.5to8"
+#define COEF78 LIB "/lpfcoef.7to8"
 
 /* Command Name */
 char *cmnd, *coef = NULL, *type = STYPE;
@@ -140,9 +146,11 @@ void usage(int status)
    fprintf(stderr, "                23F up-sampling by 2:3\n");
    fprintf(stderr, "                23S up-sampling by 2:3\n");
    fprintf(stderr, "                34  up-sampling by 3:4\n");
+   fprintf(stderr, "                35  up-sampling by 3:5\n");
    fprintf(stderr, "                45  up-sampling by 4:5\n");
    fprintf(stderr, "                57  up-sampling by 5:7\n");
    fprintf(stderr, "                58  up-sampling by 5:8\n");
+   fprintf(stderr, "                78  up-sampling by 7:8\n");
    fprintf(stderr,
            "       -c c  : filename of low pass filter coefficients  [Default]\n");
    fprintf(stderr,
@@ -159,9 +167,11 @@ void usage(int status)
    fprintf(stderr, "        2:3 -> %s\n", COEF23F);
    fprintf(stderr, "        2:3 -> %s\n", COEF23S);
    fprintf(stderr, "        3:4 -> %s\n", COEF34);
+   fprintf(stderr, "        3:5 -> %s\n", COEF35);
    fprintf(stderr, "        4:5 -> %s\n", COEF45);
    fprintf(stderr, "        5:7 -> %s\n", COEF57);
    fprintf(stderr, "        5:8 -> %s\n", COEF58);
+   fprintf(stderr, "        7:8 -> %s\n", COEF78);
 #ifdef PACKAGE_VERSION
    fprintf(stderr, "\n");
    fprintf(stderr, " SPTK: version %s\n", PACKAGE_VERSION);
@@ -228,6 +238,10 @@ int main(int argc, char *argv[])
       coef = COEF34;
       def_d_rate = 3;
       def_u_rate = 4;
+   } else if (strcmp(type, "35") == 0) {
+      coef = COEF35;
+      def_d_rate = 3;
+      def_u_rate = 5;
    } else if (strcmp(type, "45") == 0) {
       coef = COEF45;
       def_d_rate = 4;
@@ -239,6 +253,10 @@ int main(int argc, char *argv[])
    } else if (strcmp(type, "58") == 0) {
       coef = COEF58;
       def_d_rate = 5;
+      def_u_rate = 8;
+   } else if (strcmp(type, "78") == 0) {
+      coef = COEF78;
+      def_d_rate = 7;
       def_u_rate = 8;
    } else {
       fprintf(stderr, "%s : Given dec/int rate %s is not supported!\n", cmnd,

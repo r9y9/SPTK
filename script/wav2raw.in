@@ -9,7 +9,7 @@
 #                           Interdisciplinary Graduate School of    #
 #                           Science and Engineering                 #
 #                                                                   #
-#                1996-2012  Nagoya Institute of Technology          #
+#                1996-2013  Nagoya Institute of Technology          #
 #                           Department of Computer Science          #
 #                                                                   #
 # All rights reserved.                                              #
@@ -49,7 +49,7 @@ onintr clean
 
 set path    = ( @binpath@ $path )
 set sptkver = '@sptk_version@'
-set cvsid   = '$Id: wav2raw.in,v 1.15 2012/12/24 14:08:22 mataki Exp $'
+set cvsid   = '$Id: wav2raw.in,v 1.19 2013/12/16 09:02:07 mataki Exp $'
 
 
 set cmnd	= $0
@@ -68,17 +68,28 @@ set normalization_all = 0
 set OutputType = s
 set OutMaxVal = 32767
 set data_position
-set READfmt = 0
-set ENTERdatachunk = 0
+set read_fmt = 0
+set enter_datachunk = 0
+set read_data = 0
 set left = 0
 set right = 0
 set decimate_start = 0
 set Channels = 1
 
+set _argv
+set white
+set whitespace = 0
+set index
+
 @ i = 0
 while ($i < $#argv)
 	@ i++
-	switch ($argv[$i])
+    set whitespace = 0
+    set _argv = `echo $argv[$i] | sed -e 's/ /_/g'`
+    if ( "$_argv" != "$argv[$i]" ) then
+       @ whitespace = 1
+    endif
+	switch ($_argv)
 	case -swab:
 		set swab = 1
 		breaksw
@@ -132,7 +143,7 @@ while ($i < $#argv)
 		breaksw
 	case +a:
 		set OutputType = a
-		breaksw		
+		breaksw
 	case -d:
 		@ i++
 		set directory = $argv[$i]
@@ -158,7 +169,7 @@ while ($i < $#argv)
 		endif
 		set left = 1
 		set decimate_start = 0
-		breaksw 
+		breaksw
 	case -R:
 		if ( $left == 1 ) then
 			echo2 "${cmnd}: Can't convert left and right sounds at the same time\!"
@@ -173,12 +184,16 @@ while ($i < $#argv)
 		goto usage
 		breaksw
 	default:
-		set file = ( $file $argv[$i] )
+		set file = ( $file $_argv )
+		set white = ( $white $whitespace )
+		set index = ( $index $i )
 		set flagfile = 1
-		if ( ! -f $argv[$i] ) then
-			echo2 "${cmnd}: Can't open file "'"'"$file"'"'" \!"
-			set exit_status = 1
+		if ( $whitespace == 1 ) then
+			if ( ! -f "$argv[$i]" ) then
+				echo2 "${cmnd}: Can't open file "'"'"$argv[$i]"'"'" \!"
+				set exit_status = 1
 			goto usage
+			endif
 		endif
 		breaksw
 	endsw
@@ -235,7 +250,13 @@ exit $exit_status
 
 main:
 
-foreach f ($file)
+@ j = 1
+while ( $j <= $#file )
+    set f = $file[$j]
+    if ( $white[$j] ) then
+        /bin/ln -f -s "$argv[$index[$j]]" $f
+    endif
+
     set tmp = `bcut +c -s 4 -e 7 $f | x2x +Ia`
     @ FileSize = $tmp + 8
 
@@ -258,10 +279,11 @@ foreach f ($file)
 
         switch( $ChunkID )
         case 666D7420: #The chunk ID is "fmt " (ASCII code, hexadecimal number)
+            set fmt_start = $Current
             @ tmp = $Current + 1
             set FormatID = `bcut +c -s $Current -e $tmp $f | x2x +Sa`
             @ Current = $Current + 2
-            
+
             #Read the channels (2byte)
             @ tmp = $Current + 1
             set Channels = `bcut +c -s $Current -e $tmp $f | x2x +Sa`
@@ -291,10 +313,10 @@ foreach f ($file)
                 breaksw
             endsw
 
-            @ Current = $Current + 2
+            @ Current = $fmt_start + $ChunkSize
 
-            set READfmt = 1 # enable to read "data" chunk
-            if ( $ENTERdatachunk == 0) then
+            set read_fmt = 1 # enable to read "data" chunk
+            if ( $enter_datachunk == 0) then
                 breaksw
             else
                 # if "data" chunk has been read
@@ -303,8 +325,8 @@ foreach f ($file)
             endif
 
         case 64617461: #The chunk ID is "data" (ASCII code, hexadecimal number)
-            if ( $READfmt == 0 ) then
-                set ENTERdatachunk = 1
+            if ( $read_fmt == 0 ) then
+                set enter_datachunk = 1
                 set data_position = $Current
                 breaksw
             endif
@@ -315,11 +337,11 @@ foreach f ($file)
                        if ( $Channels == 2 && ( $left == 1 || $right == 1 ) ) then
                         bcut +c -s $Current -e $tmp $f | swab | decimate -p 2 -s $decimate_start |\
                         sopr -m ${OutMaxVal} > /tmp/{$f:t}.$$.tmp
-                       else 
+                       else
                         bcut +c -s $Current -e $tmp $f | swab |\
                         sopr -m ${OutMaxVal} > /tmp/{$f:t}.$$.tmp
                        endif
-                    else 
+                    else
                        if ( $Channels == 2 && ( $left == 1 || $right == 1 ) ) then
                         bcut +c -s $Current -e $tmp $f | decimate -p 2 -s $decimate_start |\
                         sopr -m ${OutMaxVal} > /tmp/{$f:t}.$$.tmp
@@ -392,7 +414,7 @@ foreach f ($file)
                         bcut +c -s $Current -e $tmp $f |\
                         sopr -m ${OutMaxVal} |\
                         x2x -r +f${OutputType} > /tmp/{$f:t}.$$.raw
-                      endif                    
+                      endif
                     endif
                 else #FormatID is not 3
                     if ( $swab ) then
@@ -417,31 +439,42 @@ foreach f ($file)
 
             if ( $f:e == "wav" ) then
                 if ( $flagdirectory ) then
-                    set outfile = $directory/$f:t:r.raw
+                    set outfile = $directory/"$argv[$index[$j]]:t:r".raw
                 else
-                    set outfile = $f:r.raw
+                    set outfile = "$argv[$index[$j]]:r".raw
                 endif
             else
                 if ( $flagdirectory ) then
-                    set outfile = $directory/$f:t.raw
+                    set outfile = $directory/"$argv[$index[$j]]:t".raw
                 else
-                    set outfile = $f.raw
+                    set outfile = "$argv[$index[$j]]".raw
                 endif
             endif
 
-            /bin/mv /tmp/{$f:t}.$$.raw $outfile
-            @ Current = $Current + $ChunkSize
+            /bin/mv /tmp/{$f:t}.$$.raw "$outfile"
+            if ( $white[$j] ) then
+                /bin/rm -f $f
+            endif
 
+            set read_data = 1
+
+            @ Current = $Current + $ChunkSize
             breaksw
-       
+
         default:
             @ Current = $Current + $ChunkSize
             breaksw
 
         endsw # end of switch($ChunkID)
+
+        if (($read_fmt == 1) && ($read_data == 1)) then
+            break
+        endif
+
         @ Rest = $FileSize - $Current
     end # end of while( $Rest > 0 )
-end # end of foreach f ($file)
+    @ j++
+end # end of while ($j <= $#file)
 
 clean:
 /bin/rm -f /tmp/{$f:t}.$$.raw /tmp/{$f:t}.$$.tmp

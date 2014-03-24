@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /*****************************************************************
 
-    $Id: matrix.c,v 1.14 2012/12/21 09:45:26 mataki Exp $
+    $Id: matrix.c,v 1.15 2013/12/16 09:02:07 mataki Exp $
 
     compute matrix functions
 

@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /***********************************************************
-   $Id: SPTK.h,v 1.44 2012/12/21 11:27:39 mataki Exp $ 
+   $Id: SPTK.h,v 1.54 2013/12/16 09:02:06 mataki Exp $ 
    
    Speech Signal Processing Toolkit
    SPTK.h
@@ -67,9 +67,18 @@
 
 #define LN_TO_LOG 4.3429448190325182765
 
+#define LZERO (-1.0e+10)
+#define LSMALL (-0.5e+10)
+
 /* #ifndef ABS(x) */
 #define ABS(x) ((x<0.0) ? -x : x)
 /* #endif */
+
+#ifdef __BIG_ENDIAN
+#  if __BYTE_ORDER == __BIG_ENDIAN
+#    define WORDS_BIGENDIAN
+#  endif
+#endif
 
 /* enum for Boolean */
 typedef enum _Boolean { FA, TR } Boolean;
@@ -102,10 +111,19 @@ typedef struct _Gauss {
 /* structure for GMM */
 typedef struct _GMM {
    int nmix;
+   int dim;
+   Boolean full;
    double *weight;
    Gauss *gauss;
 } GMM;
 
+typedef struct _deltawindow {
+   size_t win_size;
+   size_t win_max_width;
+   int *win_l_width;
+   int *win_r_width;
+   double **win_coefficient;
+} DELTAWINDOW;
 
 /* library routines */
 double agexp(double r, double x, double y);
@@ -115,6 +133,8 @@ int fwritex(void *ptr, const size_t size, const int nitems, FILE * fp);
 int freadx(void *ptr, const size_t size, const int nitems, FILE * fp);
 int fwritef(double *ptr, const size_t size, const int nitems, FILE * fp);
 int freadf(double *ptr, const size_t size, const int nitems, FILE * fp);
+int fwrite_little_endian(void *ptr, const size_t size,
+                         const size_t n, FILE * fp);
 void fillz(void *ptr, const size_t size, const int nitem);
 FILE *getfp(char *name, char *opt);
 short *sgetmem(const int leng);
@@ -123,6 +143,7 @@ double *dgetmem(const int leng);
 float *fgetmem(const int leng);
 /* real *rgetmem (const int leng); */
 float **ffgetmem(const int leng);
+double **ddgetmem(const int leng1, const int leng2);
 char *getmem(const size_t leng, const size_t size);
 double gexp(const double r, const double x);
 double glog(const double r, const double x);
@@ -190,12 +211,14 @@ double glsadft(double x, double *c, const int m, const int n, double *d);
 double glsadf1t(double x, double *c, const int m, const int n, double *d);
 double cal_gconst(double *var, const int D);
 double cal_gconstf(double **var, const int D);
-void fillz_gmm(GMM * gmm, const int M, const int L);
-void fillz_gmmf(GMM * gmm, const int M, const int L);
-double log_wgd(GMM * gmm, const int m, double *dat, const int L);
-double log_wgdf(GMM * gmm, const int m, double *dat, const int L);
+double log_wgd(const GMM * gmm, const int m, const int L, const double *dat);
 double log_add(double logx, double logy);
-double log_outp(GMM * gmm, double *dat, const int M, const int L);
+double log_outp(const GMM * gmm, const int L, const double *dat);
+void fillz_GMM(GMM * gmm);
+int alloc_GMM(GMM * gmm, const int M, const int L, const Boolean full);
+int load_GMM(GMM * gmm, FILE * fp);
+int save_GMM(const GMM * gmm, FILE * fp);
+int free_GMM(GMM * gmm);
 void gnorm(double *c1, double *c2, int m, const double g);
 void grpdelay(double *x, double *gd, const int size, const int is_arma);
 int histogram(double *x, const int size, const double min, const double max,
@@ -234,6 +257,7 @@ int lpc2lsp(double *lpc, double *lsp, const int order, const int numsp,
             const int maxitr, const double eps);
 int lpc2par(double *a, double *k, const int m);
 void lsp2lpc(double *lsp, double *a, const int m);
+void lsp2sp(double *lsp, const int m, double *x, const int l, const int gain);
 int lspcheck(double *lsp, const int ord);
 double lspdf_even(double x, double *f, const int m, double *d);
 double lspdf_odd(double x, double *f, const int m, double *d);
@@ -297,6 +321,10 @@ int uels(double *xw, const int flng, double *c, const int m, const int itr1,
          const int itype);
 double ulaw_c(const double x, const double max, const double mu);
 double ulaw_d(const double x, const double max, const double mu);
+int vc(const GMM * gmm, const DELTAWINDOW * window, const size_t total_frame,
+       const size_t source_vlen, const size_t target_vlen,
+       const double *gv_mean, const double *gv_vari,
+       const double *source, double *target);
 int vq(double *x, double *cb, const int l, const int cbsize);
 double edist(double *x, double *y, const int m);
 double window(Window type, double *x, const int size, const int nflg);
@@ -305,8 +333,3 @@ double zerodf(double x, double *b, int m, double *d);
 double zerodft(double x, double *b, const int m, double *d);
 double zerodf1(double x, double *b, int m, double *d);
 double zerodf1t(double x, double *b, const int m, double *d);
-
-/**
- * SWIPE - Fundamental frequency estimator
- */
-void swipe(double *input, double *output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype);

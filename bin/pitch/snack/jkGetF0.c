@@ -24,7 +24,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -60,7 +60,7 @@
 
 /****************************************************************
 
-    $Id: jkGetF0.c,v 1.11 2012/12/09 14:56:16 mataki Exp $
+    $Id: jkGetF0.c,v 1.13 2013/12/16 09:02:02 mataki Exp $
 
 *****************************************************************/
 
@@ -523,8 +523,12 @@ float *downsample(input,samsin,state_idx,freq,samsout,decimate, first_time, last
       return(foutput);
     } else
       Fprintf(stderr,"Problems in downsamp() in downsample()\n");
+#if 0  /* skip final frame if it is too small */
   } else
     Fprintf(stderr,"Bad parameters passed to downsample()\n");
+#else
+  }
+#endif
   
   return(NULL);
 }
@@ -1074,6 +1078,10 @@ dp_f0(fdata, buff_size, sdstep, freq,
     dsdata = fdata;
   else {
     samsds = ((nframes-1) * step + ncomp) / decimate;
+#if 1 /* skip final frame if it is too small */
+    if(samsds < 1)
+      return 1; 
+#endif
     dsdata = downsample(fdata, buff_size, sdstep, freq, &samsds, decimate, 
 			first_time, last_time);
     if (!dsdata) {
@@ -2065,8 +2073,7 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
 #if 0
             return "problem in dp_f0().";
 #else
-            fprintf(stderr, "problem in dp_f0().\n");
-            usage(1);
+            break;  /* skip final frame if it is too small */
 #endif /* 0 */
         }
 

@@ -32,7 +32,7 @@ all: acep.exe acorr.exe agcep.exe amcep.exe \
 	par2lpc.exe phase.exe pitch.exe poledf.exe psgr.exe \
 	ramp.exe rawtowav.exe reverse.exe rmse.exe root_pol.exe sin.exe smcep.exe snr.exe \
 	sopr.exe spec.exe step.exe swab.exe symmetrize.exe train.exe transpose.exe uels.exe ulaw.exe \
-	us.exe vopr.exe vq.exe vstat.exe vsum.exe window.exe x2x.exe \
+	us.exe vc.exe vopr.exe vq.exe vstat.exe vsum.exe window.exe x2x.exe \
 	zcross.exe zerodf.exe 
 
 acep.exe : acep\acep.obj
@@ -477,6 +477,15 @@ ulaw.exe : ulaw\ulaw.obj
 us.exe : us\us.obj
 	$(CC) $(CFLAGS) /c $(@B)\$(@B).c
 	$(CL) /LTCG /OUT:$@ $(LIBS) $(@B).obj
+
+vc.exe : vc\vc.obj vc\_vc.obj vc\hts_engine_API\HTS_misc.obj vc\hts_engine_API\HTS_pstream.obj \
+	vc\hts_engine_API\HTS_sstream.obj
+	$(CC) $(CFLAGS) /c vc\vc.c
+	$(CC) $(CFLAGS) /c vc\_vc.c
+	$(CC) $(CFLAGS) /c vc\hts_engine_API\HTS_misc.c
+	$(CC) $(CFLAGS) /c vc\hts_engine_API\HTS_pstream.c
+	$(CC) $(CFLAGS) /c vc\hts_engine_API\HTS_sstream.c
+	$(CL) /LTCG /OUT:$@ $(LIBS) vc.obj _vc.obj HTS_misc.obj HTS_pstream.obj HTS_sstream.obj
 
 vopr.exe : vopr\vopr.obj
 	$(CC) $(CFLAGS) /c $(@B)\$(@B).c

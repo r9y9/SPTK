@@ -9,7 +9,7 @@
 #                           Interdisciplinary Graduate School of    #
 #                           Science and Engineering                 #
 #                                                                   #
-#                1996-2012  Nagoya Institute of Technology          #
+#                1996-2013  Nagoya Institute of Technology          #
 #                           Department of Computer Science          #
 #                                                                   #
 # All rights reserved.                                              #
@@ -57,7 +57,7 @@ onintr clean
 
 set path    = ( @binpath@ $path )
 set sptkver = '@sptk_version@'
-set cvsid   = '$Id: gwave.in,v 1.16 2012/12/22 08:49:48 okdtmhr Exp $'
+set cvsid   = '$Id: gwave.in,v 1.20 2013/12/16 09:02:07 mataki Exp $'
 
 set cmnd = $0
 set cmnd = $cmnd:t
@@ -80,7 +80,7 @@ set flagy       = 0
 @ i = 0
 while ($i < $#argv)
         @ i++
-        switch ($argv[$i])
+        switch ("$argv[$i]")
         case -s:
                 @ i++
                 set start = $argv[$i]
@@ -167,9 +167,9 @@ while ($i < $#argv)
                 goto usage
                 breaksw
         default:
-                set file = $argv[$i]
+                set file = "$argv[$i]"
                 set flagfile = 1
-                if ( ! -f $file ) then
+                if ( ! -f "$file" ) then
                         echo2 "${cmnd} : Cannot open file ${file}\!"
                         set exit_status = 1
                         goto usage
@@ -178,7 +178,11 @@ while ($i < $#argv)
         endsw
 end
 
-cat $file > /tmp/$$
+if ("$file" == "") then
+    cat $file > /tmp/$$
+else
+    cat "$file" > /tmp/$$
+endif
 set file = /tmp/$$
 
 goto main
@@ -240,19 +244,10 @@ if ( ! $flagnumdata ) then
 endif
 
 if ( ! $flagy ) then
-        set val = (`x2x +${type}f < $file | minmax | x2x +fs | x2x +sa`)
+        set val = (`x2x +${type}f < $file | sopr -ABS  | minmax -o 2 | x2x +fa`)
 
-        if ( $val[1] < 0 ) then
-                @ val[1] *= -1
-        endif
-
-        if ( $val[1] > $val[2] ) then
-                @ ymax = $val[1]
-                @ ymin = -$val[1]
-        else
-                @ ymax = $val[2]
-                @ ymin = -$val[2]
-        endif
+	set ymax = $val
+	set ymin = -$val
 endif
 
 if ( ! $flagy2 ) then

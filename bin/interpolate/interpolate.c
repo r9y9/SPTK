@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -51,6 +51,7 @@
 *       usage:                                                          *
 *               interpolate [ options ] [ infile ] > stdout             *
 *       options:                                                        *
+*               -l l     :  length of vector       [1]                  *
 *               -p p     :  interpolation period   [10]                 *
 *               -s s     :  start sample           [0]                  *
 *       infile:                                                         *
@@ -72,7 +73,7 @@
 ************************************************************************/
 
 static char *rcs_id =
-    "$Id: interpolate.c,v 1.24 2012/12/21 11:27:34 mataki Exp $";
+    "$Id: interpolate.c,v 1.27 2013/12/17 01:49:49 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -99,6 +100,7 @@ static char *rcs_id =
 #define PERIOD 10
 #define START 0
 #define PADINPUT FA
+#define LENG 1
 
 char *BOOL[] = { "FALSE", "TRUE" };
 
@@ -114,6 +116,7 @@ void usage(int status)
    fprintf(stderr, "  usage:\n");
    fprintf(stderr, "       %s [ options ] [ infile ] > stdout\n", cmnd);
    fprintf(stderr, "  options:\n");
+   fprintf(stderr, "       -l l  : length of vector             [%d]\n", LENG);
    fprintf(stderr, "       -p p  : interpolation period         [%d]\n",
            PERIOD);
    fprintf(stderr, "       -s s  : start sample                 [%d]\n", START);
@@ -136,7 +139,7 @@ void usage(int status)
 
 int main(int argc, char **argv)
 {
-   int i, period = PERIOD, start = START;
+   int i, j = 0, period = PERIOD, start = START, fleng = LENG;
    FILE *fp = stdin;
    double *x;
    Boolean padinput = PADINPUT;
@@ -156,6 +159,10 @@ int main(int argc, char **argv)
             start = atoi(*++argv);
             --argc;
             break;
+         case 'l':
+            fleng = atoi(*++argv);
+            --argc;
+            break;
          case 'd':
             padinput = 1 - padinput;
             break;
@@ -168,16 +175,21 @@ int main(int argc, char **argv)
       } else
          fp = getfp(*argv, "rb");
 
-   x = dgetmem(period);
+   x = dgetmem(period * fleng);
 
-   fwritef(x, sizeof(*x), start, stdout);
+   fwritef(x, sizeof(*x), start * fleng, stdout);
 
-   while (freadf(x, sizeof(*x), 1, fp) == 1) {
+   while (freadf(x, sizeof(*x), fleng, fp) == fleng) {
       if (padinput) {
-         for (i = 1; i < period; i++)
-            x[i] = x[0];
+         for (i = fleng; i < period * fleng; i++) {
+            if (j >= fleng)
+               j = 0;
+            x[i] = x[j];
+            j++;
+         }
       }
-      fwritef(x, sizeof(*x), period, stdout);
+
+      fwritef(x, sizeof(*x), period * fleng, stdout);
    }
 
    return (0);

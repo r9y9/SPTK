@@ -9,7 +9,7 @@
 #                           Interdisciplinary Graduate School of    #
 #                           Science and Engineering                 #
 #                                                                   #
-#                1996-2012  Nagoya Institute of Technology          #
+#                1996-2013  Nagoya Institute of Technology          #
 #                           Department of Computer Science          #
 #                                                                   #
 # All rights reserved.                                              #
@@ -56,7 +56,7 @@ onintr clean
 
 set path    = ( @binpath@ $path )
 set sptkver = '@sptk_version@'
-set cvsid   = '$Id: gseries.in,v 1.1 2012/12/24 03:34:02 mataki Exp $'
+set cvsid   = '$Id: gseries.in,v 1.5 2013/12/16 09:02:07 mataki Exp $'
 
 set cmnd = $0
 set cmnd = $cmnd:t
@@ -87,7 +87,7 @@ set MAGIC_count = 0
 @ i = 0
 while ($i < $#argv)
         @ i++
-        switch ($argv[$i])
+        switch ("$argv[$i]")
         case -s:
                 @ i++
                 set start = $argv[$i]
@@ -191,9 +191,9 @@ while ($i < $#argv)
                 goto usage
                 breaksw
         default:
-                set file = $argv[$i]
+                set file = "$argv[$i]"
                 set flagfile = 1
-                if ( ! -f $file ) then
+                if ( ! -f "$file" ) then
                         echo2 "${cmnd} : Cannot open file ${file}\!"
                         set exit_status = 1
                         goto usage
@@ -208,18 +208,24 @@ if ( $magic_count > 1 || $MAGIC_count > 1 ) then
         goto usage
 endif
 
+# when input stream is stdin
+if ("$file" == "") then
+    cat > /tmp/gseries
+    set file=/tmp/gseries
+endif
+
 if ( ($start != 0) || ($term > 0) ) then
     if ( $flagmagic && $flagMAGIC ) then
-               x2x +${type}f $file | sopr -magic $magic -MAGIC $MAGIC | x2x +f${type} > /tmp/$$
+               x2x +${type}f "$file" | sopr -magic $magic -MAGIC $MAGIC | x2x +f${type} > /tmp/$$
     else if ( $flagmagic ) then
         if ( $term < 0 ) then
-           set wctmp = `x2x +${type}a $file | wc -l`
+           set wctmp = `x2x +${type}a "$file" | wc -l`
              @ wctmp = `echo "$wctmp - 1" | bc -l`
         else
            set wctmp = `echo "$term" | bc -l`
         endif
-           set mwc = `x2x +${type}f $file | bcut -s $start -e $wctmp | sopr -magic $magic | x2x +fa | wc -l` 
-           x2x +${type}f $file | bcut -s $start -e $wctmp | sopr -magic $magic | x2x +f${type} > /tmp/$$
+           set mwc = `x2x +${type}f "$file" | bcut -s $start -e $wctmp | sopr -magic $magic | x2x +fa | wc -l` 
+           x2x +${type}f "$file" | bcut -s $start -e $wctmp | sopr -magic $magic | x2x +f${type} > /tmp/$$
            @ reduced = `echo "$wctmp + 1 - $start - $mwc" | bc -l`
            @ term = `echo "$wctmp - $reduced + 1" | bc -l`
            set mterm = `echo "$mwc - 1" | bc -l`
@@ -230,20 +236,25 @@ if ( ($start != 0) || ($term > 0) ) then
                set exit_status = 1
                goto usage
     else
-            cat $file > /tmp/$$
+        cat "$file" > /tmp/$$
     endif
 else
     if ( $flagmagic && $flagMAGIC ) then
-           x2x +${type}f $file | sopr -magic $magic -MAGIC $MAGIC | x2x +f${type} > /tmp/$$
+           x2x +${type}f "$file" | sopr -magic $magic -MAGIC $MAGIC | x2x +f${type} > /tmp/$$
     else if ( $flagmagic ) then
-           x2x +${type}f $file | sopr -magic $magic | x2x +f${type} > /tmp/$$
+           x2x +${type}f "$file" | sopr -magic $magic | x2x +f${type} > /tmp/$$
     else if ( $flagMAGIC ) then
            echo2 "${cmnd} : -MAGIC option need magic number\!"
            set exit_status = 1
            goto usage
     else
-        cat $file > /tmp/$$
+        cat "$file" > /tmp/$$
     endif
+endif
+
+# when input stream is stdin
+if ("$file" == "") then
+    /bin/rm -f /tmp/gseries
 endif
 
 set file = /tmp/$$
@@ -342,19 +353,10 @@ else
 endif
 
 if ( ! $flagy ) then
-        set val = (`x2x +${type}f < $file | minmax | x2x +fs | x2x +sa`)
+        set val = (`x2x +${type}f < $file | sopr -ABS  | minmax -o 2 | x2x +fa`)
 
-        if ( $val[1] < 0 ) then
-                @ val[1] *= -1
-        endif
-
-        if ( $val[1] > $val[2] ) then
-                @ ymax = $val[1]
-                @ ymin = -$val[1]
-        else
-                @ ymax = $val[2]
-                @ ymin = -$val[2]
-        endif
+	set ymax = $val
+	set ymin = -$val
 endif
 
 if ( ! $flagy2 ) then

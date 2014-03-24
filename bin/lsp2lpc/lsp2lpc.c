@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -54,7 +54,7 @@
 *               -m m     :  order of LPC                [25]            *
 *               -s s     :  sampling frequency          [10]            *
 *               -k       :  input & output gain         [TRUE]          *
-*               -l       :  regard input as log gain    [FALSE]         *
+*               -L       :  regard input as log gain    [FALSE]         *
 *                           and output linear one                       *
 *               -i i     :  input format                [0]             *
 *                             0 (normalized frequency <0...pi>)         *
@@ -72,7 +72,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: lsp2lpc.c,v 1.29 2012/12/21 11:27:35 mataki Exp $";
+static char *rcs_id = "$Id: lsp2lpc.c,v 1.32 2013/12/16 09:01:59 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -126,7 +126,7 @@ void usage(int status)
    fprintf(stderr,
            "       -k    : input & output gain                            [TRUE]\n");
    fprintf(stderr,
-           "       -l    : regard input as log gain and output linear one [%s]\n",
+           "       -L    : regard input as log gain and output linear one [%s]\n",
            BOOL[LOGGAIN]);
    fprintf(stderr,
            "       -i i  : input format                                   [%d]\n",
@@ -178,6 +178,7 @@ int main(int argc, char **argv)
             gain = 0;
             break;
          case 'l':
+         case 'L':
             loggain = TR;
             break;
          case 'i':

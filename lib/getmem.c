@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /********************************************************************
-    $Id: getmem.c,v 1.14 2012/12/21 09:45:26 mataki Exp $
+    $Id: getmem.c,v 1.17 2013/12/16 09:02:07 mataki Exp $
 
     Memory Allocation Functions
 
@@ -53,6 +53,7 @@
     float  *fgetmem(leng)
     real   *rgetmem(leng)
     float  **fgetmem(leng)
+    double **ddgetmem(leng1, leng2)
 
     int leng : data length
 
@@ -111,4 +112,18 @@ real *rgetmem(const int leng)
 float **ffgetmem(const int leng)
 {
    return ((float **) getmem((size_t) leng, sizeof(float *)));
+}
+
+double **ddgetmem(const int leng1, const int leng2)
+{
+   int i, j;
+   double **tmp, *tmp2;
+   tmp = (double **) getmem((size_t) leng1, sizeof(double *));
+   tmp2 = dgetmem(leng1 * leng2);
+
+   for (i = 0, j = 0; i < leng1; i++, j += leng2) {
+      tmp[i] = tmp2 + j;
+   }
+
+   return (tmp);
 }

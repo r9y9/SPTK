@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _lspcheck.c,v 1.16 2012/12/21 10:04:42 mataki Exp $
+    $Id: _lspcheck.c,v 1.17 2013/12/16 09:02:00 mataki Exp $
 
     Check order of LSP
 
@@ -84,7 +84,7 @@ int lspcheck(double *lsp, const int ord)
 
 /****************************************************************
 
-    $Id: _lspcheck.c,v 1.16 2012/12/21 10:04:42 mataki Exp $
+    $Id: _lspcheck.c,v 1.17 2013/12/16 09:02:00 mataki Exp $
 
     Rearrangement of LSP
 

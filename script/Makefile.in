@@ -88,6 +88,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 POW_LIB = @POW_LIB@
@@ -156,6 +157,7 @@ EXTRA_DIST = bell.in gseries.in glogsp.in grlogsp.in gwave.in mgc2mgclsp.in mgcl
 CLEANFILES = $(bin_SCRIPTS)
 replace_path = sed -e 's,@binpath@,$(DESTDIR)$(bindir),g' \
 	            -e 's,@libpath@,$(DESTDIR)$(libdir),g' \
+	            -e 's,@sharepath@,$(datarootdir)/SPTK,g' \
 	            -e 's,@sptk_version@,$(PACKAGE_VERSION),g' \
 	            -e 's,@cshpath@,$(CSH),' \
 	            -e 's,@io_symbol@,$(IO_SYMBOL),g' \
@@ -339,19 +341,19 @@ install-binSCRIPTS: $(bin_SCRIPTS)
 	  if test -f $$d$$p; then \
 	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
 	    echo " $(binSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(bindir)/$$f'"; \
-	    $(binSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(bindir)/$$f"; \
+	    $(binSCRIPT_INSTALL) "$$d$$p" "$(datarootdir)/SPTK/$$f"; \
 	  else :; fi; \
 	  p2=`basename $$p .sh`; \
 	  rm -f "$(DESTDIR)$(bindir)/$$p2"; \
-	  (cd $(DESTDIR)$(bindir); $(LN_S) $$p  $$p2) \
+	  (cd $(DESTDIR)$(bindir); $(LN_S) "$(datarootdir)/SPTK/$$p"  $$p2) \
 	done
 
 uninstall-binSCRIPTS:
 	@$(NORMAL_UNINSTALL)
 	@list='$(bin_SCRIPTS)'; for p in $$list; do \
 	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
-	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
+	  echo " rm -f '$(datarootdir)/SPTK/$$f'"; \
+	  rm -f "$(datarootdir)/SPTK/$$f"; \
 	  p2=`basename $$p .sh`; \
 	  rm -f "$(DESTDIR)$(bindir)/$$p2"; \
 	done

@@ -31,7 +31,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -67,7 +67,7 @@
 
 /****************************************************************
 
-    $Id: vector.c,v 1.7 2012/12/22 12:25:38 mataki Exp $
+    $Id: vector.c,v 1.9 2013/12/16 09:02:02 mataki Exp $
 
 *****************************************************************/
 
@@ -588,6 +588,7 @@ static void dgels(int n, vector Ap, vector bp)
   LU(n, a.m);
   /* solve linear equation via LU decomposition */
   SOLVE(n, a.m, bp.v);
+  freem(a);
 }
 
 #endif

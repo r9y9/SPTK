@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -67,7 +67,7 @@
 **************************************************************************************/
 
 static char *rcs_id =
-    "$Id: symmetrize.c,v 1.4 2012/12/21 11:27:37 mataki Exp $";
+    "$Id: symmetrize.c,v 1.8 2013/12/23 00:02:41 mataki Exp $";
 
 
 /*  Standard C Libraries  */
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
    int i, o = OTYPE, L = FLENG;
    char *s, c;
    FILE *fp = stdin;
-   float *buf, tmp;
+   double *buf, tmp;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL)
       cmnd = argv[0];
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
    }
 
    L /= 2;
-   buf = fgetmem(L);
+   buf = dgetmem(L);
 
    if ((o != 0) && (o != 1) && (o != 2)) {
       fprintf(stderr, "%s : invalid output type %d\n", cmnd, o);
@@ -182,15 +182,8 @@ int main(int argc, char *argv[])
       fprintf(stderr, "%s : value of L must be L>=4!\n", cmnd);
       usage();
    }
-   if (fread(buf, sizeof(float), L, fp) < (size_t) L) {
-      fprintf(stderr,
-              "%s : the length of input data is smaller than defined!\n", cmnd);
-      usage();
-   }
 
-   rewind(fp);
-
-   while (fread(buf, sizeof(float), L, fp) == (size_t) L) {
+   while (freadf(buf, sizeof(*buf), L, fp) == L) {
 
       if (o == 0) {
          if (L <= 2) {
@@ -198,28 +191,28 @@ int main(int argc, char *argv[])
             usage();
          }
          for (i = 0; i < L; i++) {
-            fwrite(&buf[i], sizeof(float), 1, stdout);
+            fwritef(&buf[i], sizeof(*buf), 1, stdout);
          }
          for (i = L - 2; i > 0; i--) {
-            fwrite(&buf[i], sizeof(float), 1, stdout);
+            fwritef(&buf[i], sizeof(*buf), 1, stdout);
          }
       } else if (o == 1) {
          for (i = L - 1; i > 0; i--) {
-            fwrite(&buf[i], sizeof(float), 1, stdout);
+            fwritef(&buf[i], sizeof(*buf), 1, stdout);
          }
          for (i = 0; i < L; i++) {
-            fwrite(&buf[i], sizeof(float), 1, stdout);
+            fwritef(&buf[i], sizeof(*buf), 1, stdout);
          }
       } else if (o == 2) {
          tmp = buf[L - 1] / 2;
-         fwrite(&tmp, sizeof(float), 1, stdout);
+         fwritef(&tmp, sizeof(*buf), 1, stdout);
          for (i = L - 2; i > 0; i--) {
-            fwrite(&buf[i], sizeof(float), 1, stdout);
+            fwritef(&buf[i], sizeof(*buf), 1, stdout);
          }
          for (i = 0; i < L - 1; i++) {
-            fwrite(&buf[i], sizeof(float), 1, stdout);
+            fwritef(&buf[i], sizeof(*buf), 1, stdout);
          }
-         fwrite(&tmp, sizeof(float), 1, stdout);
+         fwritef(&tmp, sizeof(tmp), 1, stdout);
       }
    }
 

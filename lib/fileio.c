@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /********************************************************************
-    $Id: fileio.c,v 1.17 2012/12/21 09:45:26 mataki Exp $
+    $Id: fileio.c,v 1.19 2013/12/16 09:02:07 mataki Exp $
 
     File I/O Functions
 
@@ -167,3 +167,29 @@ int freadf(double *ptr, const size_t size, const int nitems, FILE * fp)
    return n;
 }
 #endif                          /* DOUBLE */
+
+void SPTK_byte_swap(void *p, size_t size, size_t num)
+{
+   char *q, tmp;
+   size_t i, j;
+
+   q = (char *) p;
+
+   for (i = 0; i < num; i++) {
+      for (j = 0; j < (size / 2); j++) {
+         tmp = *(q + j);
+         *(q + j) = *(q + (size - 1 - j));
+         *(q + (size - 1 - j)) = tmp;
+      }
+      q += size;
+   }
+}
+
+int fwrite_little_endian(void *buf, const size_t size,
+                         const size_t n, FILE * fp)
+{
+#ifdef WORDS_BIGENDIAN
+   SPTK_byte_swap(buf, size, n);
+#endif
+   return fwrite(buf, size, n, fp);
+}

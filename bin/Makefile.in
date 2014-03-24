@@ -96,6 +96,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 POW_LIB = @POW_LIB@
@@ -220,6 +221,7 @@ SUBDIRS = acep \
 	lpc2lsp \
 	lpc2par \
 	lsp2lpc \
+	lsp2sp \
 	lspcheck \
 	lspdf \
 	ltcdf \
@@ -263,6 +265,7 @@ SUBDIRS = acep \
 	uels \
 	ulaw \
 	us \
+	vc \
 	vopr \
 	vq \
 	vstat \
@@ -273,7 +276,7 @@ SUBDIRS = acep \
 	zcross \
 	zerodf
 
-EXTRA_DIST = pitch/snack/COPYING pitch/swipe/COPYING
+EXTRA_DIST = pitch/snack/COPYING pitch/swipe/COPYING vc/hts_engine_API/COPYING ds/titech/COPYING us/titech/COPYING
 all: all-recursive
 
 .SUFFIXES:

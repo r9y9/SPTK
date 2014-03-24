@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2012  Nagoya Institute of Technology          */
+/*                1996-2013  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -59,11 +59,10 @@
 *               input (float)                                             *
 *       stdout:                                                           *
 *               output (float)                                            *
-*       note:                                                             *
-*               M, N <= 2047                                              *
+*                                                                         *
 **************************************************************************/
 
-static char *rcs_id = "$Id: dfs.c,v 1.23 2012/12/21 11:27:32 mataki Exp $";
+static char *rcs_id = "$Id: dfs.c,v 1.27 2013/12/16 09:01:55 mataki Exp $";
 
 
 /* Standard C Libraries */
@@ -87,12 +86,13 @@ static char *rcs_id = "$Id: dfs.c,v 1.23 2012/12/21 11:27:32 mataki Exp $";
 #  include <SPTK.h>
 #endif
 
-/* Default Values */
-#define SIZE 2048
-
 /* Command Name */
 char *cmnd;
 
+typedef struct _float_list {
+   float *f;
+   struct _float_list *next;
+} float_list;
 
 void usage(int status)
 {
@@ -117,8 +117,6 @@ void usage(int status)
            FORMAT);
    fprintf(stderr, "  stdout:\n");
    fprintf(stderr, "       filter output (%s)\n", FORMAT);
-   fprintf(stderr, "  notice:\n");
-   fprintf(stderr, "       M,N <= %d \n", SIZE - 1);
 #ifdef PACKAGE_VERSION
    fprintf(stderr, "\n");
    fprintf(stderr, " SPTK: version %s\n", PACKAGE_VERSION);
@@ -128,16 +126,73 @@ void usage(int status)
    exit(status);
 }
 
-int main(int argc, char *argv[])
+double *read_coeff(int *argc, char ***argv, int *num)
 {
    int i;
-   static double a[SIZE], b[SIZE];
-   static double d[SIZE];
-   int bufp = 0;
-   int na = -1, nb = -1;
-   double x;
+   float_list *top, *cur, *prev, *tmpf, *tmpff;
+   double *coeff = NULL;
+
+   top = prev = (float_list *) malloc(sizeof(float_list));
+   top->f = fgetmem(1);
+   while ((*argc - 1) && !isalpha(*(*(*argv + 1) + 1))) {
+      cur = (float_list *) malloc(sizeof(float_list));
+      cur->f = fgetmem(1);
+      cur->f[0] = atof(*++(*argv));
+      prev->next = cur;
+      cur->next = NULL;
+      prev = cur;
+      (*argc)--;
+      (*num)++;
+   }
+   coeff = dgetmem(*num + 1);
+   for (i = 0, tmpf = top->next; tmpf != NULL; i++, tmpf = tmpff) {
+      coeff[i] = tmpf->f[0];
+      tmpff = tmpf->next;
+      free(tmpf->f);
+      free(tmpf);
+   }
+   free(top);
+
+   return (coeff);
+}
+
+double *read_coeff_file(FILE * fp, int *num)
+{
+   int i;
+   float_list *top, *cur, *prev, *tmpf, *tmpff;
+   double *dat, *coeff = NULL;
+
+   top = prev = (float_list *) malloc(sizeof(float_list));
+   top->f = fgetmem(1);
+   dat = dgetmem(1);
+   while (freadf(dat, sizeof(*dat), 1, fp) == 1) {
+      cur = (float_list *) malloc(sizeof(float_list));
+      cur->f = fgetmem(1);
+      cur->f[0] = dat[0];
+      prev->next = cur;
+      cur->next = NULL;
+      prev = cur;
+      (*num)++;
+   }
+   coeff = dgetmem(*num + 1);
+   for (i = 0, tmpf = top->next; tmpf != NULL; i++, tmpf = tmpff) {
+      coeff[i] = tmpf->f[0];
+      tmpff = tmpf->next;
+      free(tmpf->f);
+      free(tmpf);
+   }
+   free(top);
+   free(dat);
+
+   return (coeff);
+}
+
+int main(int argc, char *argv[])
+{
+   double x, *a = NULL, *b = NULL, *d = NULL;
+   int bufp = 0, max = 0, na = -1, nb = -1;
    char *file_z = "", *file_p = "";
-   FILE *fp_z, *fp_p;
+   FILE *fp_z = NULL, *fp_p = NULL;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL)
       cmnd = argv[0];
@@ -147,20 +202,10 @@ int main(int argc, char *argv[])
       if (**++argv == '-')
          switch (*(*argv + 1)) {
          case 'a':
-            i = 0;
-            while ((argc - 1) && !isalpha(*(*(argv + 1) + 1))) {
-               a[i++] = atof(*++argv);
-               argc--;
-               na++;
-            }
+            a = read_coeff(&argc, &argv, &na);
             break;
          case 'b':
-            i = 0;
-            while ((argc - 1) && !isalpha(*(*(argv + 1) + 1))) {
-               b[i++] = atof(*++argv);
-               argc--;
-               nb++;
-            }
+            b = read_coeff(&argc, &argv, &nb);
             break;
          case 'z':
             argc--;
@@ -182,22 +227,26 @@ int main(int argc, char *argv[])
 
    if (*file_z != '\0') {
       fp_z = getfp(file_z, "rb");
-      nb = freadf(b, sizeof(*b), SIZE, fp_z) - 1;
+      b = read_coeff_file(fp_z, &nb);
    }
    if (*file_p != '\0') {
       fp_p = getfp(file_p, "rb");
-      na = freadf(a, sizeof(*a), SIZE, fp_p) - 1;
+      a = read_coeff_file(fp_p, &na);
    }
 
    if (na == -1) {
+      a = dgetmem(1);
       na = 0;
       a[0] = 1.0;
    }
    if (nb == -1) {
+      b = dgetmem(1);
       nb = 0;
       b[0] = 1.0;
    }
 
+   max = (nb > na) ? (nb + 1) : (na + 1);
+   d = dgetmem(max);
    while (freadf(&x, sizeof(x), 1, stdin) == 1) {
       x = dfs(x, a, na, b, nb, d, &bufp);
       fwritef(&x, sizeof(x), 1, stdout);

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 ##
-## $Id: Makefile.am,v 1.19 2012/10/03 16:03:27 okdtmhr Exp $
+## $Id: Makefile.am,v 1.23 2013/12/23 14:27:17 uratec Exp $
 
 SUBDIRS = acep \
 	acorr \
@@ -63,6 +63,7 @@ SUBDIRS = acep \
 	lpc2lsp \
 	lpc2par \
 	lsp2lpc \
+	lsp2sp \
 	lspcheck \
 	lspdf \
 	ltcdf \
@@ -106,6 +107,7 @@ SUBDIRS = acep \
 	uels \
 	ulaw \
 	us \
+	vc \
 	vopr \
 	vq \
 	vstat \
@@ -116,4 +118,4 @@ SUBDIRS = acep \
 	zcross \
 	zerodf
 
-EXTRA_DIST = pitch/snack/COPYING pitch/swipe/COPYING
+EXTRA_DIST = pitch/snack/COPYING pitch/swipe/COPYING vc/hts_engine_API/COPYING ds/titech/COPYING us/titech/COPYING
