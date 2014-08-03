@@ -44,7 +44,8 @@
 %rename (swipe) my_swipe;
 %inline %{
   void my_swipe(double *input, int len1, double *output, int len2, int samplerate, int frame_shift, double min, double max, double st, int otype) {
-    if (len1 != len2) {
+    int expected_output_len = len1/frame_shift+1;
+    if (expected_output_len != len2) {
       // TODO
     }
     swipe(input, output, len1, samplerate, frame_shift, min, max, st, otype);
