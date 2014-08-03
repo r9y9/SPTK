@@ -2,7 +2,6 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #include "SPTK.h"
-  double ave(double *array, int n) {  return 1.0; }
 %}
 
 %include "numpy.i"
@@ -13,6 +12,15 @@
 
 // FFT
 %apply (double *INPLACE_ARRAY1, int DIM1) {(double *x, int n), (double *y, int m)}
+
+// MCEP
+%apply (double* IN_ARRAY1, int DIM1) {(double *xw, int flng)}
+%apply (double* ARGOUT_ARRAY1, int DIM1) {(double *mc, int m)}
+
+// SWIPE
+%apply (double* IN_ARRAY1, int DIM1) {(double *input, int len1)}
+%apply (double* INPLACE_ARRAY1, int DIM1) {(double *output, int len2)}
+
 %rename (fft) my_fft;
 %inline %{
   int my_fft(double *x, int n, double *y, int m) {
@@ -23,9 +31,6 @@
   }
 %}
 
-// MCEP
-%apply (double* IN_ARRAY1, int DIM1) {(double *xw, int flng)}
-%apply (double* ARGOUT_ARRAY1, int DIM1) {(double *mc, int m)}
 %rename (mcep) my_mcep;
 %inline %{
   int my_mcep(double *xw, const int flng, double *mc, const int m, const double a,
@@ -36,5 +41,14 @@
   }
 %}
 
+%rename (swipe) my_swipe;
+%inline %{
+  void my_swipe(double *input, int len1, double *output, int len2, int samplerate, int frame_shift, double min, double max, double st, int otype) {
+    if (len1 != len2) {
+      // TODO
+    }
+    swipe(input, output, len1, samplerate, frame_shift, min, max, st, otype);
+  }
+%}
 
 %include "SPTK.h"
