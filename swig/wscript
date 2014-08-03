@@ -1,0 +1,18 @@
+def configure(conf):
+    pass
+
+def build(bld):
+    numpy_path = bld.env['PYTHONDIR'] + "/numpy/core/include"
+    
+    bld(
+        features = 'c cshlib pyext',
+        source = ['sptk.i'],
+        target = '_sptk',
+        swig_flags = '-python -Wall',
+        vnum = bld.env['VERSION'],
+        use = 'SPTK SPTKlib',
+        includes = ['.', '../include', numpy_path])
+
+    bld.install_files(bld.env['PYTHONDIR'], 'sptk.py')
+
+    bld.install_files('${HPREFIX}', '../include/SPTK.h')

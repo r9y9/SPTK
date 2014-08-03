@@ -10,17 +10,26 @@ import waflib
 subdirs = [
     'bin',
     'lib',
+    'swig',
 ]
 
 top = '.'
 out = 'build'
 
 def options(opt):
-    opt.load('compiler_cc')
+    opt.load('compiler_c python')
         
 def configure(conf):
-    conf.load('compiler_cc')
+    conf.load('compiler_c python')
     
+    conf.load('swig')
+    if conf.check_swig_version() < (1, 2, 27):
+        conf.fatal('this swig version is too old')
+        
+    conf.load('python')
+    conf.check_python_version((2,4,2))
+    conf.check_python_headers()
+
     conf.define('SPTK_VERSION', VERSION)
     conf.env['VERSION'] = VERSION
 

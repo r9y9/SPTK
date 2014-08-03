@@ -74,6 +74,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define complex Complex
+
 #if defined(WIN32)
 #  include "SPTK.h"
 #else
