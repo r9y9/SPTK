@@ -1,4 +1,4 @@
-%module sptk
+%module csptk
 %{
 #define SWIG_FILE_WITH_INIT
 #include "SPTK.h"

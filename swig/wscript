@@ -6,13 +6,13 @@ def build(bld):
     
     bld(
         features = 'c cshlib pyext',
-        source = ['sptk.i'],
-        target = '_sptk',
+        source = ['csptk.i'],
+        target = '_csptk',
         swig_flags = '-python -Wall',
         vnum = bld.env['VERSION'],
         use = 'SPTK SPTKlib',
         includes = ['.', '../include', numpy_path])
 
+    bld.install_files(bld.env['PYTHONDIR'], 'csptk.py')
     bld.install_files(bld.env['PYTHONDIR'], 'sptk.py')
-
     bld.install_files('${HPREFIX}', '../include/SPTK.h')
