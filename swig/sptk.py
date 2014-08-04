@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# coding: utf-8
+
 import csptk
 
 import numpy as np
@@ -5,7 +8,7 @@ import numpy as np
 def mcep(x, order=20, alpha=0.41, iter1=2, iter2=30, 
          dd=0.001, etype=0, e=0.0, f=0.0001, itype=0):
     """
-    mcep perform mel-cepstrum analysis.
+    Mel-Cepstrum analysis
     
     Parameters
     ----------
@@ -15,10 +18,32 @@ def mcep(x, order=20, alpha=0.41, iter1=2, iter2=30,
           order of mel-cepstrum that will be extracted
       alpha : float
           all pass constant
+      iter1 : int
+          minimum number of iteration
+      iter2 : int
+          maximum number of iteration
+      dd : float
+          threshold
+      etype : int
+          type of paramter `e` 
+               (0) not used
+               (1) initial value of log-periodogram
+               (2) floor of periodogram in db
+      e : float
+          initial value for log-periodogram or floor of periodogram in db
+      f : float
+          mimimum value of the determinant of normal matrix
+      itype : float
+          input data type:
+              (0) windowed signal
+              (1) log amplitude in db
+              (2) log amplitude
+              (3) amplitude
+              (4) periodogram
 
     Return
     ------
-    mel-cepstrum
+    mel-cepstrum : array, shape (`order`)
 
     """
     end_condition, mc = csptk.mcep(x, order, alpha, iter1, iter2,
@@ -49,7 +74,7 @@ def swipe(x, samplerate, frame_shift,
           frame_shift
       min : float (default=50.0)
           minimum fundamental frequency
-      max : int (default=800.0)
+      max : float (default=800.0)
           maximum fundamental frequency
       st : float (default=0.3)
           voice/unvoiced threthold 
@@ -58,7 +83,7 @@ def swipe(x, samplerate, frame_shift,
 
     Return
     ------
-    f0 sequence
+    f0 sequence : array, shape(`len(x)/frame_shift+1`)
 
     """
     expected_len = len(x)/frame_shift + 1
