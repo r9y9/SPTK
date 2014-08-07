@@ -15,4 +15,3 @@ def build(bld):
 
     bld.install_files(bld.env['PYTHONDIR'], 'csptk.py')
     bld.install_files(bld.env['PYTHONDIR'], 'sptk.py')
-    bld.install_files('${HPREFIX}', '../include/SPTK.h')
