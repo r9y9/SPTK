@@ -24,6 +24,20 @@
 %apply (double* IN_ARRAY1, int DIM1) {(double *input, int len1)}
 %apply (double* INPLACE_ARRAY1, int DIM1) {(double *output, int len2)}
 
+// MC2B
+%apply (double *IN_ARRAY1, int DIM1)
+{
+  (double *mc_mc2b, int m_mc2b),
+  (double *b_mc2b, int n_mc2b)
+}
+
+// B2MC 
+%apply (double *IN_ARRAY1, int DIM1)
+{
+  (double *b_b2mc, int n_b2mc),
+  (double *mc_b2mc, int m_b2mc)
+}
+
 %rename (fft) my_fft;
 %inline %{
   int my_fft(double *x, int n, double *y, int m) {
@@ -56,6 +70,24 @@
       // TODO
     }
     swipe(input, output, len1, samplerate, frame_shift, min, max, st, otype);
+  }
+%}
+
+%rename (mc2b) my_mc2b;
+%inline %{
+  void my_mc2b(double *mc_mc2b, int m_mc2b,
+	       double *b_mc2b, int n_mc2b, const double a) {
+    int order = m_mc2b - 1; // except 0th order
+    mc2b(mc_mc2b, b_mc2b, order, a);
+  }
+%}
+
+%rename (b2mc) my_b2mc;
+%inline %{
+  void my_b2mc(double *b_b2mc, int n_b2mc, 
+	       double *mc_b2mc, int m_b2mc, const double a) {
+    int order = m_b2mc - 1; // except 0th order
+    b2mc(b_b2mc, mc_b2mc, order, a);
   }
 %}
 

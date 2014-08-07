@@ -90,3 +90,43 @@ def swipe(x, samplerate, frame_shift,
     f0 = np.zeros(expected_len, dtype=float)
     csptk.swipe(x, f0, samplerate, frame_shift, min, max, st, otype)
     return f0
+
+def mc2b(mc, alpha):
+    """
+    mc2b converts mel-cepsrum to MLSA filter coefficients.
+
+    Parameters
+    ----------
+      mc : array, shape (`order of mel-cepstrum` + 1)
+           mel-cepstrum
+      alpha : float
+           all-pass constant
+
+    Return
+    ------
+    MLSA filter coefficients : array, shape(=mc)
+
+    """
+    b = np.zeros(mc.shape)
+    csptk.mc2b(mc, b, alpha)
+    return b
+
+def b2mc(b, alpha):
+    """
+    b2mc converts MLSA filter coefficients to mel-cepstrum
+
+    Parameters
+    ----------
+      b : array, shape (`number of MLSA filter coefficients`)
+           MLSA filter coefficients
+      alpha : float
+           all-pass constant
+
+    Return
+    ------
+    mel-cepstrum : array, shape(=b)
+
+    """
+    mc = np.zeros(b.shape)
+    csptk.b2mc(b, mc, alpha)
+    return mc
