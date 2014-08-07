@@ -43,11 +43,12 @@ def mcep(x, order=20, alpha=0.41, iter1=2, iter2=30,
 
     Return
     ------
-    mel-cepstrum : array, shape (`order`)
+    mel-cepstrum : array, shape (`order + 1`)
 
     """
-    end_condition, mc = csptk.mcep(x, order, alpha, iter1, iter2,
-                                   dd, etype, e, f, itype)
+    mc = np.zeros(order+1)
+    end_condition = csptk.mcep(x, mc, alpha, iter1, iter2,
+                               dd, etype, e, f, itype, 0)
     # ignore end_condition
     return mc
 
@@ -196,3 +197,78 @@ def ignorm(c, gamma):
     csptk.ignorm(c, c2, gamma)
     return c2
 
+
+def mgcep(x, order=20, alpha=0.41, gamma=0.0, n=None,
+          iter1=2, iter2=30, 
+          dd=0.001, etype=0, e=0.0, f=0.0001, itype=0, otype=0):
+    """
+    Mel Generalized Cepstrum analysis
+    
+    Parameters
+    ----------
+      x : array, shape (`frame_len`)
+          A input frame
+      order : int
+          order of mel generalized cepstrum that will be extracted
+      alpha : float
+          all pass constant
+      n : int (default=len(x)-1)
+          order of recursions
+      iter1 : int
+          minimum number of iteration
+      iter2 : int
+          maximum number of iteration
+      dd : float
+          threshold
+      etype : int
+          type of paramter `e` 
+               (0) not used
+               (1) initial value of log-periodogram
+               (2) floor of periodogram in db
+      e : float
+          initial value for log-periodogram or floor of periodogram in db
+      f : float
+          mimimum value of the determinant of normal matrix
+      itype : float
+          input data type:
+              (0) windowed signal
+              (1) log amplitude in db
+              (2) log amplitude
+              (3) amplitude
+              (4) periodogram
+      otype : int
+          output data type
+              (0) mel generalized cepstrum: (c~0...c~m)
+              (1) MGLSA filter coefficients: b0...bm
+              (2) K~,c~'1...c~'m
+              (3) K,b'1...b'm
+              (4) K~,g*c~'1...g*c~'m
+              (5) K,g*b'1...g*b'm
+
+    Return
+    ------
+    mel generalized cepstrum : array, shape (`order + 1`)
+
+    """
+    mgc = np.zeros(order+1)
+
+    if n == None:
+        n = len(x)
+
+    end_condition = csptk.mgcep(x, mgc, alpha, gamma, n, 
+                                iter1, iter2, 
+                                dd, etype, e, f, itype)
+
+    if otype == 0 or otype == 1 or otype == 2 or otype == 4:
+        csptk.ignorm(mgc, mgc, gamma)
+    
+    if otype == 0 or otype == 2 or otype == 4:
+        csptk.b2mc(mgc, mgc, alpha)
+
+    if otype == 2 or otype == 4:
+        csptk.gnorm(mgc, mgc, gamma)
+
+    if otype == 4 or otype == 5:
+        mgc[1:] *= gamma
+    
+    return mgc

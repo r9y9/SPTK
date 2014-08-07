@@ -17,8 +17,10 @@
 }
 
 // MCEP
-%apply (double* IN_ARRAY1, int DIM1) {(double *xw, int flng)}
-%apply (double* ARGOUT_ARRAY1, int DIM1) {(double *mc, int m)}
+%apply (double* IN_ARRAY1, int DIM1) {
+  (double *xw_mcep, int flng_mcep),
+  (double *mc_mcep, int m_mcep)
+}
 
 // SWIPE
 %apply (double* IN_ARRAY1, int DIM1) {(double *input, int len1)}
@@ -59,6 +61,14 @@
   (double *c2_ignorm, int m_ignorm)
 }
 
+// mgcep
+// TODO: why not work with INPLACE_ARRAY1?
+%apply (double *IN_ARRAY1, int DIM1)
+{
+  (double *xw_mgcep, int flng_mgcep),
+  (double *b_mgcep, int m_mgcep)
+}
+
 %rename (fft) my_fft;
 %inline %{
   int my_fft(double *x, int n, double *y, int m) {
@@ -69,15 +79,18 @@
   }
 %}
 
+// TODO remove dummy variavle
 %rename (mcep) my_mcep;
 %inline %{
-  int my_mcep(double *xw, const int flng, double *mc, 
-	      const int m, const double a,
+  int my_mcep(double *xw_mcep, const int flng_mcep,
+	      double *mc_mcep, const int m_mcep,
+	      const double a,
 	      const int itr1, const int itr2,
 	      const double dd, const int etype,
-	      const double e, const double f, const int itype) {
+	      const double e, const double f, const int itype, int dummy) {
     // m-1 is the order of mel-cepstrum except for 0-th order coef.
-    return mcep(xw, flng, mc, m-1, a, itr1, itr2, dd, etype, e, f, itype);
+    return mcep(xw_mcep, flng_mcep, mc_mcep, m_mcep-1,
+		a, itr1, itr2, dd, etype, e, f, itype);
   }
 %}
 
@@ -135,6 +148,25 @@
 		 double *c2_ignorm, int m_ignorm, const double g) {
     int order = n_ignorm - 1;
     ignorm(c1_ignorm, c2_ignorm, order, g);
+  }
+%}
+
+%rename (mgcep) my_mgcep;
+%inline %{
+  int my_mgcep(double *xw_mgcep, int flng_mgcep,
+	       double *b_mgcep, int m_mgcep,
+	       const double a,
+	       const double g, const int n, const int itr1, const int itr2,
+	       const double dd, const int etype, 
+	       const double e, const double f,
+	       const int itype) {
+    return mgcep(xw_mgcep, flng_mgcep,
+		 b_mgcep, m_mgcep-1,
+		 a,
+		 g, n, itr1, itr2, 
+		 dd, etype,
+		 e, f, 
+		 itype);
   }
 %}
 
