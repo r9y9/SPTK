@@ -10,22 +10,29 @@ import waflib
 subdirs = [
     'bin',
     'lib',
-    'swig',
 ]
+
+python_bindings = 'python'
 
 top = '.'
 out = 'build'
 
 def options(opt):
     opt.load('compiler_c python')
-        
+    opt.add_option("--python",
+                   action="store_true", dest="enable_python", default=False,
+                   help="whether compile python bindings")
+    
 def configure(conf):
     conf.load('compiler_c python')
-    
-    conf.load('swig')
-    if conf.check_swig_version() < (1, 2, 27):
-        conf.fatal('this swig version is too old')
-        
+
+    conf.env['PYTHON_BINDINGS'] = conf.options.enable_python
+
+    if conf.options.enable_python:
+        conf.load('swig')
+        if conf.check_swig_version() < (1, 2, 27):
+            conf.fatal('this swig version is too old')
+
     conf.load('python')
     conf.check_python_version((2,4,2))
     conf.check_python_headers()
@@ -53,6 +60,8 @@ def configure(conf):
     conf.check_cc(header_name = "sys/ioctl.h")
 
     conf.recurse(subdirs)
+    if conf.options.enable_python:
+        conf.recurse(python_bindings)
 
     print """
 SPTK has been configured as follows:
@@ -63,20 +72,24 @@ build (compile on):      %s
 host endian:             %s
 Compiler:                %s
 Compiler version:        %s
-CFLAGS:                %s
+CFLAGS:                  %s
+Generate python bindings %s
 """ % (
         APPNAME + '-' + VERSION,
         conf.env.DEST_CPU + '-' + conf.env.DEST_OS,
         sys.byteorder,
         conf.env.COMPILER_CC,
         '.'.join(conf.env.CC_VERSION),
-        ' '.join(conf.env.CFLAGS)
+        ' '.join(conf.env.CFLAGS),
+        conf.options.enable_python
         )
 
     conf.write_config_header('src/SPTK-config.h')
             
 def build(bld):
     bld.recurse(subdirs)
+    if bld.env["PYTHON_BINDINGS"]:
+        bld.recurse(python_bindings)
 
     libs = []
     for tasks in bld.get_build_iterator():
