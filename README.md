@@ -39,7 +39,7 @@ import sptk
 import scipy.io.wavfile as wavfile
 from pylab import plot, show
 
-fs, data = wavfile.read("test.wav")
+fs, data = wavfile.read("/example/arayuru.wav")
 
 f0 = sptk.swipe(data, samplerate=fs, frame_shift=80)
 plot(f0)
