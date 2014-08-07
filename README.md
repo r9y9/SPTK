@@ -36,21 +36,17 @@ It is assumed that swig is installed.
 
 ```python
 import sptk
-import numpy as np
 import scipy.io.wavfile as wavfile
-from pylab import plot, show, legend, xlabel, ylabel
+from pylab import plot, show
 
 fs, data = wavfile.read("test.wav")
 
 f0 = sptk.swipe(data, samplerate=fs, frame_shift=80)
-
-axis = [float(n)*80/fs for n in range(len(f0))]
-xlabel("Time (sec)")
-ylabel("Hz")
-plot(axis, f0, label="F0 estimation result using SWIPE")
-legend()
+plot(f0)
 show()
 ```
+
+![](http://r9y9.github.io/images/arayuru_f0.png)
 	 
 ## License
 
