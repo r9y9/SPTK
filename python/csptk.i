@@ -45,6 +45,20 @@
   (double *c2_freqt, int m2_freqt)
 }
 
+// gnorm
+%apply (double *INPLACE_ARRAY1, int DIM1)
+{
+  (double *c1_gnorm, int n_gnorm),
+  (double *c2_gnorm, int m_gnorm)
+}
+
+// ignorm
+%apply (double *INPLACE_ARRAY1, int DIM1)
+{
+  (double *c1_ignorm, int n_ignorm),
+  (double *c2_ignorm, int m_ignorm)
+}
+
 %rename (fft) my_fft;
 %inline %{
   int my_fft(double *x, int n, double *y, int m) {
@@ -103,6 +117,24 @@
   void my_freqt(double *c1_freqt, int m1_freqt,
 		double *c2_freqt, int m2_freqt, const double a) {
     freqt(c1_freqt, m1_freqt-1, c2_freqt, m2_freqt-1, a);
+  }
+%}
+
+%rename (gnorm) my_gnorm;
+%inline %{
+  void my_gnorm(double *c1_gnorm, int n_gnorm,
+	     double *c2_gnorm, int m_gnorm, const double g) {
+    int order = n_gnorm - 1;
+    gnorm(c1_gnorm, c2_gnorm, order, g);
+  }
+%}
+
+%rename (ignorm) my_ignorm;
+%inline %{
+  void my_ignorm(double *c1_ignorm, int n_ignorm,
+		 double *c2_ignorm, int m_ignorm, const double g) {
+    int order = n_ignorm - 1;
+    ignorm(c1_ignorm, c2_ignorm, order, g);
   }
 %}
 

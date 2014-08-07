@@ -139,7 +139,7 @@ def freqt(c, order, alpha):
 
     Parameters
     ----------
-      c : array, shape (`order of cepstrum + 1`)
+      c : array, shape (`order of cepstrum ` + 1)
           cepstrum
       order : int
           desired order of cepstrum that will be converted  
@@ -155,4 +155,44 @@ def freqt(c, order, alpha):
     convertedC = np.zeros(m2)
     csptk.freqt(c, convertedC, alpha)
     return convertedC
+
+def gnorm(c, gamma):
+    """
+    gnorm performs gain normalization on generalized cepstrum
+
+    Parameters
+    ----------
+      c : array, shape (`order of cepstrum` + 1)
+          generalized cepstrum
+      gamma : float
+          TODO
+
+    Return
+    ------
+    normalized generalized cepstrum : array, shape(=c)
     
+    """
+    c2 = np.zeros(c.shape)
+    csptk.gnorm(c, c2, gamma)
+    return c2
+
+def ignorm(c, gamma):
+    """
+    gnorm performs inverse gain normalization on generalized cepstrum
+
+    Parameters
+    ----------
+      c : array, shape (`order of cepstrum` + 1)
+          generalized cepstrum
+      gamma : float
+          TODO
+
+    Return
+    ------
+    generalized cepstrum : array, shape(=c)
+    
+    """
+    c2 = np.zeros(c.shape)
+    csptk.ignorm(c, c2, gamma)
+    return c2
+
