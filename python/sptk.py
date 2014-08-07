@@ -130,3 +130,29 @@ def b2mc(b, alpha):
     mc = np.zeros(b.shape)
     csptk.b2mc(b, mc, alpha)
     return mc
+
+def freqt(c, order, alpha):
+    """
+    freqt peforms frequency transform on cepstrum. It is used 
+    to transform linear frequency to mel frequency domain on 
+    cepstrum.
+
+    Parameters
+    ----------
+      c : array, shape (`order of cepstrum + 1`)
+          cepstrum
+      order : int
+          desired order of cepstrum that will be converted  
+      alpha : float
+          all-pass constant
+
+    Return
+    ------
+    mel-cepstrum : array, shape(=b)
+
+    """
+    m2 = order+1
+    convertedC = np.zeros(m2)
+    csptk.freqt(c, convertedC, alpha)
+    return convertedC
+    

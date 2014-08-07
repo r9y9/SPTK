@@ -38,6 +38,13 @@
   (double *mc_b2mc, int m_b2mc)
 }
 
+// freqt 
+%apply (double *INPLACE_ARRAY1, int DIM1)
+{
+  (double *c1_freqt, int m1_freqt),
+  (double *c2_freqt, int m2_freqt)
+}
+
 %rename (fft) my_fft;
 %inline %{
   int my_fft(double *x, int n, double *y, int m) {
@@ -88,6 +95,14 @@
 	       double *mc_b2mc, int m_b2mc, const double a) {
     int order = m_b2mc - 1; // except 0th order
     b2mc(b_b2mc, mc_b2mc, order, a);
+  }
+%}
+
+%rename (freqt) my_freqt;
+%inline %{
+  void my_freqt(double *c1_freqt, int m1_freqt,
+		double *c2_freqt, int m2_freqt, const double a) {
+    freqt(c1_freqt, m1_freqt-1, c2_freqt, m2_freqt-1, a);
   }
 %}
 
