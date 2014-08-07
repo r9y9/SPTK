@@ -93,11 +93,11 @@ typedef enum _Window {
    RECTANGULAR
 } Window;
 
-/* struct for complex */
+/* struct for Complex */
 typedef struct {
    double re;
    double im;
-} complex;
+} Complex;
 
 /* struct for Gaussian distribution */
 typedef struct _Gauss {
@@ -308,10 +308,10 @@ double poledf(double x, double *a, int m, double *d);
 double poledft(double x, double *a, int m, double *d);
 void reverse(double *x, const int l);
 double rmse(double *x, double *y, const int n);
-void output_root_pol(complex * x, int odr, int form);
-void root_pol(double *a, const int odr, complex * x, const int a_zero,
+void output_root_pol(Complex * x, int odr, int form);
+void root_pol(double *a, const int odr, Complex * x, const int a_zero,
               const double eps, const int itrat);
-complex *cplx_getmem(const int leng);
+Complex *cplx_getmem(const int leng);
 int smcep(double *xw, const int flng, double *mc, const int m, const int fftsz,
           const double a, const double t, const int itr1, const int itr2,
           const double dd, const int etype, const double e, const double f,

@@ -1,74 +1,61 @@
-# SPTK with waf
-
+# SPTK
 -----------------
 
-# Description 
+This repository hosts a modified version of [Speech Signal Processing Toolkit (SPTK)](http://sp-tk.sourceforge.net/) to use the SPTK as **API** (not command line program) from external programs. For command line use, please check [the original one](http://sp-tk.sourceforge.net/).
 
-Waf integration to build [Speech Signal Processing Toolkit (SPTK) library](http://sp-tk.sourceforge.net/) with C and C++ compilers. 
+Changes from the original SPTK are summerized as follows:
 
-**SPTKを自分のコードから呼びたい人向けです。**
+- Integrate [waf]((https://code.google.com/p/waf/)) build tool
+- Add python wrapper using SWIG (experimental)
 
-* SPTKを共有ライブラリとしてインストールできます。
-* C、C++の好きな方でコンパイルできます。
-* [waf](https://code.google.com/p/waf/)が使えます（速い、出力がキレイ）
-* 自分のC、C++コードからSPTKのメソッドを呼べます。
-* コマンドラインツールはインストールされません。
-* 一部API breakingが存在します（今のところ基本周波数推定のswipeのみ）
-* SPTKのバージョンは3.7です
-   
+## Install
 
-コマンドラインツールを使いたい人は、オリジナルを使えばOKです。
-
-# Branches
-
-- master : c向け
-- c++: c++向け（必要に迫られればアップデート）
-
-# About the SPTK
+    ./waf configure
+    ./waf
+    sudo ./waf install
     
-see [README.org](README.org)
+## Getting Started
 
-# Platform
+### C
 
-* Unix系
-* Ubuntu 12.04 LTS 64bit, Mac OS X 10.9 で最低限確認済
+    gcc call_sptk.c `pkg-config SPTK --cflags --libs`
+    
+### Go
 
-# Getting started
+Go wrapper can be found at [https://github.com/r9y9/gossp/tree/master/3rdparty/sptk](https://github.com/r9y9/gossp/tree/master/3rdparty/sptk).
 
-## Build
+### Python [experimental]
 
-     ./waf configure && ./waf
+It is assumed that swig is installed.
 
-## Build with clang++
+    ./waf configure --python
+    ./waf
+    sudo ./waf install
 
-     CXX=clang++ ./waf configure && ./waf
+#### SWIPE f0 estimation example from python
 
-## Build with gcc
+```python
+import sptk
+import numpy as np
+import scipy.io.wavfile as wavfile
+from pylab import plot, show, legend, xlabel, ylabel
 
-     git checkout c
-     ./waf configure && ./waf
+fs, data = wavfile.read("test.wav")
 
-## Build with clang
+f0 = sptk.swipe(data, samplerate=fs, frame_shift=80)
 
-     git checkout c
-     CC=clang ./waf configure && ./waf
+axis = [float(n)*80/fs for n in range(len(f0))]
+xlabel("Time (sec)")
+ylabel("Hz")
+plot(axis, f0, label="F0 estimation result using SWIPE")
+legend()
+show()
+```
+	 
+## License
 
-## Install 
+[MIT](./LICENSE)
 
-     sudo ./waf install
+## Author
 
-* Include files: `/usr/local/include/SPTK`
-* Library: `/usr/local/lib/SPTK`
-* Pkg-config: `/usr/local/lib/pkgconfig`
-
-オリジナルのSPTKとはインストール場所が異なります（オリジナルは、`/usr/local/SPTK`）
-
-# How to use
-
-`<SPTK/SPTK.h>` をインクルードして、好きな関数を呼ぶ
-
-コンパイルは、例えば以下のようにする
-
-     g++ test.cpp `pkg-config SPTK --cflags --libs`
-
-面倒なので、example/ 内のコードを修正して使う（wafを使おう）のがおすすめです。
+[Ryuichi YAMAMOTO](https://github.com/r9y9)
