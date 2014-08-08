@@ -5,7 +5,7 @@ This repository hosts a modified version of [Speech Signal Processing Toolkit (S
 
 Changes from the original SPTK are summerized as follows:
 
-- Integrate [waf]((https://code.google.com/p/waf/)) build tool
+- Integrate [waf](https://code.google.com/p/waf/) build tool
 - Add python wrapper using SWIG (experimental)
 
 ## Install
@@ -50,7 +50,8 @@ show()
 	 
 ## License
 
-[MIT](./LICENSE)
+- Original SPTK - [BSD](./COPYING)
+- Python wrapper - [MIT](./LICENSE)
 
 ## Author
 
