@@ -401,3 +401,23 @@ def __window(t, x, normalize=0):
     gain = csptk.window(t, y, normalize)
     return y
 
+def c2ir(c, length):
+    """
+    cepstrum to impulse response conversion
+
+    Parameters
+    ----------
+      c : array, shape (`order + 1`)
+           cepstrum
+      length : int
+           length of impulse response
+
+    Return
+    ------
+    impulse response
+
+    """    
+    h = np.zeros(length)
+    dummy = 0
+    csptk.c2ir(c, h, dummy)
+    return h

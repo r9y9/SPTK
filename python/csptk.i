@@ -74,6 +74,13 @@
   (double *x_window, int size_window)
 }
 
+// c2ir
+%apply (double *IN_ARRAY1, int DIM1)
+{
+  (double *c_c2ir, const int nc_c2ir), 
+  (double *h_c2ir, const int leng_c2ir)
+}
+
 %rename (fft) my_fft;
 %inline %{
   int my_fft(double *x, int n, double *y, int m) {
@@ -181,6 +188,14 @@
 		 double *x_window, const int size_window,
 		 const int nflg) {
     return window(type, x_window, size_window, nflg);
+  }
+%}
+
+%rename (c2ir) my_c2ir;
+%inline %{
+  void my_c2ir(double *c_c2ir, const int nc_c2ir, 
+	       double *h_c2ir, const int leng_c2ir, int dummy) {
+    c2ir(c_c2ir, nc_c2ir, h_c2ir, leng_c2ir);
   }
 %}
 
