@@ -69,6 +69,11 @@
   (double *b_mgcep, int m_mgcep)
 }
 
+// window
+%apply (double *IN_ARRAY1, int DIM1) {
+  (double *x_window, int size_window)
+}
+
 %rename (fft) my_fft;
 %inline %{
   int my_fft(double *x, int n, double *y, int m) {
@@ -167,6 +172,15 @@
 		 dd, etype,
 		 e, f, 
 		 itype);
+  }
+%}
+
+%rename (window) my_window;
+%inline %{
+  double my_window(int type, 
+		 double *x_window, const int size_window,
+		 const int nflg) {
+    return window(type, x_window, size_window, nflg);
   }
 %}
 

@@ -272,3 +272,132 @@ def mgcep(x, order=20, alpha=0.41, gamma=0.0, n=None,
         mgc[1:] *= gamma
     
     return mgc
+
+def blackman(x, normalize=0):
+    """
+    blackman window
+
+    Parameters
+    ----------
+      x : array, shape (`frame len`)
+           input frame
+      normalize : int
+           0 : don't normalize
+           1 : normalize by power
+           2 : normalize by magnitude
+
+    Return
+    ------
+    windowed signal
+
+    """
+    return __window(0, x, normalize)
+
+def hamming(x, normalize=0):
+    """
+    hamming window
+
+    Parameters
+    ----------
+      x : array, shape (`frame len`)
+           input frame
+      normalize : int
+           0 : don't normalize
+           1 : normalize by power
+           2 : normalize by magnitude
+
+    Return
+    ------
+    windowed signal
+
+    """
+    return __window(1, x, normalize)
+
+def hanning(x, normalize=0):
+    """
+    hanning window
+
+    Parameters
+    ----------
+      x : array, shape (`frame len`)
+           input frame
+      normalize : int
+           0 : don't normalize
+           1 : normalize by power
+           2 : normalize by magnitude
+
+    Return
+    ------
+    windowed signal
+
+    """
+    return __window(2, x, normalize)
+
+def barlett(x, normalize=0):
+    """
+    barlett window
+
+    Parameters
+    ----------
+      x : array, shape (`frame len`)
+           input frame
+      normalize : int
+           0 : don't normalize
+           1 : normalize by power
+           2 : normalize by magnitude
+
+    Return
+    ------
+    windowed signal
+
+    """
+    return __window(3, x, normalize)
+
+def trapezoid(x, normalize=0):
+    """
+    trapezoid window
+
+    Parameters
+    ----------
+      x : array, shape (`frame len`)
+           input frame
+      normalize : int
+           0 : don't normalize
+           1 : normalize by power
+           2 : normalize by magnitude
+
+    Return
+    ------
+    windowed signal
+
+    """
+    return __window(4, x, normalize)
+
+def rectangular(x, normalize=0):
+    """
+    rectangular window
+
+    Parameters
+    ----------
+      x : array, shape (`frame len`)
+           input frame
+      normalize : int
+           0 : don't normalize
+           1 : normalize by power
+           2 : normalize by magnitude
+
+    Return
+    ------
+    windowed signal
+
+    """
+    return __window(4, x, normalize)
+
+def __window(t, x, normalize=0):
+    assert len(x) > 0
+    # must be float type
+    y = np.array(x.copy(), dtype=float)
+    # do we need gain as a return value?
+    gain = csptk.window(t, y, normalize)
+    return y
+
