@@ -57,9 +57,39 @@ def fft(x, y):
     csptk.fft(x, y)
 
 def gexp(r, x):
+    """
+    Generalized Exponential Function
+
+    Parameters
+    ----------
+      r : float
+          gamma
+      x : float
+          arg
+    
+    Return
+    ------
+    value
+    
+    """
     return csptk.gexp(r, x)
 
 def glog(r, x):
+   """
+    Generalized Logarithmic Function
+
+    Parameters
+    ----------
+      r : float
+          gamma
+      x : float
+          arg
+    
+    Return
+    ------
+    value
+    
+    """
     return csptk.glog(r, x)
 
 def swipe(x, samplerate, frame_shift, 
