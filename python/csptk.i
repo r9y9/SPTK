@@ -98,7 +98,7 @@
   }
 %}
 
-// TODO remove dummy variavle
+// TODO remove dummy variable
 %rename (mcep) my_mcep;
 %inline %{
   int my_mcep(double *xw_mcep, const int flng_mcep,
