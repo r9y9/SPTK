@@ -56,9 +56,11 @@ def mcep(x, order=20, alpha=0.41, iter1=2, iter2=30,
 def fft(x, y):
     csptk.fft(x, y)
 
-# will be deprecated
 def gexp(r, x):
     return csptk.gexp(r, x)
+
+def glog(r, x):
+    return csptk.glog(r, x)
 
 def swipe(x, samplerate, frame_shift, 
           min=50.0, max=800.0, st=0.3, otype=1):
