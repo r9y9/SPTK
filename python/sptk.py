@@ -423,3 +423,157 @@ def c2ir(c, length):
     dummy = 0
     csptk.c2ir(c, h, dummy)
     return h
+
+class MLSADF:
+    """
+    Mel-Log Spectrum Approximation (MLSA) Digital Filter
+
+    Parameters
+    ----------
+    order : int
+        order of input filter coefficients
+    
+    pd : int
+        order of pade approximation (4 or 5)
+
+    Attributes
+    ----------
+    pd : int
+        order of pade approximation (4 or 5)
+
+    order : int
+        order of input filter coefficients
+
+    delay : array, shape (`3*(pd+1)+pd*(order+2)`)
+        filter delay used during filtering.
+        See mlsadf.c for this magic shape.
+
+    """
+    def __init__(self, order, pd=4):
+        assert pd == 4 or pd == 5
+
+        self.pd = pd
+        self.order = order
+        self.__setup_delay(order, pd)
+
+    def __setup_delay(self, order, pd):
+        # see mlsadf.c for the following magic allocation
+        self.delay = np.zeros(3*(pd+1)+pd*(order+2))
+        
+    def filter(self, x, b, alpha=0.41):
+        """
+        Generate one sample by filtering
+        
+        Parameters
+        ----------
+        x : float
+             an excitation sample
+        b : array, shape (`order + 1`)
+             filter coefficients
+        alpha : float
+             all-pass constant
+
+        Return
+        ------
+        filtered sample
+        
+        """
+        return csptk.mlsadf(x, b, alpha, self.pd, self.delay)
+
+class MLSASynthesizer:
+    """
+    MLSADF-based speech waveform synthesizer
+
+    Parameters
+    ----------
+    order : int
+        order of input filter coefficients
+    
+    pd : int
+        order of pade approximation (4 or 5)
+
+    Attributes
+    ----------
+    f : int
+        mlsa digital filter that is used in synthesis
+
+    """
+    def __init__(self, order, pd=4):
+        self.f = MLSADF(order=order, pd=pd)
+
+    def synthesis_one_frame(self, excite, previous_mcep, current_mcep, 
+                            alpha=0.41):
+        """
+        Synthesis one frame waveform
+        
+        Parameters
+        ----------
+        excite : array, shape(`frame_len`)
+             excitation signal
+        previous_mcep : array, shape (`order + 1`)
+             mel-cepstrum at previous frame
+        current_mcep : array, shape (`order + 1`)
+             mel-cepstrum at current frame
+        alpha : float
+             all-pass constant
+
+        Return
+        ------
+        synthesized waveform for one frame
+        
+        """
+        previous_coef = mc2b(previous_mcep, alpha=alpha)
+        current_coef = mc2b(current_mcep, alpha=alpha)
+
+        slope = (current_coef - previous_coef)/float(len(excite))
+        
+        part_of_speech = np.zeros(excite.shape)
+        interpolated_coef = previous_coef.copy()
+        
+        for i in range(len(excite)):
+            scaled_excitation = excite[i] * np.exp(interpolated_coef[0])
+            part_of_speech[i] = self.f.filter(scaled_excitation, 
+                                              interpolated_coef)
+            interpolated_coef += slope
+        
+        return part_of_speech
+
+    def synthesis(self, excite, mcep_sequence, alpha=0.41, frame_shift=80):
+        """
+        Synthesis waveform
+        
+        Parameters
+        ----------
+        excite : array, shape(`frame_len`)
+             excitation signal
+        mcep_sequence : array, shape (`number of frames`, `order + 1`)
+             mel-cepstrum sequence over time
+        alpha : float
+             all-pass constant
+        frame_shift : int
+             frame_shift
+        
+        Return
+        ------
+        synthesized waveform
+        
+        """
+        synthesized = np.zeros(len(excite))
+
+        previous_mcep = mcep_sequence[0]
+        for i in range(len(mcep_sequence)):
+            if i > 0:
+                previous_mcep = mcep_sequence[i-1]
+            current_mcep = mcep_sequence[i]
+
+            s, e = i*frame_shift, (i+1)*frame_shift
+            if e >= len(excite):
+                break
+
+            part_of_speech = self.synthesis_one_frame(excite[s:e],
+                                                      previous_mcep,
+                                                      current_mcep,
+                                                      alpha=alpha)
+            synthesized[s:e] = part_of_speech
+            
+        return synthesized
