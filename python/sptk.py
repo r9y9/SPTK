@@ -255,7 +255,7 @@ def mgcep(x, order=20, alpha=0.41, gamma=0.0, n=None,
     mgc = np.zeros(order+1)
 
     if n == None:
-        n = len(x)
+        n = len(x)-1
 
     end_condition = csptk.mgcep(x, mgc, alpha, gamma, n, 
                                 iter1, iter2, 
