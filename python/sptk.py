@@ -75,9 +75,9 @@ def gexp(r, x):
     return csptk.gexp(r, x)
 
 def glog(r, x):
-   """
+    """
     Generalized Logarithmic Function
-
+    
     Parameters
     ----------
       r : float
