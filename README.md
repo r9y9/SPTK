@@ -32,21 +32,9 @@ It is assumed that swig is installed.
     ./waf
     sudo ./waf install
 
-#### SWIPE f0 estimation example from python
+#### Tutorial
 
-```python
-import sptk
-import scipy.io.wavfile as wavfile
-from pylab import plot, show
-
-fs, data = wavfile.read("/example/arayuru.wav")
-
-f0 = sptk.swipe(data, samplerate=fs, frame_shift=80)
-plot(f0)
-show()
-```
-
-![](http://r9y9.github.io/images/arayuru_f0.png)
+[SPTK を Pythonから呼ぶ | nbviewer](http://nbviewer.ipython.org/github/r9y9/SPTK/blob/master/notebook/SPTK%20calling%20from%20python.ipynb)
 	 
 ## License
 
