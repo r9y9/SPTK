@@ -88,8 +88,6 @@ Generate python bindings %s
             
 def build(bld):
     bld.recurse(subdirs)
-    if bld.env["PYTHON_BINDINGS"]:
-        bld.recurse(python_bindings)
 
     libs = []
     for tasks in bld.get_build_iterator():
@@ -102,6 +100,9 @@ def build(bld):
     for l in set(libs):
         ls = ls + ' -l' + l
     ls += ' -lm'
+
+    if bld.env["PYTHON_BINDINGS"]:
+        bld.recurse(python_bindings)
 
     bld(source = 'SPTK.pc.in',
         prefix = bld.env['PREFIX'],
