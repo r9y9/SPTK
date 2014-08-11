@@ -88,6 +88,13 @@
   (double *d_mlsadf, int length_of_total_delay_mlsadf)
 }
 
+// mfcc
+%apply (double *IN_ARRAY1, int DIM1) 
+{
+  (double *in_mfcc, int flen_mfcc), 
+  (double *mc_mfcc, int m_mfcc)
+}
+
 %rename (fft) my_fft;
 %inline %{
   int my_fft(double *x, int n, double *y, int m) {
@@ -217,5 +224,16 @@
   }
 %}
 
+%rename (mfcc) my_mfcc;
+%inline %{
+  void my_mfcc(double *in_mfcc, int flen_mfcc, 
+	       double *mc_mfcc, int m_mfcc, 
+	       const double sampleFreq, const double alpha, const double eps,
+	       const int n, const int ceplift, const int dftmode,
+	       const int usehamming) {
+    mfcc(in_mfcc, mc_mfcc, sampleFreq, alpha, eps, flen_mfcc, flen_mfcc, 
+	 m_mfcc-1, n, ceplift, dftmode, usehamming);
+  }
+%}
 
 %include "SPTK.h"

@@ -607,3 +607,62 @@ class MLSASynthesizer:
             synthesized[s:e] = part_of_speech
             
         return synthesized
+
+def mfcc(x, order=12, samplerate=16000.0, alpha=0.97, eps=1.0, 
+         num_filterbank=20, ceplift=22,
+         dftmode=False, usehamming=False, czero=False, power=False):
+    """
+    mfcc computes Mel-Frequency Cepstrum Coefficients
+
+    Parameters
+    ----------
+      x : array, shape (`frame_len`)
+           a input signal
+      order : int
+           order of MFCC that will be extracted
+      samplerate : float
+           sampling frequency
+      alpha : float
+           pre-emphasis coefficients (this doesn't mean all-pass constant 
+           in mel-cepstrum analysis)
+      eps : float
+           epsiron
+      num_filterbank : int
+           number of mel-filterbanks
+      cepslift : int
+           number of cepstrum liftering
+      dftmode : bool
+           whether uses dft or not
+      usehamming : bool
+           whether uses hamming window or not
+      czero : nool
+           whether return c0 static MFCC features as a returned joint vector
+      power : nool
+           whether return power as a returned  joint vector
+
+    Return
+    ------
+    MFCC
+
+    """
+    assert order+1 <= num_filterbank
+
+    # order of MFCC + 0-th + power
+    cc = np.zeros(order+2)
+
+    csptk.mfcc(x, cc, samplerate, alpha, eps, 
+               num_filterbank, ceplift, dftmode, usehamming)
+
+    # after ccall we get 
+    # mfcc[0], mfcc[1], mfcc[2], ... mfcc[m-1], E(C0), Power
+    
+    if not czero and power:
+        cc[-2] = cc[-1]
+
+    if not power:
+        cc = cc[:-1]
+
+    if not czero:
+        cc = cc[:-1]
+    
+    return cc
