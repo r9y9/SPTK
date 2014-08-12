@@ -13,7 +13,8 @@
 // FFT
 %apply (double *INPLACE_ARRAY1, int DIM1)
 {
-  (double *x, int n), (double *y, int m)
+  (double *x_fft, int n_fft),
+  (double *y_fft, int m_fft)
 }
 
 // MCEP
@@ -23,8 +24,12 @@
 }
 
 // SWIPE
-%apply (double* IN_ARRAY1, int DIM1) {(double *input, int len1)}
-%apply (double* INPLACE_ARRAY1, int DIM1) {(double *output, int len2)}
+%apply (double* IN_ARRAY1, int DIM1) {
+  (double *input_swipe, int len1_swipe)
+}
+%apply (double* INPLACE_ARRAY1, int DIM1) {
+  (double *output_swipe, int len2_swipe)
+}
 
 // MC2B
 %apply (double *IN_ARRAY1, int DIM1)
@@ -97,11 +102,12 @@
 
 %rename (fft) my_fft;
 %inline %{
-  int my_fft(double *x, int n, double *y, int m) {
-    if (n != m) {
+  int my_fft(double *x_fft, int n_fft,
+	     double *y_fft, int m_fft) {
+    if (n_fft != m_fft) {
       return 0;
     }
-    return fft(x, y, m);
+    return fft(x_fft, y_fft, m_fft);
   }
 %}
 
@@ -122,14 +128,16 @@
 
 %rename (swipe) my_swipe;
 %inline %{
-  void my_swipe(double *input, int len1, double *output, int len2, 
+  void my_swipe(double *input_swipe, int len1_swipe,
+		double *output_swipe, int len2_swipe, 
 		int samplerate, int frame_shift, 
 		double min, double max, double st, int otype) {
-    int expected_output_len = len1/frame_shift+1;
-    if (expected_output_len != len2) {
+    int expected_output_len = len1_swipe/frame_shift+1;
+    if (expected_output_len != len2_swipe) {
       // TODO
     }
-    swipe(input, output, len1, samplerate, frame_shift, min, max, st, otype);
+    swipe(input_swipe, output_swipe, len1_swipe,
+	  samplerate, frame_shift, min, max, st, otype);
   }
 %}
 
