@@ -4,6 +4,8 @@ def configure(conf):
 def build(bld):
     bld.install_files('${HPREFIX}', '../include/SPTK.h')
 
+    lib_src = bld.path.parent.ant_glob('**/lib/*.c')
+
     swipe_src = [        
         'pitch/swipe/swipe.c',
         'pitch/swipe/vector.c',
@@ -12,7 +14,7 @@ def build(bld):
     hts_engine_src = bld.path.ant_glob('**/vc/hts_engine_API/*.c')
 
     bld.shlib(
-        source = bld.path.ant_glob('**/_*.c') + swipe_src + hts_engine_src,
+        source = bld.path.ant_glob('**/_*.c') + swipe_src + hts_engine_src + lib_src,
         target = 'SPTK',
         vnum = bld.env['VERSION'],
         use = 'SPTKlib',

@@ -8,8 +8,8 @@ def build(bld):
     bld.program(
         source = 'hello.cpp',
         target = 'hello',
-	use = ['SPTK', 'SPTKlib'], # if you use local library
-#	lib = ['SPTK', 'SPTKlib'], # if you use installed library
+	use = ['SPTK'], # if you use local library
+#	lib = ['SPTK'], # if you use installed library
         includes = ['../include']) # SPTK.h
 
 

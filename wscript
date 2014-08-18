@@ -9,7 +9,6 @@ import waflib
 
 subdirs = [
     'bin',
-    'lib',
 ]
 
 python_bindings = 'python'

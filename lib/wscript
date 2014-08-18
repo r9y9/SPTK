@@ -1,9 +1,0 @@
-def configure(conf):
-    pass
-
-def build(bld):
-    bld.shlib(
-        source = bld.path.ant_glob('*.c'),
-        target = 'SPTKlib',
-        vnum = bld.env['VERSION'],
-        includes = ['../include'])

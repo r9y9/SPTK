@@ -10,7 +10,7 @@ def build(bld):
         target = '_csptk',
         swig_flags = '-python -Wall',
         vnum = bld.env['VERSION'],
-        use = 'SPTK SPTKlib',
+        use = 'SPTK',
         includes = ['.', '../include', numpy_path])
 
     bld.install_files(bld.env['PYTHONDIR'], 'csptk.py')
