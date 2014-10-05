@@ -22,7 +22,7 @@ Changes from the original SPTK are summerized as follows:
     
 ### Go
 
-Go wrapper can be found at [https://github.com/r9y9/gossp/tree/master/3rdparty/sptk](https://github.com/r9y9/gossp/tree/master/3rdparty/sptk).
+Check [gossp](https://github.com/r9y9/gossp/tree/master/3rdparty/sptk).
 
 ### Python [experimental]
 
