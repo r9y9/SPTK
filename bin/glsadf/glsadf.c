@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -69,14 +69,14 @@
 *        stdout:                                                        *
 *               filtered sequence                                       *
 *                   , y(0), y(1), ...,                                  *
-*        note:                                                          *
+*        notice:                                                        *
 *               if c==0, LMA filter is used, P should be 4 or 5         *
 *        require:                                                       *
 *               glsadf(), lmadf(), iglsadf(), glsadft(), iglsadft()     *
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: glsadf.c,v 1.35 2013/12/16 09:01:57 mataki Exp $";
+static char *rcs_id = "$Id: glsadf.c,v 1.37 2014/12/11 08:30:36 uratec Exp $";
 
 
 /*  Standard C Libraries  */

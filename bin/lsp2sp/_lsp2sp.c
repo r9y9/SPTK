@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,14 +43,14 @@
 /* ----------------------------------------------------------------- */
 
 /***************************************************************
-    $Id: _lsp2sp.c,v 1.3 2013/12/16 09:01:59 mataki Exp $
+    $Id: _lsp2sp.c,v 1.5 2014/12/11 08:30:40 uratec Exp $
 
     Transform LSP to spectrum
 
         void   lsp2sp(lsp, m, x, l)
 
-        double   *lsp  : cepstrum
-        int      m   : order of cepstrum
+        double   *lsp  : LSP
+        int      m   : order of LSP
         double   *x  : real part of spectrum
         double   l   : FFT length
 

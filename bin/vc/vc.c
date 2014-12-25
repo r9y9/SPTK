@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -59,22 +59,25 @@
 *            -d coef [coef...]  : delta coefficients                  [N/A]   *
 *            -r n w1 [w2]       : order and width of regression       [N/A]   *
 *            -g fn              : filename of GV statistics           [N/A]   *
+*            -e e               : small value added to                [0.0]   *
+*                                 diagonal component of covariance            *
 *    infile:                                                                  *
 *            sequence of source static feature vectors                        *
 *    gmmfile:                                                                 *
 *            GMM trained from joint features of source and target             *
 *    stdout:                                                                  *
 *            sequence of converted static feature vectors                     *
-*    note:                                                                    *
+*    notice:                                                                  *
 *            When using -d option to specify filename of delta coefficients,  *
 *            the number of coefficients must be odd.                          *
 *                                                                             *
 *******************************************************************************/
 
-static char *rcs_id = "$Id: vc.c,v 1.5 2013/12/11 07:20:38 mataki Exp $";
+static char *rcs_id = "$Id: vc.c,v 1.10 2014/12/11 08:30:51 uratec Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <math.h>
 
 #ifdef HAVE_STRING_H
@@ -95,6 +98,7 @@ static char *rcs_id = "$Id: vc.c,v 1.5 2013/12/11 07:20:38 mataki Exp $";
 /*  Default Values  */
 #define DEF_L       25
 #define DEF_M       16
+#define FLOOR       0.0
 
 /*  Command Name  */
 char *cmnd;
@@ -178,6 +182,11 @@ void usage(int status)
            "                           fn must contain mean vector and diagonal\n");
    fprintf(stderr,
            "                           components of covariance matrix of GV\n");
+   fprintf(stderr,
+           "       -e e              : small value added to                       [%g]\n",
+           FLOOR);
+   fprintf(stderr,
+           "                           diagonal component of covariance\n");
    fprintf(stderr, "       -h                : print this message\n");
    fprintf(stderr, "  infile:\n");
    fprintf(stderr,
@@ -191,7 +200,7 @@ void usage(int status)
    fprintf(stderr,
            "       sequence of converted target static feature vectors (%s)\n",
            FORMAT);
-   fprintf(stderr, "  note:\n");
+   fprintf(stderr, "  notice:\n");
    fprintf(stderr,
            "       When using -d option to specify filename of delta coefficients, \n");
    fprintf(stderr, "       the number of coefficients must be odd. \n");
@@ -210,6 +219,7 @@ int main(int argc, char **argv)
        DEF_M, total_frame = 0;
    char *coef = NULL, **dw_fn = (char **) getmem(argc, sizeof(*(dw_fn)));
    int j, k, dw_num = 1, dw_calccoef = -1, dw_coeflen = 1, win_max_width = 0;
+   double floor = FLOOR;
    double *source = NULL, *target = NULL, *gv_mean = NULL, *gv_vari = NULL;
    FILE *fp = stdin, *fgmm = NULL, *fgv = NULL;
    Boolean full = TR;
@@ -319,6 +329,16 @@ int main(int argc, char **argv)
             fgv = getfp(*++argv, "rb");
             --argc;
             break;
+         case 'e':
+            floor = atof(*++argv);
+            if (floor < 0.0 || isdigit(**argv) == 0) {
+               fprintf(stderr,
+                       "%s : '-e' option must be specified with positive value.\n",
+                       cmnd);
+               usage(1);
+            }
+            --argc;
+            break;
          case 'h':
             usage(EXIT_SUCCESS);
          default:
@@ -351,7 +371,18 @@ int main(int argc, char **argv)
    /* load GMM parameters */
    alloc_GMM(&gmm, num_mix, len_total, full);
    load_GMM(&gmm, fgmm);
+   prepareCovInv_GMM(&gmm);
+   prepareGconst_GMM(&gmm);
    fclose(fgmm);
+
+   /* flooring for diagonal component of covariance */
+   if (floor != 0.0) {
+      for (i = 0; i < num_mix; i++) {
+         for (j = 0; j < (int) len_total; j++) {
+            gmm.gauss[i].cov[j][j] += floor;
+         }
+      }
+   }
 
    /* load GV parameters */
    if (fgv != NULL) {

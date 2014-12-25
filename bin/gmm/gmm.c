@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -42,38 +42,45 @@
 /* POSSIBILITY OF SUCH DAMAGE.                                       */
 /* ----------------------------------------------------------------- */
 
-/***************************************************************************
- *                                                                         *
- *    Gaussian Mixture Model                                               *
- *                                                                         *
- *                                       2000.7   C. Miyajima              *
- *                                       2010.4   A. Saito                 *
- *                                       2010.9   A. Tamamori              *
- *                                                                         *
- *       usage:                                                            *
- *               gmm [options] [infile] > stdout                           *
- *       options:                                                          *
- *               -l l  :  length of vector                      [26]       *
- *               -m m  :  number of Gaussian components         [16]       *
- *               -s s  :  seed of random var. for LBG algo.     [1]        *
- *               -a a  :  minimum number of EM iterations       [0]        *
- *               -b b  :  maximum number of EM iterations       [20]       *
- *               -e e  :  convergence factor                    [0.00001]  *
- *               -v v  :  floor value of variances              [0.001]    *
- *               -w w  :  floor value of weights (1/m)*w        [0.001]    *
- *               -f    :  full covariance                       [FALSE]    *
- *               -F fn :  gmm initial parameter file            [FALSE]    *
- *               -M M1 ... Mb : block size in covariance matrix [FALSE]    *
- *               -c1   : inter-block correlation                [FALSE]    *
- *               -c2   : full covariance in each block          [FALSE]    *
- *       infile:                                                           *
- *               training data sequence                         [stdin]    *
- *       stdout:                                                           *
- *               GMM parameters                                            *
- *                                                                         *
- **************************************************************************/
+/*********************************************************************************
+ *                                                                               *
+ *    Gaussian Mixture Model                                                     *
+ *                                                                               *
+ *                                             2000.7   C. Miyajima              *
+ *                                             2010.4   A. Saito                 * 
+ *                                             2010.9   A. Tamamori              *
+ *                                                                               *
+ *       usage:                                                                  *
+ *               gmm [options] [infile] > stdout                                 *
+ *       options:                                                                *
+ *               -l l  :  length of vector                            [26]       *
+ *               -m m  :  number of Gaussian components               [16]       *
+ *               -s s  :  seed of random var. for LBG algo.           [1]        *
+ *               -a a  :  minimum number of EM iterations             [0]        *
+ *               -b b  :  maximum number of EM iterations             [20]       *
+ *               -e e  :  convergence factor                          [0.00001]  *
+ *               -v v  :  floor value of variances                    [0.001]    *
+ *               -w w  :  floor value of weights                      [0.001]    *
+ *               -f    :  full covariance                             [FALSE]    *
+ *               -M M  :  using maximum a posteriori(MAP) estimation, [0]        *
+ *                        where M is the parameter for                           *
+ *                        Dirichlet and normal-Wishart densities.                *
+ *               -F fn :  gmm initial parameter file                  [FALSE]    *
+ *                        If -M option is specified,                             *
+ *                        fn is regarded as the parameter for UBM.               *
+ *             (level 2)                                                         *
+ *               -B B1 ... Bb : block size in covariance matrix       [FALSE]    *
+ *                              where (B1 + B2 + ... + Bb) = l                   *
+ *               -c1   : inter-block correlation                      [FALSE]    * 
+ *               -c2   : full covariance in each block                [FALSE]    *
+ *       infile:                                                                 *
+ *               training data sequence                               [stdin]    *
+ *       stdout:                                                                 *
+ *               GMM parameters                                                  *
+ *                                                                               *
+ ********************************************************************************/
 
-static char *rcs_id = "$Id: gmm.c,v 1.22 2013/12/16 09:01:57 mataki Exp $";
+static char *rcs_id = "$Id: gmm.c,v 1.25 2014/12/11 08:30:36 uratec Exp $";
 
 /*  Standard C Libraries  */
 #include <stdio.h>
@@ -107,6 +114,7 @@ static char *rcs_id = "$Id: gmm.c,v 1.22 2013/12/16 09:01:57 mataki Exp $";
 #define DEF_E       0.00001
 #define DEF_V       0.001
 #define DEF_W       0.001
+#define DEF_X       0.0
 #define DELTA       0.0001
 #define END         0.0001
 #define EPSILON     1.0e-6
@@ -117,6 +125,8 @@ static char *rcs_id = "$Id: gmm.c,v 1.22 2013/12/16 09:01:57 mataki Exp $";
 #define ITER 1000
 #define CENTUP 1
 #define MINTRAIN 1
+
+#define sq(x)       ( (x)*(x) )
 
 char *BOOL[] = { "FALSE", "TRUE" };
 
@@ -158,18 +168,25 @@ void usage(int status)
            "       -v v  : flooring value for variance                 [%g]\n",
            DEF_V);
    fprintf(stderr,
-           "       -w w  : flooring value for weights (1/m)*w          [%g]\n",
+           "       -w w  : flooring value for weights                  [%g]\n",
            DEF_W);
    fprintf(stderr,
            "       -f    : full covariance                             [%s]\n",
            BOOL[FULL]);
    fprintf(stderr,
+           "       -M M  : using maximum a posteriori(MAP) estimation, [%g]\n",
+           DEF_X);
+   fprintf(stderr, "               where M is the parameter for \n");
+   fprintf(stderr, "               Dirichlet and normal-Wishart densities.\n");
+   fprintf(stderr,
            "       -F fn : GMM initial parameter file                  [N/A]\n");
+   fprintf(stderr, "               If -M option is specified, \n");
+   fprintf(stderr, "               fn is regarded as the parameter for UBM.\n");
    fprintf(stderr, "       -h    : print this message\n");
    fprintf(stderr, "     (level 2)\n");
    fprintf(stderr,
-           "       -M M1 M2 ... Mb : block size in covariance matrix,  [FALSE]\n");
-   fprintf(stderr, "                         where (M1 + M2 + ... + Mb) = l\n");
+           "       -B B1 B2 ... Bb : block size in covariance matrix,  [FALSE]\n");
+   fprintf(stderr, "                         where (B1 + B2 + ... + Bb) = l\n");
    fprintf(stderr,
            "       -c1   : inter-block correlation                     [FALSE]\n");
    fprintf(stderr,
@@ -195,8 +212,8 @@ void usage(int status)
            "         weight, mean, and variance parameters must be aligned\n");
    fprintf(stderr, "         in the same order as output.\n");
    fprintf(stderr,
-           "       -M option specifies the size of each blocks in covariance matrix.\n");
-   fprintf(stderr, "       -c1 and -c2 option must be used with -M option.\n");
+           "       -B option specifies the size of each blocks in covariance matrix.\n");
+   fprintf(stderr, "       -c1 and -c2 option must be used with -B option.\n");
    fprintf(stderr,
            "         Without -c1 and -c2 option, a diagonal covariance can be obtained.\n");
 #ifdef PACKAGE_VERSION
@@ -211,14 +228,14 @@ void usage(int status)
 int main(int argc, char **argv)
 {
    FILE *fp = stdin, *fgmm = NULL;
-   GMM gmm, tgmm, floor;
-   double E = DEF_E, V = DEF_V, W = DEF_W,
-       *dat, *pd, *cb, *icb, *logwgd, logb, *sum, *sum_m = NULL, **sum_v = NULL,
-       diff, sum_w, ave_logp0 = 0.0, ave_logp1, change = MAXVALUE, tmp1, tmp2;
-   int l, L = DEF_L, m, M = DEF_M, N, t, T = DEF_T, S =
-       DEF_S, full = FULL, n1 = 0, i, j, k, Imin = DEF_IMIN, Imax =
-       DEF_IMAX, *tindex, *cntcb, offset_row = 0, offset_col = 0,
-       row = 0, col = 0;
+   GMM gmm, bgmgmm, tgmm;
+   double E = DEF_E, V = DEF_V, W = DEF_W, X = DEF_X,
+       *dat, *pd, *cb, *icb, *logwgd, logb, *sum, *xi = NULL, *eta = NULL,
+       diff, ave_logp0 = 0.0, ave_logp1, change = MAXVALUE, tmp1, tmp2, mapt;
+   int l, L = DEF_L, m, M = DEF_M, N, t, T = DEF_T, S = DEF_S, full = FULL,
+       i, j, k, Imin = DEF_IMIN, Imax =
+       DEF_IMAX, *tindex, *cntcb, offset_row = 0, offset_col = 0, row = 0, col =
+       0;
    void cal_inv(double **cov, double **inv, const int L);
    float_list *top, *cur, *prev, *tmpf, *tmpff;
    Boolean block_full = FA, block_corr = FA, multiple_dim = FA, full_cov = FA;
@@ -272,12 +289,16 @@ int main(int argc, char **argv)
             full = TR - full;
             full_cov = TR;
             break;
+         case 'M':
+            X = atof(*++argv);
+            --argc;
+            break;
          case 'F':
             fgmm = getfp(*++argv, "rb");
             --argc;
             break;
             /* level 2 */
-         case 'M':
+         case 'B':
             multiple_dim = TR;
             dim_list[0] = atoi(*++argv);
             i = 1;
@@ -319,11 +340,28 @@ int main(int argc, char **argv)
       if (block_corr == TR || block_full == TR) {
          if (full_cov != TR) {
             fprintf(stderr,
-                    "%s: -c1 and -c2 option must be specified with -M option!\n",
+                    "%s: -c1 and -c2 option must be specified with -B option!\n",
                     cmnd);
             usage(1);
          }
       }
+   }
+   if (X > 1.0 || X < 0.0) {
+      fprintf(stderr,
+              "%s : the weight for UBM must be specified between 0.0 and 1.0!\n",
+              cmnd);
+      usage(1);
+   }
+   if (W * M > 1.0) {
+      fprintf(stderr,
+              "%s : the floor for weight must be smaller than 1.0/m !", cmnd);
+      usage(1);
+   }
+   if (X != 0.0 && fgmm == NULL) {
+      fprintf(stderr,
+              "%s : the prior distribution must be specified, if the MAP method is valid!\n",
+              cmnd);
+      usage(1);
    }
 
    /* -- Count number of input vectors and read -- */
@@ -355,29 +393,66 @@ int main(int argc, char **argv)
    }
    free(top);
 
-   floor.gauss = NULL;
-   sum_m = NULL;
-   sum_v = NULL;
-   if (full == TR) {
-      floor.gauss = (Gauss *) getmem(1, sizeof(Gauss));
-      floor.gauss[0].cov = (double **) getmem(L, sizeof(double *));
-      for (l = 0; l < L; l++)
-         floor.gauss[0].cov[l] = dgetmem(L);
-      sum_m = dgetmem(L);
-      sum_v = (double **) getmem(L, sizeof(double *));
-   }
-
    logwgd = dgetmem(M);
    sum = dgetmem(M);
+   if (X != 0.0) {
+      xi = dgetmem(M);
+      eta = dgetmem(M);
+   }
 
    /* Initialization of GMM parameters */
    alloc_GMM(&gmm, M, L, full);
    alloc_GMM(&tgmm, M, L, full);
 
    if (fgmm != NULL) {
-      load_GMM(&gmm, fgmm);
-      fprintf(stderr, "T = %d  L = %d  M = %d\n", T, L, M);
-      fclose(fgmm);
+      if (X == 0.0) {
+         load_GMM(&gmm, fgmm);
+         floorWeight_GMM(&gmm, W);
+         floorVar_GMM(&gmm, V);
+         if (full == TR) {
+            prepareCovInv_GMM(&gmm);
+         }
+         prepareGconst_GMM(&gmm);
+         fprintf(stderr, "T = %d  L = %d  M = %d\n", T, L, M);
+         fclose(fgmm);
+      } else {
+         alloc_GMM(&bgmgmm, M, L, full);
+         load_GMM(&bgmgmm, fgmm);
+         floorWeight_GMM(&gmm, W);
+         floorVar_GMM(&gmm, V);
+         if (full == TR) {
+            prepareCovInv_GMM(&bgmgmm);
+         }
+         prepareGconst_GMM(&bgmgmm);
+
+         fprintf(stderr, "T = %d  L = %d  M = %d\n", T, L, M);
+         fclose(fgmm);
+
+         for (m = 0; m < M; m++) {
+            gmm.weight[m] = bgmgmm.weight[m];
+            for (l = 0; l < L; l++) {
+               gmm.gauss[m].mean[l] = bgmgmm.gauss[m].mean[l];
+            }
+            /* variance or covariance */
+            if (full != TR) {
+               for (l = 0; l < L; l++) {
+                  gmm.gauss[m].var[l] = bgmgmm.gauss[m].var[l];
+               }
+            } else {
+               for (l = 0; l < L; l++) {
+                  for (j = 0; j < L; j++) {
+                     gmm.gauss[m].cov[l][j] = bgmgmm.gauss[m].cov[l][j];
+                  }
+               }
+            }
+            xi[m] = X * bgmgmm.weight[m];
+            if (full != TR) {
+               eta[m] = xi[m] + 1.0;
+            } else {
+               eta[m] = xi[m] + L;
+            }
+         }
+      }
    } else {
       /* for VQ */
       N = 1;
@@ -405,25 +480,15 @@ int main(int argc, char **argv)
 
       fprintf(stderr, "T = %d  L = %d  M = %d\n", T, L, M);
 
-      /* flooring value for weights */
-      W = 1.0 / (double) M *(double) W;
-
       /* weights */
-      for (m = 0, sum_w = 0.0; m < M; m++) {
+      for (m = 0; m < M; m++) {
          gmm.weight[m] = (double) cntcb[m] / (double) T;
-         if (gmm.weight[m] < W)
-            gmm.weight[m] = W;
-         sum_w += gmm.weight[m];
       }
-      if (sum_w != 1.0)
-         for (m = 0; m < M; m++)
-            gmm.weight[m] /= sum_w;
-
+      floorWeight_GMM(&gmm, W);
 
       /* mean */
       for (m = 0, pd = cb; m < M; m++, pd += L)
          movem(pd, gmm.gauss[m].mean, sizeof(double), L);
-
 
       /* variance */
       if (full != TR) {
@@ -433,41 +498,14 @@ int main(int argc, char **argv)
                gmm.gauss[tindex[t]].var[l] += diff * diff;
             }
 
-         for (m = 0; m < M; m++)
+         for (m = 0; m < M; m++) {
             for (l = 0; l < L; l++) {
                gmm.gauss[m].var[l] /= (double) cntcb[m];
-               if (gmm.gauss[m].var[l] < V)
-                  gmm.gauss[m].var[l] = V;
             }
-
-         for (m = 0; m < M; m++)
-            gmm.gauss[m].gconst = cal_gconst(gmm.gauss[m].var, L);
-
+         }
       }
       /* full covariance */
       else {
-         for (t = 0, pd = dat; t < T; t++, pd += L) {
-            for (l = 0; l < L; l++) {
-               for (i = 0; i <= l; i++) {
-                  if (l == i) {
-                     diff =
-                         (gmm.gauss[tindex[t]].mean[l] -
-                          pd[l]) * (gmm.gauss[tindex[t]].mean[i] - pd[i]);
-                     floor.gauss[0].cov[l][i] += diff;
-                  }
-               }
-            }
-         }
-
-         for (l = 0; l < L; l++) {
-            for (i = 0; i <= l; i++) {
-               if (l == i) {
-                  floor.gauss[0].cov[l][i] /= T;
-                  floor.gauss[0].cov[l][i] *= V;
-               }
-            }
-         }
-
          for (t = 0, pd = dat; t < T; t++, pd += L) {
             for (l = 0; l < L; l++) {
                for (i = 0; i <= l; i++) {
@@ -525,6 +563,7 @@ int main(int argc, char **argv)
             }
          }
       }
+      floorVar_GMM(&gmm, V);
    }                            /* end of initialization */
 
    /* EM training of GMM parameters */
@@ -536,25 +575,17 @@ int main(int argc, char **argv)
          for (m = 0; m < M; m++)
             gmm.gauss[m].gconst = cal_gconst(gmm.gauss[m].var, L);
       } else {
-         for (m = 0, n1 = 0; m < M; m++) {
+         for (m = 0; m < M; m++) {
             gmm.gauss[m].gconst = cal_gconstf(gmm.gauss[m].cov, L);
-            if (gmm.gauss[m].gconst == 0) {
-               n1++;
-               for (l = 0; l < L; l++)
-                  gmm.gauss[m].cov[l][l] += floor.gauss[0].cov[l][l];
-               gmm.gauss[m].gconst = cal_gconstf(gmm.gauss[m].cov, L);
-            }
             if (gmm.gauss[m].gconst == 0) {
                fprintf(stderr, "ERROR : Can't caluculate covdet\n");
                exit(EXIT_FAILURE);
             }
-
-            /* calculate inv */
-            cal_inv(gmm.gauss[m].cov, gmm.gauss[m].inv, L);
          }
       }
-      if (full == TR)
-         fprintf(stderr, "%d cov can't caluculate covdet\n", n1);
+      if (full == TR) {
+         prepareCovInv_GMM(&gmm);
+      }
 
       for (t = 0, ave_logp1 = 0.0, pd = dat; t < T; t++, pd += L) {
          for (m = 0, logb = LZERO; m < M; m++) {
@@ -576,9 +607,8 @@ int main(int argc, char **argv)
                   for (j = 0; j <= l; j++) {
                      tgmm.gauss[m].cov[l][j] +=
                          tmp1 * (pd[l] - gmm.gauss[m].mean[l]) * (pd[j] -
-                                                                  gmm.
-                                                                  gauss[m].mean
-                                                                  [j]);
+                                                                  gmm.gauss[m].
+                                                                  mean[j]);
                   }
                }
             }
@@ -601,26 +631,66 @@ int main(int argc, char **argv)
 
       /* Update perameters */
       /* weights */
-      for (m = 0; m < M; m++)
-         gmm.weight[m] = sum[m] / (double) T;
+      if (X == 0.0) {
+         for (m = 0; m < M; m++)
+            gmm.weight[m] = sum[m] / (double) T;
+      } else {
+         mapt = 0.0;
+         for (m = 0; m < M; m++) {
+            mapt += (sum[m] + xi[m]);
+         }
+         for (m = 0; m < M; m++) {
+            gmm.weight[m] = (sum[m] + xi[m]) / mapt;
+         }
+      }
+      floorWeight_GMM(&gmm, W);
 
       /* mean, variance */
       for (m = 0; m < M; m++) {
-         for (l = 0; l < L; l++)
-            gmm.gauss[m].mean[l] = tgmm.gauss[m].mean[l] / sum[m];
+         if (X == 0.0) {
+            for (l = 0; l < L; l++)
+               gmm.gauss[m].mean[l] = tgmm.gauss[m].mean[l] / sum[m];
+         } else {
+            for (l = 0; l < L; l++)
+               gmm.gauss[m].mean[l]
+                   = (tgmm.gauss[m].mean[l] +
+                      xi[m] * bgmgmm.gauss[m].mean[l]) / (sum[m] + xi[m]);
+         }
 
          if (multiple_dim == TR) {
             if (block_full == FA && block_corr == FA) {
                if (full_cov != TR) {    /* -f is not specified */
                   for (l = 0; l < L; l++) {
-                     gmm.gauss[m].cov[l][l]
-                         = tgmm.gauss[m].cov[l][l] / sum[m];
+                     gmm.gauss[m].cov[l][l] = tgmm.gauss[m].cov[l][l] / sum[m];
+                     if (X != 0.0) {
+                        gmm.gauss[m].cov[l][l]
+                            = sum[m] * gmm.gauss[m].cov[l][l]
+                            + sum[m] * sq(tgmm.gauss[m].mean[l] / sum[m] -
+                                          gmm.gauss[m].mean[l])
+                            + xi[m] * bgmgmm.gauss[m].cov[l][l]
+                            + xi[m] * sq(gmm.gauss[m].mean[l] -
+                                         bgmgmm.gauss[m].mean[l]);
+                        gmm.gauss[m].cov[l][l] /= (sum[m] + eta[m] - 1.0);
+                     }
                   }
                } else {
                   for (l = 0; l < L; l++) {
                      for (j = 0; j <= l; j++) {
-                        gmm.gauss[m].cov[l][j]
-                            = tgmm.gauss[m].cov[l][j] / sum[m];
+                        gmm.gauss[m].cov[l][j] =
+                            tgmm.gauss[m].cov[l][j] / sum[m];
+                        if (X != 0.0) {
+                           gmm.gauss[m].cov[l][j]
+                               = sum[m] * gmm.gauss[m].cov[l][j]
+                               + sum[m] * (tgmm.gauss[m].mean[l] / sum[m] -
+                                           gmm.gauss[m].mean[l]) *
+                               (tgmm.gauss[m].mean[j] / sum[m] -
+                                gmm.gauss[m].mean[j])
+                               + xi[m] * bgmgmm.gauss[m].cov[l][j]
+                               + xi[m] * (gmm.gauss[m].mean[l] -
+                                          bgmgmm.gauss[m].mean[l]) *
+                               (gmm.gauss[m].mean[j] - bgmgmm.gauss[m].mean[j]);
+                           gmm.gauss[m].cov[l][j] /= (sum[m] + eta[m] - L);
+                        }
                      }
                   }
                }
@@ -635,9 +705,24 @@ int main(int argc, char **argv)
                            /* blockwise diagonal */
                            for (k = offset_row, l = offset_col;
                                 k < offset_row + dim_list[row]; k++, l++) {
-                              gmm.gauss[m].cov[k][l]
-                                  = tgmm.gauss[m].cov[k][l]
-                                  / sum[m];
+                              gmm.gauss[m].cov[k][l] =
+                                  tgmm.gauss[m].cov[k][l] / sum[m];
+                              if (X != 0.0) {
+                                 gmm.gauss[m].cov[k][l]
+                                     = sum[m] * gmm.gauss[m].cov[k][l]
+                                     +
+                                     sum[m] * (tgmm.gauss[m].mean[k] / sum[m] -
+                                               gmm.gauss[m].mean[k]) *
+                                     (tgmm.gauss[m].mean[l] / sum[m] -
+                                      gmm.gauss[m].mean[l])
+                                     + xi[m] * bgmgmm.gauss[m].cov[k][l]
+                                     + xi[m] * (gmm.gauss[m].mean[k] -
+                                                bgmgmm.gauss[m].mean[k]) *
+                                     (gmm.gauss[m].mean[l] -
+                                      bgmgmm.gauss[m].mean[l]);
+                                 gmm.gauss[m].cov[k][l] /= (sum[m] + eta[m] -
+                                                            L);
+                              }
                            }
                         } else {        /* block_full is TR */
                            for (k = offset_row; k < offset_row + dim_list[row];
@@ -646,15 +731,53 @@ int main(int argc, char **argv)
                                    l < offset_col + dim_list[col]; l++) {
                                  if (row == col) {
                                     if (l <= k) {
-                                       gmm.gauss[m].cov[k][l]
-                                           = tgmm.gauss[m].cov[k][l]
-                                           / sum[m];
+                                       gmm.gauss[m].cov[k][l] =
+                                           tgmm.gauss[m].cov[k][l] / sum[m];
+                                       if (X != 0.0) {
+                                          gmm.gauss[m].cov[k][l]
+                                              = sum[m] * gmm.gauss[m].cov[k][l]
+                                              +
+                                              sum[m] * (tgmm.gauss[m].mean[k] /
+                                                        sum[m] -
+                                                        gmm.gauss[m].mean[k]) *
+                                              (tgmm.gauss[m].mean[l] / sum[m] -
+                                               gmm.gauss[m].mean[l])
+                                              +
+                                              xi[m] * bgmgmm.gauss[m].cov[k][l]
+                                              + xi[m] * (gmm.gauss[m].mean[k] -
+                                                         bgmgmm.
+                                                         gauss[m].mean[k]) *
+                                              (gmm.gauss[m].mean[l] -
+                                               bgmgmm.gauss[m].mean[l]);
+                                          gmm.gauss[m].cov[k][l] /= (sum[m] +
+                                                                     eta[m] -
+                                                                     L);
+                                       }
                                     }
                                  } else {
                                     if (block_corr == TR) {
-                                       gmm.gauss[m].cov[k][l]
-                                           = tgmm.gauss[m].cov[k][l]
-                                           / sum[m];
+                                       gmm.gauss[m].cov[k][l] =
+                                           tgmm.gauss[m].cov[k][l] / sum[m];
+                                       if (X != 0.0) {
+                                          gmm.gauss[m].cov[k][l]
+                                              = sum[m] * gmm.gauss[m].cov[k][l]
+                                              +
+                                              sum[m] * (tgmm.gauss[m].mean[k] /
+                                                        sum[m] -
+                                                        gmm.gauss[m].mean[k]) *
+                                              (tgmm.gauss[m].mean[l] / sum[m] -
+                                               gmm.gauss[m].mean[l])
+                                              +
+                                              xi[m] * bgmgmm.gauss[m].cov[k][l]
+                                              + xi[m] * (gmm.gauss[m].mean[k] -
+                                                         bgmgmm.
+                                                         gauss[m].mean[k]) *
+                                              (gmm.gauss[m].mean[l] -
+                                               bgmgmm.gauss[m].mean[l]);
+                                          gmm.gauss[m].cov[k][l] /= (sum[m] +
+                                                                     eta[m] -
+                                                                     L);
+                                       }
                                     }
                                  }
                               }
@@ -671,19 +794,40 @@ int main(int argc, char **argv)
                for (l = 0; l < L; l++) {
                   gmm.gauss[m].var[l] = tgmm.gauss[m].var[l] / sum[m]
                       - gmm.gauss[m].mean[l] * gmm.gauss[m].mean[l];
-                  if (gmm.gauss[m].var[l] < V) {
-                     gmm.gauss[m].var[l] = V;
+                  if (X != 0.0) {
+                     gmm.gauss[m].var[l]
+                         = sum[m] * (gmm.gauss[m].var[l] +
+                                     sq(tgmm.gauss[m].mean[l] / sum[m] -
+                                        gmm.gauss[m].mean[l]))
+                         + xi[m] * sq(gmm.gauss[m].mean[l] -
+                                      bgmgmm.gauss[m].mean[l])
+                         + xi[m] * bgmgmm.gauss[m].var[l];
+                     gmm.gauss[m].var[l] /= (sum[m] + eta[m] - 1.0);
                   }
                }
             } else {
                for (l = 0; l < L; l++) {
                   for (j = 0; j <= l; j++) {
                      gmm.gauss[m].cov[l][j] = tgmm.gauss[m].cov[l][j] / sum[m];
+                     if (X != 0.0) {
+                        gmm.gauss[m].cov[l][j]
+                            = sum[m] * gmm.gauss[m].cov[l][j]
+                            + sum[m] * (tgmm.gauss[m].mean[l] / sum[m] -
+                                        gmm.gauss[m].mean[l]) *
+                            (tgmm.gauss[m].mean[j] / sum[m] -
+                             gmm.gauss[m].mean[j])
+                            + xi[m] * bgmgmm.gauss[m].cov[l][j]
+                            + xi[m] * (gmm.gauss[m].mean[l] -
+                                       bgmgmm.gauss[m].mean[l]) *
+                            (gmm.gauss[m].mean[j] - bgmgmm.gauss[m].mean[j]);
+                        gmm.gauss[m].cov[l][j] /= (sum[m] + eta[m] - L);
+                     }
                   }
                }
             }
          }
       }
+      floorVar_GMM(&gmm, V);
    }
 
    /*  Output GMM parameters */

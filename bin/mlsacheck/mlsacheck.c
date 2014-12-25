@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -54,11 +54,13 @@
 *               -m m     :  order of mel-cepstrum               [25]    *
 *               -a a     :  all-pass constant                   [0.35]  *
 *               -l L     :  FFT length                          [256]   *
-*               -c C     :  modify MLSA filter coefficients     [0]     *
-*                           of unstable frames                          *
-*                             0 : no modification                       *
-*                             1 : clipping                              *
-*                             2 : scaling                               *
+*               -c C     :  stability check and modification of [0]     *
+*                           MLSA filter coefficients                    *
+*                             0 : only check                            *
+*                             1 : only check (fast mode)                *
+*                             2 : check and modification by clipping    *
+*                             3 : check and modification by scaling     *
+*                             4 : check and modification (fast mode)    *
 *               -r r     :  stable condition for MLSA filter    [0]     *
 *                             0 : keeping log approximation error       *
 *                                 not exceeding 0.24 dB (P=4)           *
@@ -81,7 +83,7 @@
 ************************************************************************/
 
 static char *rcs_id =
-    "$Id: mlsacheck.c,v 1.15 2013/12/23 00:02:41 mataki Exp $";
+    "$Id: mlsacheck.c,v 1.18 2014/12/11 08:30:42 uratec Exp $";
 
 
 /*  Standard C Libraries  */
@@ -133,32 +135,30 @@ void usage(int status)
    fprintf(stderr, "       %s [ options ] [ infile ] > stdout\n", cmnd);
    fprintf(stderr, "  options:\n");
    fprintf(stderr,
-           "       -m m  : order of mel-cepstrum                 [%d]\n",
-           ORDER);
+           "       -m m  : order of mel-cepstrum             [%d]\n", ORDER);
    fprintf(stderr,
-           "       -a a  : all-pass constant                     [%g]\n",
-           ALPHA);
+           "       -a a  : all-pass constant                 [%g]\n", ALPHA);
    fprintf(stderr,
-           "       -l L  : FFT length                            [%d]\n",
+           "       -l L  : FFT length                        [%d]\n",
            FFTLENGTH);
+   fprintf(stderr, "       -c C  : stability check and modification  [0]\n");
+   fprintf(stderr, "               of MLSA filter coefficients \n");
+   fprintf(stderr, "                 0 only check\n");
+   fprintf(stderr, "                 1 only check (fast mode)\n");
+   fprintf(stderr, "                 2 check and modification by clipping\n");
+   fprintf(stderr, "                 3 check and modification by scaling\n");
+   fprintf(stderr, "                 4 check and modification (fast mode)\n");
    fprintf(stderr,
-           "       -c C  : modify MLSA filter coefficients of    [0]\n");
-   fprintf(stderr, "               unstable frames \n");
-   fprintf(stderr, "                 0 : no modification\n");
-   fprintf(stderr, "                 1 : clipping\n");
-   fprintf(stderr, "                 2 : scaling\n");
+           "       -r r  : stability condition for MLSA      [%d]\n", STABLE1);
+   fprintf(stderr, "               filter \n");
+   fprintf(stderr, "                 0 keeping log approximation error\n");
+   fprintf(stderr, "                   not exceeding 0.24 dB (P=4)\n");
+   fprintf(stderr, "                   or 0.2735 dB (P=5) \n");
+   fprintf(stderr, "                 1 keeping MLSA filter stable\n");
    fprintf(stderr,
-           "       -r r  : stability condion for MLSA filter     [%d]\n",
-           STABLE1);
-   fprintf(stderr, "                 0 : keeping log approximation error\n");
-   fprintf(stderr, "                     not exceeding 0.24 dB (P=4)\n");
-   fprintf(stderr, "                     or 0.2735 dB (P=5) \n");
-   fprintf(stderr, "                 1 : keeping MLSA filter stable\n");
-   fprintf(stderr,
-           "       -P P  : order of Pade approximation           [%d]\n",
+           "       -P P  : order of Pade approximation       [%d]\n",
            PADEORDER);
-   fprintf(stderr,
-           "       -R R  : threshold value for modification      [N/A]\n");
+   fprintf(stderr, "       -R R  : threshold value for modification  [N/A]\n");
    fprintf(stderr, "               if this option wasn't specified, \n");
    fprintf(stderr, "                 r=0,P=4 : R=4.5\n");
    fprintf(stderr, "                 r=1,P=4 : R=6.2\n");
@@ -167,8 +167,7 @@ void usage(int status)
    fprintf(stderr, "       -h    : print this message\n");
    fprintf(stderr, "  infile:\n");
    fprintf(stderr,
-           "       mel-cepstrums (%s)                         [stdin]\n",
-           FORMAT);
+           "       mel-cepstrums (%s)                     [stdin]\n", FORMAT);
    fprintf(stderr, "  stdout:\n");
    fprintf(stderr, "       mel-cepstrums satisfying stability condition (%s)\n",
            FORMAT);
@@ -186,11 +185,10 @@ void usage(int status)
 }
 
 void mlsacheck(double *mcep, int m, int fftlen, int frame,
-               double a, double r1, double r2, int c, int stable_condition)
+               double a, double r, int c)
 {
    int i;
-   double gain, r, *x, *y, mag, max = 0.0, tmp = 1.0;
-   Boolean ascii_report = FA;
+   double gain, *x, *y, *mag = NULL, max = 0.0;
 
    x = dgetmem(fftlen);
    y = dgetmem(fftlen);
@@ -199,7 +197,7 @@ void mlsacheck(double *mcep, int m, int fftlen, int frame,
    fillz(y, sizeof(*y), fftlen);
 
    /* calculate gain factor */
-   for (i = 0, gain = 0.0; i < m + 1; i++) {
+   for (i = 0, gain = 0.0; i <= m; i++) {
       x[i] = mcep[i];
       gain += x[i] * pow(-a, i);
    }
@@ -207,97 +205,68 @@ void mlsacheck(double *mcep, int m, int fftlen, int frame,
    /* gain normalization */
    x[0] -= gain;
 
-   fftr(x, y, fftlen);
-
    /* check stability */
-   for (i = 0; i < fftlen / 2 + 1; i++) {
-      mag = x[i] * x[i] + y[i] * y[i];
-      mag = sqrt(mag);
-
-      switch (stable_condition) {
-      case STABLE1:
-         if (mag > r1) {
-            ascii_report = TR;
-            if (c == 2) {
-               if (mag > max)
-                  max = mag;
-            }
-            if (c == 1) {
-               r = r1 / mag;
-               x[i] *= r;
-               y[i] *= r;
-               if (i != 0 && i != fftlen / 2) {
-                  x[fftlen - i] *= r;
-                  y[fftlen - i] *= r;
-               }
-            }
-         }
-         break;
-      case STABLE2:
-         if (mag > r2) {
-            ascii_report = TR;
-            if (c == 2) {
-               if (mag > max)
-                  max = mag;
-            }
-            if (c == 1) {
-               r = r2 / mag;
-               x[i] *= r;
-               y[i] *= r;
-               if (i != 0 && i != fftlen / 2) {
-                  x[fftlen - i] *= r;
-                  y[fftlen - i] *= r;
-               }
-            }
-         }
+   if (c == 0 || c == 2 || c == 3) {    /* usual mode */
+      mag = dgetmem(fftlen);
+      fillz(mag, sizeof(*mag), fftlen);
+      fftr(x, y, fftlen);
+      for (i = 0; i < fftlen; i++) {
+         mag[i] = sqrt(x[i] * x[i] + y[i] * y[i]);
+         if (mag[i] > max)
+            max = mag[i];
       }
+   } else {                     /* fast mode */
+      for (i = 0; i <= m; i++)
+         max += x[i];
    }
 
-   if (c == 2) {
-      switch (stable_condition) {
-      case STABLE1:
-         tmp = r1 / max;
-         break;
-      case STABLE2:
-         tmp = r2 / max;
-         break;
-      }
-      if (tmp < 1.0) {
+   /* modification MLSA filter coefficients */
+   if (max > r) {
+      /* output ascii report */
+      fprintf(stderr,
+              "[No. %d] is unstable frame (maximum = %f, threshold = %f)\n",
+              frame, max, r);
+
+      /* modification */
+      if (c == 2) {             /* clipping */
          for (i = 0; i < fftlen; i++) {
-            switch (stable_condition) {
-            case STABLE1:
-               x[i] *= tmp;
-               y[i] *= tmp;
-               break;
-            case STABLE2:
-               x[i] *= tmp;
-               y[i] *= tmp;
-               break;
+            if (mag[i] > r) {
+               x[i] *= r / mag[i];
+               y[i] *= r / mag[i];
             }
          }
+      } else if (c == 3) {      /* scaling */
+         for (i = 0; i < fftlen; i++) {
+            x[i] *= r / max;
+            y[i] *= r / max;
+         }
+      } else if (c == 4) {      /* fast mode */
+         for (i = 0; i <= m; i++)
+            x[i] *= r / max;
       }
    }
 
-   ifft(x, y, fftlen);
-
-   x[0] += gain;
-
-   fwritef(x, sizeof(*x), m + 1, stdout);
+   /* output MLSA filter coefficients */
+   if (c == 0 || c == 1 || max <= r) {  /* no modification */
+      fwritef(mcep, sizeof(*mcep), m + 1, stdout);
+   } else {
+      if (c == 2 || c == 3)
+         ifft(x, y, fftlen);
+      x[0] += gain;
+      fwritef(x, sizeof(*x), m + 1, stdout);
+   }
 
    free(x);
    free(y);
-
-   /* output ascii report */
-   if (ascii_report == TR) {
-      fprintf(stderr, "[No. %d] is unstable frame\n", frame);
-   }
+   if (c == 0 || c == 2 || c == 3)
+      free(mag);
 }
 
 int main(int argc, char **argv)
 {
    int m = ORDER, pd = PADEORDER, fftlen = FFTLENGTH, stable_condition =
        STABLE1, frame = 0, c = 0;
-   double *mcep, a = ALPHA, r1 = PADE4_THRESH1, r2 = PADE4_THRESH2, R = 0.0;
+   double *mcep, a = ALPHA, r = PADE4_THRESH1, R = 0.0;
    FILE *fp = stdin;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL) {
@@ -326,9 +295,10 @@ int main(int argc, char **argv)
             break;
          case 'c':
             c = atoi(*++argv);
-            if ((c != 0 && c != 1 && c != 2) || isdigit(**argv) == 0) {
+            if ((c != 0 && c != 1 && c != 2 && c != 3 && c != 4)
+                || isdigit(**argv) == 0) {
                fprintf(stderr,
-                       "%s : '-c' option must be specified with 0, 1 or 2.\n",
+                       "%s : '-c' option must be specified with 0, 1, 2, 3 or 4.\n",
                        cmnd);
                usage(1);
             }
@@ -367,28 +337,30 @@ int main(int argc, char **argv)
 
    switch (pd) {
    case 4:
-      r1 = PADE4_THRESH1;
-      r2 = PADE4_THRESH2;
+      if (stable_condition == STABLE1)
+         r = PADE4_THRESH1;
+      else
+         r = PADE4_THRESH2;
       break;
    case 5:
-      r1 = PADE5_THRESH1;
-      r2 = PADE5_THRESH2;
+      if (stable_condition == STABLE1)
+         r = PADE5_THRESH1;
+      else
+         r = PADE5_THRESH2;
       break;
    default:
       fprintf(stderr, "%s : Order of Pade approximation should be 4 or 5!\n",
               cmnd);
       usage(1);
    }
-   if (R != 0.0) {
-      r1 = R;
-      r2 = R;
-   }
+   if (R != 0.0)
+      r = R;
 
    mcep = dgetmem(m + 1);
 
    /* check stability of MLSA filter and output */
    while (freadf(mcep, sizeof(*mcep), m + 1, fp) == m + 1) {
-      mlsacheck(mcep, m, fftlen, frame, a, r1, r2, c, stable_condition);
+      mlsacheck(mcep, m, fftlen, frame, a, r, c);
       frame++;
    }
 

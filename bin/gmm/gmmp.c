@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -62,7 +62,7 @@
  *                                                                       *
  ************************************************************************/
 
-static char *rcs_id = "$Id: gmmp.c,v 1.16 2013/12/16 09:01:57 mataki Exp $";
+static char *rcs_id = "$Id: gmmp.c,v 1.18 2014/12/11 08:30:36 uratec Exp $";
 
 /*  Standard C Libraries  */
 #include <stdio.h>
@@ -184,6 +184,8 @@ int main(int argc, char **argv)
 
    alloc_GMM(&gmm, M, L, full);
    load_GMM(&gmm, fgmm);
+   prepareCovInv_GMM(&gmm);
+   prepareGconst_GMM(&gmm);
 
    fclose(fgmm);
 

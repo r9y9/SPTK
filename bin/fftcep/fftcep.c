@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -65,13 +65,13 @@
 *                   , c(0), c(1), ..., c(m),                            *
 *       require:                                                        *
 *               fftcep()                                                *
-*       note:                                                           *
+*       notice:                                                         *
 *               When -j & -k options are specified,                     *
 *               improved cepstral analysis is performed.                *
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: fftcep.c,v 1.28 2013/12/16 09:01:56 mataki Exp $";
+static char *rcs_id = "$Id: fftcep.c,v 1.30 2014/12/11 08:30:34 uratec Exp $";
 
 
 /*  Standard C Libraries  */
@@ -124,7 +124,7 @@ void usage(int status)
    fprintf(stderr, "       windowed sequence (%s)   [stdin]\n", FORMAT);
    fprintf(stderr, "  stdout:\n");
    fprintf(stderr, "       cepstrum (%s)\n", FORMAT);
-   fprintf(stderr, "  note:\n");
+   fprintf(stderr, "  notice:\n");
    fprintf(stderr, "       When -j & -k options are specified,\n");
    fprintf(stderr, "       improved cepstral analysis is performed.\n");
 #ifdef PACKAGE_VERSION

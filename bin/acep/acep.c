@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -69,14 +69,14 @@
 *       output:                                                         *
 *               prediction error (if pefile is specified)               *
 *                   , e(0), e(1), ...                                   *
-*       note:                                                           *
+*       notice:                                                         *
 *               P = 4 or 5                                              *
 *       require:                                                        *
 *               lmadf()                                                 *
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: acep.c,v 1.25 2013/12/16 09:01:53 mataki Exp $";
+static char *rcs_id = "$Id: acep.c,v 1.27 2014/12/11 08:30:28 uratec Exp $";
 
 
 /*  Standard C Libraries  */
@@ -140,7 +140,7 @@ void usage(const int status)
    fprintf(stderr, "       cepstrum (%s)\n", FORMAT);
    fprintf(stderr, "  pefile:\n");
    fprintf(stderr, "       prediction error (%s)\n", FORMAT);
-   fprintf(stderr, "  note:\n");
+   fprintf(stderr, "  notice:\n");
    fprintf(stderr, "       P = 4 or 5\n");
 #ifdef PACKAGE_VERSION
    fprintf(stderr, "\n");

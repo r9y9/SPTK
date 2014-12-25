@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _mlsadf.c,v 1.18 2013/12/16 09:02:01 mataki Exp $
+    $Id: _mlsadf.c,v 1.19 2014/12/11 08:30:42 uratec Exp $
 
     MLSA Digital Filter
 

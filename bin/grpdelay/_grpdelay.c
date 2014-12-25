@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /***************************************************************
-  $Id: _grpdelay.c,v 1.16 2013/12/16 09:01:57 mataki Exp $
+  $Id: _grpdelay.c,v 1.17 2014/12/11 08:30:36 uratec Exp $
   group delay of digital filter
       grpdelay(x, gd, size, is_alma);
 

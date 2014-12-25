@@ -4,7 +4,7 @@
 /*           http://hts-engine.sourceforge.net/                      */
 /* ----------------------------------------------------------------- */
 /*                                                                   */
-/*  Copyright (c) 2001-2013  Nagoya Institute of Technology          */
+/*  Copyright (c) 2001-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /*                2001-2008  Tokyo Institute of Technology           */
@@ -250,6 +250,9 @@ size_t HTS_ftell(HTS_File * fp)
 #else
       return (size_t) pos.__pos;
 #endif                          /* _WIN32 || __CYGWIN__ || __APPLE__ || __ANDROID__ */
+   } else if (fp->type == HTS_DATA) {
+      HTS_Data *d = (HTS_Data *) fp->pointer;
+      return d->index;
    }
    HTS_error(0, "HTS_ftell: Unknown file type.\n");
    return 0;
@@ -260,7 +263,8 @@ static size_t HTS_fread(void *buf, size_t size, size_t n, HTS_File * fp)
 {
    if (fp == NULL || size == 0 || n == 0) {
       return 0;
-   } else if (fp->type == HTS_FILE) {
+   }
+   if (fp->type == HTS_FILE) {
       return fread(buf, size, n, (FILE *) fp->pointer);
    } else if (fp->type == HTS_DATA) {
       HTS_Data *d = (HTS_Data *) fp->pointer;
@@ -480,7 +484,6 @@ HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *
 HTS_Boolean HTS_get_token_from_string_with_separator(const char *str, size_t * index, char *buff, char separator)
 {
    char c;
-   size_t start;
    size_t len = 0;
 
    if (str == NULL)
@@ -495,7 +498,6 @@ HTS_Boolean HTS_get_token_from_string_with_separator(const char *str, size_t * i
       (*index)++;
       c = str[(*index)];
    }
-   start = (*index);
    while (c != separator && c != '\0') {
       buff[len++] = c;
       (*index)++;
@@ -516,10 +518,15 @@ HTS_Boolean HTS_get_token_from_string_with_separator(const char *str, size_t * i
 void *HTS_calloc(const size_t num, const size_t size)
 {
    size_t n = num * size;
+   void *mem;
+
+   if (n == 0)
+      return NULL;
+
 #ifdef FESTIVAL
-   void *mem = (void *) safe_wcalloc(n);
+   mem = (void *) safe_wcalloc(n);
 #else
-   void *mem = (void *) malloc(n);
+   mem = (void *) malloc(n);
 #endif                          /* FESTIVAL */
 
    memset(mem, 0, n);
@@ -556,7 +563,12 @@ char *HTS_strdup(const char *string)
 double **HTS_alloc_matrix(size_t x, size_t y)
 {
    size_t i;
-   double **p = (double **) HTS_calloc(x, sizeof(double *));
+   double **p;
+
+   if (x == 0 || y == 0)
+      return NULL;
+
+   p = (double **) HTS_calloc(x, sizeof(double *));
 
    for (i = 0; i < x; i++)
       p[i] = (double *) HTS_calloc(y, sizeof(double));

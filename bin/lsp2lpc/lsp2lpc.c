@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -56,7 +56,7 @@
 *               -k       :  input & output gain         [TRUE]          *
 *               -L       :  regard input as log gain    [FALSE]         *
 *                           and output linear one                       *
-*               -i i     :  input format                [0]             *
+*               -q q     :  input format                [0]             *
 *                             0 (normalized frequency <0...pi>)         *
 *                             1 (normalized frequency <0...0.5>)        *
 *                             2 (frequency (kHz))                       *
@@ -72,7 +72,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: lsp2lpc.c,v 1.32 2013/12/16 09:01:59 mataki Exp $";
+static char *rcs_id = "$Id: lsp2lpc.c,v 1.36 2014/12/25 02:41:38 uratec Exp $";
 
 
 /*  Standard C Libraries  */
@@ -129,7 +129,7 @@ void usage(int status)
            "       -L    : regard input as log gain and output linear one [%s]\n",
            BOOL[LOGGAIN]);
    fprintf(stderr,
-           "       -i i  : input format                                   [%d]\n",
+           "       -q q  : input format                                   [%d]\n",
            ITYPE);
    fprintf(stderr, "                 0 (normalized frequency <0...pi>)\n");
    fprintf(stderr, "                 1 (normalized frequency <0...0.5>)\n");
@@ -182,6 +182,7 @@ int main(int argc, char **argv)
             loggain = TR;
             break;
          case 'i':
+         case 'q':
             itype = atoi(*++argv);
             --argc;
             break;

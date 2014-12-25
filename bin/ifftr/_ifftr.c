@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /***************************************************************
-    $Id: _ifftr.c,v 1.3 2013/12/16 09:01:58 mataki Exp $
+    $Id: _ifftr.c,v 1.4 2014/12/11 08:30:37 uratec Exp $
 
     Inverse Fast Fourier Transform for Real Sequence
 

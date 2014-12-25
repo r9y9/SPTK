@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /***************************************************************
-    $Id: _mc2b.c,v 1.14 2013/12/16 09:02:00 mataki Exp $
+    $Id: _mc2b.c,v 1.15 2014/12/11 08:30:40 uratec Exp $
 
     Transform Mel Cepstrum to MLSA Digital Filter Coefficients
 

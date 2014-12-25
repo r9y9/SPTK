@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -42,40 +42,43 @@
 /* POSSIBILITY OF SUCH DAMAGE.                                       */
 /* ----------------------------------------------------------------- */
 
-/***************************************************************************
-*                                                                          *
-*    Dynamic Time Warping                                                  *
-*                                                                          *
-*                                      2011.12 Akira Tamamori              *
-*       usage:                                                             *
-*               dtw [ options ] reffile [ infile ] > stdout                *
-*       options:                                                           *
-*               -m M      : order of vector                        [24]    *
-*               -l L      : dimension of vector                    [m+1]   *
-*               -t T      : number of test vectors                 [N/A]   *
-*               -r R      : number of reference vectors            [N/A]   *
-*               -n N      : type of norm used for calculation      [2]     *
-*                           of local distance                              *
-*                             1 : L1-norm                                  *
-*                             2 : L2-norm                                  *
-*               -p P      : local path constraint                  [5]     *
-*               -s sfile  : output score of dynamic time warping   [FALSE] *
-*               -v vfile  : output concatenated test/reference     [FALSE] *
-*                           data sequence along the Vitebi path            *
-*       infile:                                                            *
-*              test vector sequence                                        *
-*                  x_1(1), ..., x_1(L), x_2(1), ..., x_2(L), ...           *
-*       reffile:                                                           *
-*              reference vector sequence                                   *
-*                  y_1(1), ..., y_1(L), y_2(1), ..., y_2(L), ...           *
-*       stdout:                                                            *
-*              concatenated test/reference vector sequence                 *
-*              along the Vitebi path                                       *
-*                  x_1(1), ..., x_1(L), y_1(1), ..., y_1(L), ...           *
-*                                                                          *
-***************************************************************************/
+/*******************************************************************************
+*                                                                              *
+*    Dynamic Time Warping                                                      *
+*                                                                              *
+*                                      2011.12 Akira Tamamori                  *
+*       usage:                                                                 *
+*               dtw [ options ] reffile [ infile ] > stdout                    *
+*       options:                                                               *
+*               -m M          : order of vector                        [24]    *
+*               -l L          : dimension of vector                    [m+1]   *
+*               -t T          : number of test vectors                 [N/A]   *
+*               -r R          : number of reference vectors            [N/A]   *
+*               -n N          : type of norm used for calculation      [2]     *
+*                               of local distance                              *
+*                                 1 : L1-norm                                  *
+*                                 2 : L2-norm                                  *
+*               -p P          : local path constraint                  [5]     *
+*               -s sfile      : output score of dynamic time warping   [FALSE] *
+*               -v out_vfile  : output concatenated test/reference     [FALSE] *
+*                               data sequence along the Vitebi path            *
+*               -V in_vfile   : concatenate test and reference vectors [FALSE] *
+*                               in accordance with the Vitebi path             *
+*                               information written in in_vfile                *
+*       infile:                                                                *
+*              test vector sequence                                            *
+*                  x_1(1), ..., x_1(L), x_2(1), ..., x_2(L), ...               *
+*       reffile:                                                               *
+*              reference vector sequence                                       *
+*                  y_1(1), ..., y_1(L), y_2(1), ..., y_2(L), ...               *
+*       stdout:                                                                *
+*              concatenated test/reference vector sequence                     *
+*              along the Vitebi path                                           *
+*                  x_1(1), ..., x_1(L), y_1(1), ..., y_1(L), ...               *
+*                                                                              *
+*******************************************************************************/
 
-static char *rcs_id = "$Id: dtw.c,v 1.8 2013/12/16 09:01:55 mataki Exp $";
+static char *rcs_id = "$Id: dtw.c,v 1.12 2014/12/11 08:30:33 uratec Exp $";
 
 /*  Standard C Libraries  */
 #include <stdio.h>
@@ -108,42 +111,34 @@ char *cmnd;
 #define PATH_NG FA
 #define PATH_OK TR
 
-enum Norm { L1 = 1, L2 };
-enum PATH { I = 1, II, III, IV, V, VI, VII };
-enum Allowable_Path { P1 = 1, P2, P3, P4, P5, P6, P7, P8, P9 };
-
-typedef struct _DTW_Cell {
+typedef struct _Dtw_Cell {
    double local;                /* local cost */
    double global;               /* global cost */
    int backptr[2];              /* back pointer for Viterbi path */
    Boolean is_region;
-   enum Allowable_Path allow_path;
-} DTW_Cell;
+   int allow_path;
+} Dtw_Cell;
 
-typedef struct _DATA {
+typedef struct _Data {
    double *input;
    int total;                   /* total number of vectors */
    int dim;                     /* dimension of input vector */
    int *viterbi;                /* Viterbi path */
-} DATA;
+} Data;
 
-typedef struct _WEIGHT {
-   double *val;                 /* weight on the local path */
-} WEIGHT;
-
-typedef struct _DTW_Table {
-   DTW_Cell **cell;
-   DATA data[2];                /* two comparative data */
+typedef struct _Dtw_Table {
+   Dtw_Cell **cell;
+   Data data[2];                /* two comparative data */
    int vit_leng;                /* length of Viterbi path */
-   enum PATH path;              /* type of local constraint */
-   enum Norm norm;              /* type of norm for local cost */
-   WEIGHT weight;
-} DTW_Table;
+   int path;                    /* type of local constraint */
+   int norm;                    /* type of norm for local cost */
+   double *weight;              /* weight on the local path */
+} Dtw_Table;
 
-typedef struct _float_list {
+typedef struct _Float_List {
    float *f;
-   struct _float_list *next;
-} float_list;
+   struct _Float_List *next;
+} Float_List;
 
 static int round_up(double dat)
 {
@@ -154,15 +149,15 @@ double *read_input(FILE * fp, int dim, int *length)
 {
    int i, j;
    double *x = NULL, *input;
-   float_list *top, *prev, *cur, *next, *tmp;
+   Float_List *top, *prev, *cur, *next, *tmp;
 
    input = dgetmem(dim);
-   top = prev = (float_list *) malloc(sizeof(float_list));
+   top = prev = (Float_List *) malloc(sizeof(Float_List));
    *length = 0;
    prev->next = NULL;
 
    while (freadf(input, sizeof(*input), dim, fp) == dim) {
-      cur = (float_list *) malloc(sizeof(float_list));
+      cur = (Float_List *) malloc(sizeof(Float_List));
       cur->f = (float *) malloc(sizeof(float) * dim);
       for (i = 0; i < dim; i++) {
          cur->f[i] = (float) input[i];
@@ -184,8 +179,8 @@ double *read_input(FILE * fp, int dim, int *length)
       cur = tmp;
       next = tmp->next;
       free(cur->f);
-      free(cur);
       cur->f = NULL;
+      free(cur);
       cur = NULL;
    }
    free(top);
@@ -196,19 +191,19 @@ double *read_input(FILE * fp, int dim, int *length)
    return (x);
 }
 
-DTW_Cell **malloc_DTW_Cell(int size1, int size2)
+Dtw_Cell **malloc_Dtw_Cell(int size1, int size2)
 {
-   DTW_Cell **tmpcell, *tmpcell2;
+   Dtw_Cell **tmpcell, *tmpcell2;
    int i, j;
    void usage(int status);
 
-   tmpcell = (DTW_Cell **) malloc(sizeof(DTW_Cell *) * size1);
+   tmpcell = (Dtw_Cell **) malloc(sizeof(Dtw_Cell *) * size1);
    if (tmpcell == NULL) {
       fprintf(stderr, "ERROR: Can't allocate memory !\n");
       usage(EXIT_FAILURE);
    }
 
-   tmpcell2 = (DTW_Cell *) malloc(sizeof(DTW_Cell) * size1 * size2);
+   tmpcell2 = (Dtw_Cell *) malloc(sizeof(Dtw_Cell) * size1 * size2);
    if (tmpcell2 == NULL) {
       fprintf(stderr, "ERROR: Can't allocate memory !\n");
       usage(EXIT_FAILURE);
@@ -221,21 +216,21 @@ DTW_Cell **malloc_DTW_Cell(int size1, int size2)
    return (tmpcell);
 }
 
-void init_dtw(DTW_Table * table, int leng, double *input1, double *input2,
-              int total1, int total2, enum PATH path, enum Norm norm)
+void init_dtw(Dtw_Table * table, int leng, double *input1, double *input2,
+              int total1, int total2, int path, int norm)
 {
 
    int i, size[2] = { total1, total2 };
    void usage(int status);
 
-   if (path == III || path == IV) {
+   if (path == 3 || path == 4) {
       if (total2 > total1) {
          fprintf(stderr, "Can't perform DTW !\n"
                  "The number of the reference vectors (= %d) must be less than "
                  "the number of the test vectors (= %d). \n", total2, total1);
          usage(EXIT_FAILURE);
       }
-   } else if (path == V || path == VI || path == VII) {
+   } else if (path == 5 || path == 6 || path == 7) {
       if (total1 / 2 >= total2) {
          fprintf(stderr, "Can't perform DTW !\n"
                  "The number of the test vectors (= %d) must be less than "
@@ -251,7 +246,7 @@ void init_dtw(DTW_Table * table, int leng, double *input1, double *input2,
       }
    }
 
-   table->cell = (DTW_Cell **) malloc_DTW_Cell(size[0], size[1]);
+   table->cell = (Dtw_Cell **) malloc_Dtw_Cell(size[0], size[1]);
 
    table->data[0].input = input1;
    table->data[1].input = input2;
@@ -268,432 +263,436 @@ void init_dtw(DTW_Table * table, int leng, double *input1, double *input2,
 
    table->path = path;
 
-   if (norm != L1 && norm != L2) {
-      fprintf(stderr, "%s : type of norm must be %d or %d!\n", cmnd, L1, L2);
+   if (norm != 1 && norm != 2) {
+      fprintf(stderr, "%s : type of norm must be 1 or 2!\n", cmnd);
       usage(EXIT_FAILURE);
    }
    table->norm = norm;
 
+   if (path < 1 || path > 7) {
+      fprintf(stderr, "%s : local path constraint must be between 1 and 7!\n",
+              cmnd);
+      usage(EXIT_FAILURE);
+   }
+
    switch (path) {
-   case I:
-      table->weight.val = dgetmem(2);
-      table->weight.val[0] = 1.0;
-      table->weight.val[1] = 1.0;
+   case 1:
+      table->weight = dgetmem(2);
+      table->weight[0] = 1.0;
+      table->weight[1] = 1.0;
       break;
-   case II:
-      table->weight.val = dgetmem(3);
-      table->weight.val[0] = 1.0;
-      table->weight.val[1] = 2.0;
-      table->weight.val[2] = 1.0;
+   case 2:
+      table->weight = dgetmem(3);
+      table->weight[0] = 1.0;
+      table->weight[1] = 2.0;
+      table->weight[2] = 1.0;
       break;
-   case III:
-      table->weight.val = dgetmem(2);
-      table->weight.val[0] = 1.0;
-      table->weight.val[1] = 2.0;
+   case 3:
+      table->weight = dgetmem(2);
+      table->weight[0] = 1.0;
+      table->weight[1] = 2.0;
       break;
-   case IV:
-      table->weight.val = dgetmem(3);
-      table->weight.val[0] = 1.0;
-      table->weight.val[1] = 2.0;
-      table->weight.val[2] = 3.0;
+   case 4:
+      table->weight = dgetmem(3);
+      table->weight[0] = 1.0;
+      table->weight[1] = 2.0;
+      table->weight[2] = 3.0;
       break;
-   case V:
-      table->weight.val = dgetmem(5);
-      table->weight.val[0] = 2.0;
-      table->weight.val[1] = 1.0;
-      table->weight.val[2] = 2.0;
-      table->weight.val[3] = 2.0;
-      table->weight.val[4] = 1.0;
+   case 5:
+      table->weight = dgetmem(5);
+      table->weight[0] = 2.0;
+      table->weight[1] = 1.0;
+      table->weight[2] = 2.0;
+      table->weight[3] = 2.0;
+      table->weight[4] = 1.0;
       break;
-   case VI:
-      table->weight.val = dgetmem(3);
-      table->weight.val[0] = 3.0;
-      table->weight.val[1] = 2.0;
-      table->weight.val[2] = 3.0;
+   case 6:
+      table->weight = dgetmem(3);
+      table->weight[0] = 3.0;
+      table->weight[1] = 2.0;
+      table->weight[2] = 3.0;
       break;
-   case VII:
-      table->weight.val = dgetmem(6);
-      table->weight.val[0] = 1.0;
-      table->weight.val[1] = 1.0;
-      table->weight.val[2] = 1.0;
-      table->weight.val[3] = 1.0;
-      table->weight.val[4] = 1.0;
-      table->weight.val[5] = 1.0;
+   case 7:
+      table->weight = dgetmem(6);
+      table->weight[0] = 1.0;
+      table->weight[1] = 1.0;
+      table->weight[2] = 1.0;
+      table->weight[3] = 1.0;
+      table->weight[4] = 1.0;
+      table->weight[5] = 1.0;
       break;
    default:
       break;
    }
 }
 
-void check_enabled_region_type_1(DTW_Table * table)
+void check_enabled_region_type_1(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
-   for (j = 0; j < Ty; j++) {
-      for (i = 0; i < Tx; i++) {
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
+   for (j = 0; j < ty; j++) {
+      for (i = 0; i < tx; i++) {
          table->cell[i][j].is_region = PATH_OK;
       }
    }
 }
 
-void check_enabled_region_type_2(DTW_Table * table)
+void check_enabled_region_type_2(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
-   for (j = 0; j < Ty; j++) {
-      for (i = 0; i < Tx; i++) {
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
+   for (j = 0; j < ty; j++) {
+      for (i = 0; i < tx; i++) {
          table->cell[i][j].is_region = PATH_OK;
       }
    }
 }
 
-void check_enabled_region_type_3(DTW_Table * table)
+void check_enabled_region_type_3(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total,
-       range = Tx - Ty;
-   DTW_Cell **cell = table->cell;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total,
+       range = tx - ty;
+   Dtw_Cell **cell = table->cell;
 
    cell[0][0].is_region = PATH_OK;
 
-   for (j = 1; j < Ty; j++) {
+   for (j = 1; j < ty; j++) {
       cell[0][j].is_region = PATH_NG;
    }
-   for (i = 1; i < Tx; i++) {
+   for (i = 1; i < tx; i++) {
       cell[i][0].is_region = PATH_NG;
    }
    for (i = 1; i <= range; i++) {
       cell[i][0].is_region = PATH_OK;
    }
 
-   for (j = 1; j < Ty; j++) {
+   for (j = 1; j < ty; j++) {
       for (i = 1; i < j; i++) {
          cell[i][j].is_region = PATH_NG;
       }
       for (i = j; i <= range + j; i++) {
          cell[i][j].is_region = PATH_OK;
       }
-      for (; i < Tx; i++) {
+      for (; i < tx; i++) {
          cell[i][j].is_region = PATH_NG;
       }
    }
 
-   for (j = 1; j < Ty; j++) {
-      for (i = 1; i < Tx; i++) {
+   for (j = 1; j < ty; j++) {
+      for (i = 1; i < tx; i++) {
          if (cell[i][j].is_region == PATH_OK) {
             if (cell[i - 1][j].is_region == PATH_OK &&
                 cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P1;
+               cell[i][j].allow_path = 1;
             } else if (cell[i - 1][j].is_region == PATH_OK) {
-               cell[i][j].allow_path = P2;
+               cell[i][j].allow_path = 2;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P3;
+               cell[i][j].allow_path = 3;
             }
          }
       }
    }
 }
 
-void check_enabled_region_type_4(DTW_Table * table)
+void check_enabled_region_type_4(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
-   DTW_Cell **cell = table->cell;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
+   Dtw_Cell **cell = table->cell;
 
    cell[0][0].is_region = PATH_OK;
 
-   for (j = 1; j < Ty; j++) {
+   for (j = 1; j < ty; j++) {
       cell[0][j].is_region = PATH_NG;
    }
 
-   for (i = 1; i < Tx - Ty / 2; i++) {
+   for (i = 1; i < tx - ty / 2; i++) {
       cell[i][0].is_region = PATH_OK;
    }
-   for (; i < Tx; i++) {
+   for (; i < tx; i++) {
       cell[i][0].is_region = PATH_NG;
    }
-   for (i = 1; i < Tx - Ty / 2 + 1; i++) {
+   for (i = 1; i < tx - ty / 2 + 1; i++) {
       cell[i][1].is_region = PATH_OK;
    }
-   for (; i < Tx; i++) {
+   for (; i < tx; i++) {
       cell[i][1].is_region = PATH_NG;
    }
 
-   for (j = 2; j < Ty; j++) {
+   for (j = 2; j < ty; j++) {
       for (i = 0; i < round_up((double) j / 2); i++) {
          cell[i][j].is_region = PATH_NG;
       }
-      for (; i < Tx - Ty / 2 + round_up((double) j / 2); i++) {
+      for (; i < tx - ty / 2 + round_up((double) j / 2); i++) {
          cell[i][j].is_region = PATH_OK;
       }
-      for (; i < Tx; i++) {
+      for (; i < tx; i++) {
          cell[i][j].is_region = PATH_NG;
       }
    }
-   cell[Tx - 1][Ty - 1].is_region = PATH_OK;
+   cell[tx - 1][ty - 1].is_region = PATH_OK;
 
-   for (j = 2; j < Ty; j++) {
-      for (i = 2; i < Tx; i++) {
+   for (j = 2; j < ty; j++) {
+      for (i = 2; i < tx; i++) {
          if (cell[i][j].is_region == PATH_OK) {
             if (cell[i - 1][j].is_region == PATH_OK &&
                 cell[i - 1][j - 1].is_region == PATH_OK &&
                 cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P1;
+               cell[i][j].allow_path = 1;
             } else if (cell[i - 1][j].is_region == PATH_OK &&
                        cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P2;
+               cell[i][j].allow_path = 2;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK &&
                        cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P3;
+               cell[i][j].allow_path = 3;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P4;
+               cell[i][j].allow_path = 4;
             } else if (cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P5;
+               cell[i][j].allow_path = 5;
             }
          }
       }
    }
 }
 
-void check_enabled_region_type_5(DTW_Table * table)
+void check_enabled_region_type_5(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
-   DTW_Cell **cell = table->cell;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
+   Dtw_Cell **cell = table->cell;
 
    cell[0][0].is_region = PATH_OK;
 
-   for (j = 1; j < Ty; j++) {
-      for (i = 1; i < Tx; i++) {
+   for (j = 1; j < ty; j++) {
+      for (i = 1; i < tx; i++) {
          cell[i][j].is_region = PATH_OK;
       }
    }
 
-   for (i = 1; i < Tx; i++) {
+   for (i = 1; i < tx; i++) {
       cell[i][0].is_region = PATH_NG;
    }
 
-   for (j = 1; j < Ty; j++) {
+   for (j = 1; j < ty; j++) {
       cell[0][j].is_region = PATH_NG;
    }
 
-   for (j = 1; j < Ty - 2; j++) {
-      for (i = 2 * j + 1; i < Tx; i++) {
+   for (j = 1; j < ty - 2; j++) {
+      for (i = 2 * j + 1; i < tx; i++) {
          cell[i][j].is_region = PATH_NG;
       }
    }
-   for (i = 1; i < Tx - 2; i++) {
-      for (j = 2 * i + 1; j < Ty; j++) {
+   for (i = 1; i < tx - 2; i++) {
+      for (j = 2 * i + 1; j < ty; j++) {
          cell[i][j].is_region = PATH_NG;
       }
    }
 
    /* Backward pruning */
-   for (j = Ty - 1; j > 0; j--) {
-      for (i = 2 * (j - Ty) + Tx; i > 0; i--) {
+   for (j = ty - 1; j > 0; j--) {
+      for (i = 2 * (j - ty) + tx; i > 0; i--) {
          cell[i][j].is_region = PATH_NG;
       }
    }
-   for (i = Tx - 1; i > 0; i--) {
-      for (j = 2 * (i - Tx) + Ty; j > 0; j--) {
+   for (i = tx - 1; i > 0; i--) {
+      for (j = 2 * (i - tx) + ty; j > 0; j--) {
          cell[i][j].is_region = PATH_NG;
       }
    }
 
-   for (j = 2; j < Ty - 1; j++) {
-      for (i = 2; i < Tx - 1; i++) {
+   for (j = 2; j < ty - 1; j++) {
+      for (i = 2; i < tx - 1; i++) {
          if (cell[i][j].is_region == PATH_OK) {
             if (cell[i - 2][j - 1].is_region == PATH_OK &&
                 cell[i - 1][j - 1].is_region == PATH_OK &&
                 cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P1;
+               cell[i][j].allow_path = 1;
             } else if (cell[i - 2][j - 1].is_region == PATH_OK &&
                        cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P2;
+               cell[i][j].allow_path = 2;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK &&
                        cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P3;
+               cell[i][j].allow_path = 3;
             } else if (cell[i - 2][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P4;
+               cell[i][j].allow_path = 4;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P5;
+               cell[i][j].allow_path = 5;
             } else if (cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P6;
+               cell[i][j].allow_path = 6;
             }
          }
       }
    }
 }
 
-void check_enabled_region_type_6(DTW_Table * table)
+void check_enabled_region_type_6(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
-   DTW_Cell **cell = table->cell;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
+   Dtw_Cell **cell = table->cell;
 
    cell[0][0].is_region = PATH_OK;
 
-   for (j = 1; j < Ty; j++) {
-      for (i = 1; i < Tx; i++) {
+   for (j = 1; j < ty; j++) {
+      for (i = 1; i < tx; i++) {
          cell[i][j].is_region = PATH_OK;
       }
    }
 
-   for (i = 1; i < Tx; i++) {
+   for (i = 1; i < tx; i++) {
       cell[i][0].is_region = PATH_NG;
    }
 
-   for (j = 1; j < Ty; j++) {
+   for (j = 1; j < ty; j++) {
       cell[0][j].is_region = PATH_NG;
    }
 
-   for (j = 1; j < Ty - 2; j++) {
-      for (i = 2 * j + 1; i < Tx; i++) {
+   for (j = 1; j < ty - 2; j++) {
+      for (i = 2 * j + 1; i < tx; i++) {
          cell[i][j].is_region = PATH_NG;
       }
    }
-   for (i = 1; i < Tx - 2; i++) {
-      for (j = 2 * i + 1; j < Ty; j++) {
+   for (i = 1; i < tx - 2; i++) {
+      for (j = 2 * i + 1; j < ty; j++) {
          cell[i][j].is_region = PATH_NG;
       }
    }
 
    /* Backward pruning */
-   for (j = Ty - 1; j > 0; j--) {
-      for (i = Tx - 1 + 2 * (j - Ty) + 1; i > 0; i--) {
+   for (j = ty - 1; j > 0; j--) {
+      for (i = tx - 1 + 2 * (j - ty) + 1; i > 0; i--) {
          cell[i][j].is_region = PATH_NG;
       }
    }
-   for (i = Tx - 1; i > 0; i--) {
-      for (j = Ty - 1 + 2 * (i - Tx) + 1; j > 0; j--) {
+   for (i = tx - 1; i > 0; i--) {
+      for (j = ty - 1 + 2 * (i - tx) + 1; j > 0; j--) {
          cell[i][j].is_region = PATH_NG;
       }
    }
 
-   for (j = 2; j < Ty; j++) {
-      for (i = 2; i < Tx; i++) {
+   for (j = 2; j < ty; j++) {
+      for (i = 2; i < tx; i++) {
          if (cell[i][j].is_region == PATH_OK) {
             if (cell[i - 2][j - 1].is_region == PATH_OK &&
                 cell[i - 1][j - 1].is_region == PATH_OK &&
                 cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P1;
+               cell[i][j].allow_path = 1;
             } else if (cell[i - 2][j - 1].is_region == PATH_OK &&
                        cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P2;
+               cell[i][j].allow_path = 2;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK &&
                        cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P3;
+               cell[i][j].allow_path = 3;
             } else if (cell[i - 2][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P4;
+               cell[i][j].allow_path = 4;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P5;
+               cell[i][j].allow_path = 5;
             } else if (cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P6;
+               cell[i][j].allow_path = 6;
             }
          }
       }
    }
 }
 
-void check_enabled_region_type_7(DTW_Table * table)
+void check_enabled_region_type_7(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
-   DTW_Cell **cell = table->cell;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
+   Dtw_Cell **cell = table->cell;
 
    cell[0][0].is_region = PATH_OK;
 
-   for (j = 1; j < Ty; j++) {
-      for (i = 1; i < Tx; i++) {
+   for (j = 1; j < ty; j++) {
+      for (i = 1; i < tx; i++) {
          cell[i][j].is_region = PATH_OK;
       }
    }
 
-   for (i = 1; i < Tx; i++) {
+   for (i = 1; i < tx; i++) {
       cell[i][0].is_region = PATH_NG;
    }
 
-   for (j = 1; j < Ty; j++) {
+   for (j = 1; j < ty; j++) {
       cell[0][j].is_region = PATH_NG;
    }
 
-   for (j = 1; j < Ty - 2; j++) {
-      for (i = 2 * j + 1; i < Tx; i++) {
+   for (j = 1; j < ty - 2; j++) {
+      for (i = 2 * j + 1; i < tx; i++) {
          cell[i][j].is_region = PATH_NG;
       }
    }
-   for (i = 1; i < Tx - 2; i++) {
-      for (j = 2 * i + 1; j < Ty; j++) {
+   for (i = 1; i < tx - 2; i++) {
+      for (j = 2 * i + 1; j < ty; j++) {
          cell[i][j].is_region = PATH_NG;
       }
    }
 
    /* Backward pruning */
-   for (j = Ty - 1; j > 0; j--) {
-      for (i = Tx - 1 + 2 * (j - Ty) + 1; i > 0; i--) {
+   for (j = ty - 1; j > 0; j--) {
+      for (i = tx - 1 + 2 * (j - ty) + 1; i > 0; i--) {
          cell[i][j].is_region = PATH_NG;
       }
    }
-   for (i = Tx - 1; i > 0; i--) {
-      for (j = Ty - 1 + 2 * (i - Tx) + 1; j > 0; j--) {
+   for (i = tx - 1; i > 0; i--) {
+      for (j = ty - 1 + 2 * (i - tx) + 1; j > 0; j--) {
          cell[i][j].is_region = PATH_NG;
       }
    }
 
-   for (j = 2; j < Ty; j++) {
-      for (i = 2; i < Tx; i++) {
+   for (j = 2; j < ty; j++) {
+      for (i = 2; i < tx; i++) {
          if (cell[i][j].is_region == PATH_OK) {
             if (cell[i - 2][j - 1].is_region == PATH_OK &&
                 cell[i - 2][j - 2].is_region == PATH_OK &&
                 cell[i - 1][j - 1].is_region == PATH_OK &&
                 cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P1;
+               cell[i][j].allow_path = 1;
             } else if (cell[i - 2][j - 2].is_region == PATH_OK &&
                        cell[i - 1][j - 1].is_region == PATH_OK &&
                        cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P2;
+               cell[i][j].allow_path = 2;
             } else if (cell[i - 2][j - 1].is_region == PATH_OK &&
                        cell[i - 2][j - 2].is_region == PATH_OK &&
                        cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P3;
+               cell[i][j].allow_path = 3;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK &&
                        cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P4;
+               cell[i][j].allow_path = 4;
             } else if (cell[i - 2][j - 2].is_region == PATH_OK &&
                        cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P5;
+               cell[i][j].allow_path = 5;
             } else if (cell[i - 2][j - 1].is_region == PATH_OK &&
                        cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P6;
+               cell[i][j].allow_path = 6;
             } else if (cell[i - 2][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P7;
+               cell[i][j].allow_path = 7;
             } else if (cell[i - 1][j - 1].is_region == PATH_OK) {
-               cell[i][j].allow_path = P8;
+               cell[i][j].allow_path = 8;
             } else if (cell[i - 1][j - 2].is_region == PATH_OK) {
-               cell[i][j].allow_path = P9;
+               cell[i][j].allow_path = 9;
             }
          }
       }
    }
 }
 
-void recursive_calc_type_1(DTW_Table * table)
+void calc_global_cost_type_1(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
    double local, path1, path2;
-   DTW_Cell **cell = table->cell;
-   WEIGHT weight = table->weight;
+   Dtw_Cell **cell = table->cell;
+   double *weight = table->weight;
 
-   for (i = 1; i < Tx; i++) {
-      cell[i][0].global =
-          cell[i - 1][0].global +weight.val[0] * cell[i][0].local;
+   for (i = 1; i < tx; i++) {
+      cell[i][0].global = cell[i - 1][0].global +weight[0] * cell[i][0].local;
       cell[i][0].backptr[0] = i - 1;
       cell[i][0].backptr[1] = 0;
    }
-   for (j = 1; j < Ty; j++) {
-      cell[0][j].global =
-          cell[0][j - 1].global +weight.val[1] * cell[0][j].local;
+   for (j = 1; j < ty; j++) {
+      cell[0][j].global = cell[0][j - 1].global +weight[1] * cell[0][j].local;
       cell[0][j].backptr[0] = 0;
       cell[0][j].backptr[1] = j - 1;
    }
-   for (i = 1; i < Tx; i++) {
-      for (j = 1; j < Ty; j++) {
+   for (i = 1; i < tx; i++) {
+      for (j = 1; j < ty; j++) {
          local = cell[i][j].local;
-         path1 = cell[i - 1][j].global +weight.val[0] * local;
-         path2 = cell[i][j - 1].global +weight.val[1] * local;
+         path1 = cell[i - 1][j].global +weight[0] * local;
+         path2 = cell[i][j - 1].global +weight[1] * local;
          if (path1 < path2) {
             cell[i][j].global = path1;
             cell[i][j].backptr[0] = i - 1;
@@ -705,36 +704,35 @@ void recursive_calc_type_1(DTW_Table * table)
          }
       }
    }
-   cell[Tx - 1][Ty - 1].global /=(Tx + Ty);
+   cell[tx - 1][ty - 1].global /=(tx + ty);
 }
 
-void recursive_calc_type_2(DTW_Table * table)
+void calc_global_cost_type_2(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
    double local, min, path1, path2, path3;
-   DTW_Cell **cell = table->cell;
-   WEIGHT weight = table->weight;
+   Dtw_Cell **cell = table->cell;
+   double *weight = table->weight;
 
-   for (i = 1; i < Tx; i++) {
+   for (i = 1; i < tx; i++) {
       if (cell[i][0].is_region == PATH_OK) {
          cell[i][0].global =
-             cell[i - 1][0].global +weight.val[0] * cell[i][0].local;
+             cell[i - 1][0].global +weight[0] * cell[i][0].local;
          cell[i][0].backptr[0] = i - 1;
          cell[i][0].backptr[1] = 0;
       }
    }
-   for (j = 1; j < Ty; j++) {
-      cell[0][j].global =
-          cell[0][j - 1].global +weight.val[2] * cell[0][j].local;
+   for (j = 1; j < ty; j++) {
+      cell[0][j].global = cell[0][j - 1].global +weight[2] * cell[0][j].local;
       cell[0][j].backptr[0] = 0;
       cell[0][j].backptr[1] = j - 1;
    }
-   for (j = 1; j < Ty; j++) {
-      for (i = 1; i < Tx; i++) {
+   for (j = 1; j < ty; j++) {
+      for (i = 1; i < tx; i++) {
          local = cell[i][j].local;
-         path1 = cell[i - 1][j].global +weight.val[0] * local;
-         path2 = cell[i - 1][j - 1].global +weight.val[1] * local;
-         path3 = cell[i][j - 1].global +weight.val[2] * local;
+         path1 = cell[i - 1][j].global +weight[0] * local;
+         path2 = cell[i - 1][j - 1].global +weight[1] * local;
+         path3 = cell[i][j - 1].global +weight[2] * local;
          cell[i][j].backptr[0] = i - 1;
          cell[i][j].backptr[1] = j;
          min = path1;
@@ -751,33 +749,33 @@ void recursive_calc_type_2(DTW_Table * table)
          cell[i][j].global = min;
       }
    }
-   cell[Tx - 1][Ty - 1].global /=(Tx + Ty);
+   cell[tx - 1][ty - 1].global /=(tx + ty);
 }
 
-void recursive_calc_type_3(DTW_Table * table)
+void calc_global_cost_type_3(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
    double local, min = 0.0, path1, path2;
-   DTW_Cell **cell = table->cell;
-   WEIGHT weight = table->weight;
+   Dtw_Cell **cell = table->cell;
+   double *weight = table->weight;
 
-   for (i = 1; i < Tx; i++) {
+   for (i = 1; i < tx; i++) {
       if (cell[i][0].is_region == PATH_OK) {
          cell[i][0].global =
-             cell[i - 1][0].global +weight.val[0] * cell[i][0].local;
+             cell[i - 1][0].global +weight[0] * cell[i][0].local;
          cell[i][0].backptr[0] = i - 1;
          cell[i][0].backptr[1] = 0;
       }
    }
-   for (j = 1; j < Ty; j++) {
-      for (i = 1; i < Tx; i++) {
+   for (j = 1; j < ty; j++) {
+      for (i = 1; i < tx; i++) {
          local = cell[i][j].local;
          if (cell[i][j].is_region == PATH_OK) {
-            path1 = cell[i - 1][j].global +weight.val[0] * local;
-            path2 = cell[i - 1][j - 1].global +weight.val[1] * local;
+            path1 = cell[i - 1][j].global +weight[0] * local;
+            path2 = cell[i - 1][j - 1].global +weight[1] * local;
 
             switch (cell[i][j].allow_path) {
-            case P1:
+            case 1:
                min = path1;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j;
@@ -788,12 +786,12 @@ void recursive_calc_type_3(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P2:
+            case 2:
                cell[i][j].global = path1;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j;
                break;
-            case P3:
+            case 3:
                cell[i][j].global = path2;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
@@ -803,56 +801,56 @@ void recursive_calc_type_3(DTW_Table * table)
          }
       }
    }
-   cell[Tx - 1][Ty - 1].global /=(Tx + Ty);
+   cell[tx - 1][ty - 1].global /=(tx + ty);
 }
 
-void recursive_calc_type_4(DTW_Table * table)
+void calc_global_cost_type_4(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
    double local = 0.0, min = 0.0, path1, path2, path3;
-   DTW_Cell **cell = table->cell;
-   WEIGHT weight = table->weight;
+   Dtw_Cell **cell = table->cell;
+   double *weight = table->weight;
 
-   for (i = 1; i < Tx; i++) {
+   for (i = 1; i < tx; i++) {
       if (cell[i][0].is_region == PATH_OK) {
          cell[i][0].global =
-             cell[i - 1][0].global +weight.val[0] * cell[i][0].local;
+             cell[i - 1][0].global +weight[0] * cell[i][0].local;
          cell[i][0].backptr[0] = i - 1;
          cell[i][0].backptr[1] = 0;
       }
    }
 
-   cell[1][1].global = cell[0][0].global +weight.val[1] * cell[1][1].local;
+   cell[1][1].global = cell[0][0].global +weight[1] * cell[1][1].local;
    cell[1][1].backptr[0] = 0;
    cell[1][1].backptr[1] = 0;
 
-   for (i = 1; i < Tx; i++) {
+   for (i = 1; i < tx; i++) {
       if (cell[i][1].is_region == PATH_OK) {
-         min = cell[i - 1][1].global +weight.val[0] * local;
+         min = cell[i - 1][1].global +weight[0] * local;
          cell[i][1].backptr[0] = i - 1;
          cell[i][1].backptr[1] = 1;
-         if (min >= cell[i - 1][0].global +weight.val[1] * local) {
-            min = cell[i - 1][0].global +weight.val[1] * local;
+         if (min >= cell[i - 1][0].global +weight[1] * local) {
+            min = cell[i - 1][0].global +weight[1] * local;
             cell[i][1].backptr[0] = i - 1;
             cell[i][1].backptr[1] = 0;
          }
          cell[i][1].global = min;
       }
    }
-   cell[1][2].global = cell[0][0].global +weight.val[2] * cell[1][2].local;
+   cell[1][2].global = cell[0][0].global +weight[2] * cell[1][2].local;
    cell[1][2].backptr[0] = 0;
    cell[1][2].backptr[1] = 0;
 
-   for (j = 2; j < Ty; j++) {
-      for (i = 2; i < Tx; i++) {
+   for (j = 2; j < ty; j++) {
+      for (i = 2; i < tx; i++) {
          local = cell[i][j].local;
          if (cell[i][j].is_region == PATH_OK) {
-            path1 = cell[i - 1][j].global +weight.val[0] * local;
-            path2 = cell[i - 1][j - 1].global +weight.val[1] * local;
-            path3 = cell[i - 1][j - 2].global +weight.val[2] * local;
+            path1 = cell[i - 1][j].global +weight[0] * local;
+            path2 = cell[i - 1][j - 1].global +weight[1] * local;
+            path3 = cell[i - 1][j - 2].global +weight[2] * local;
 
             switch (cell[i][j].allow_path) {
-            case P1:
+            case 1:
                min = path1;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j;
@@ -868,7 +866,7 @@ void recursive_calc_type_4(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P2:
+            case 2:
                min = path1;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j;
@@ -879,7 +877,7 @@ void recursive_calc_type_4(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P3:
+            case 3:
                min = path2;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
@@ -890,12 +888,12 @@ void recursive_calc_type_4(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P4:
+            case 4:
                cell[i][j].global = path2;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
                break;
-            case P5:
+            case 5:
                cell[i][j].global = path3;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 2;
@@ -906,45 +904,41 @@ void recursive_calc_type_4(DTW_Table * table)
          }
       }
    }
-   cell[Tx - 1][Ty - 1].global /=(Tx + Ty);
+   cell[tx - 1][ty - 1].global /=(tx + ty);
 }
 
-void recursive_calc_type_5(DTW_Table * table)
+void calc_global_cost_type_5(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
-   double local = 0.0, min = 0.0, path1, path2, path3;
-   DTW_Cell **cell = table->cell;
-   WEIGHT weight = table->weight;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
+   double min = 0.0, path1, path2, path3;
+   Dtw_Cell **cell = table->cell;
+   double *weight = table->weight;
 
-   cell[2][1].global = cell[0][0].global +weight.val[0] * cell[1][1].local +
-       weight.val[1] * cell[2][1].local;
+   cell[2][1].global = cell[0][0].global +weight[0] * cell[1][1].local +
+       weight[1] * cell[2][1].local;
    cell[2][1].backptr[0] = 0;
    cell[2][1].backptr[1] = 0;
 
-   cell[1][1].global = cell[0][0].global +weight.val[2] * cell[1][1].local;
+   cell[1][1].global = cell[0][0].global +weight[2] * cell[1][1].local;
    cell[1][1].backptr[0] = 0;
    cell[1][1].backptr[1] = 0;
 
-   cell[1][2].global = cell[0][0].global +weight.val[3] * cell[1][1].local +
-       weight.val[4] * cell[1][2].local;
+   cell[1][2].global = cell[0][0].global +weight[3] * cell[1][1].local +
+       weight[4] * cell[1][2].local;
    cell[1][2].backptr[0] = 0;
    cell[1][2].backptr[1] = 0;
 
-   for (j = 2; j < Ty - 1; j++) {
-      for (i = 2; i < Tx - 1; i++) {
-         local = cell[i][j].local;
+   for (j = 2; j < ty - 1; j++) {
+      for (i = 2; i < tx - 1; i++) {
          if (cell[i][j].is_region == PATH_OK) {
             path1 = cell[i - 2][j - 1].global +
-                weight.val[0] * cell[i - 1][j].local +
-                weight.val[1] * cell[i][j].local;
-            path2 = cell[i - 1][j - 1].global +
-                weight.val[2] * cell[i][j].local;
+                weight[0] * cell[i - 1][j].local + weight[1] * cell[i][j].local;
+            path2 = cell[i - 1][j - 1].global +weight[2] * cell[i][j].local;
             path3 = cell[i - 1][j - 2].global +
-                weight.val[3] * cell[i][j - 1].local +
-                weight.val[4] * cell[i][j].local;
+                weight[3] * cell[i][j - 1].local + weight[4] * cell[i][j].local;
 
             switch (cell[i][j].allow_path) {
-            case P1:
+            case 1:
                min = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
@@ -960,7 +954,7 @@ void recursive_calc_type_5(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P2:
+            case 2:
                min = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
@@ -971,7 +965,7 @@ void recursive_calc_type_5(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P3:
+            case 3:
                min = path2;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
@@ -982,17 +976,17 @@ void recursive_calc_type_5(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P4:
+            case 4:
                cell[i][j].global = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
                break;
-            case P5:
+            case 5:
                cell[i][j].global = path2;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
                break;
-            case P6:
+            case 6:
                cell[i][j].global = path3;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 2;
@@ -1003,40 +997,40 @@ void recursive_calc_type_5(DTW_Table * table)
          }
       }
    }
-   cell[Tx - 1][Ty - 1].backptr[0] = Tx - 2;
-   cell[Tx - 1][Ty - 1].backptr[1] = Ty - 2;
-   cell[Tx - 1][Ty - 1].global = cell[Tx - 2][Ty - 2].global /(Tx + Ty);
+   cell[tx - 1][ty - 1].backptr[0] = tx - 2;
+   cell[tx - 1][ty - 1].backptr[1] = ty - 2;
+   cell[tx - 1][ty - 1].global = cell[tx - 2][ty - 2].global /(tx + ty);
 }
 
-void recursive_calc_type_6(DTW_Table * table)
+void calc_global_cost_type_6(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
    double local = 0.0, min = 0.0, path1, path2, path3;
-   DTW_Cell **cell = table->cell;
-   WEIGHT weight = table->weight;
+   Dtw_Cell **cell = table->cell;
+   double *weight = table->weight;
 
-   cell[2][1].global = cell[0][0].global +weight.val[0] * cell[2][1].local;
+   cell[2][1].global = cell[0][0].global +weight[0] * cell[2][1].local;
    cell[2][1].backptr[0] = 0;
    cell[2][1].backptr[1] = 0;
 
-   cell[1][1].global = cell[0][0].global +weight.val[1] * cell[1][1].local;
+   cell[1][1].global = cell[0][0].global +weight[1] * cell[1][1].local;
    cell[1][1].backptr[0] = 0;
    cell[1][1].backptr[1] = 0;
 
-   cell[1][2].global = cell[0][0].global +weight.val[2] * cell[1][2].local;
+   cell[1][2].global = cell[0][0].global +weight[2] * cell[1][2].local;
    cell[1][2].backptr[0] = 0;
    cell[1][2].backptr[1] = 0;
 
-   for (j = 2; j < Ty; j++) {
-      for (i = 2; i < Tx; i++) {
+   for (j = 2; j < ty; j++) {
+      for (i = 2; i < tx; i++) {
          local = cell[i][j].local;
          if (cell[i][j].is_region == PATH_OK) {
-            path1 = cell[i - 2][j - 1].global +weight.val[0] * local;
-            path2 = cell[i - 1][j - 1].global +weight.val[1] * local;
-            path3 = cell[i - 1][j - 2].global +weight.val[2] * local;
+            path1 = cell[i - 2][j - 1].global +weight[0] * local;
+            path2 = cell[i - 1][j - 1].global +weight[1] * local;
+            path3 = cell[i - 1][j - 2].global +weight[2] * local;
 
             switch (cell[i][j].allow_path) {
-            case P1:
+            case 1:
                min = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
@@ -1052,7 +1046,7 @@ void recursive_calc_type_6(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P2:
+            case 2:
                min = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
@@ -1063,7 +1057,7 @@ void recursive_calc_type_6(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P3:
+            case 3:
                min = path2;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
@@ -1074,17 +1068,17 @@ void recursive_calc_type_6(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P4:
+            case 4:
                cell[i][j].global = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
                break;
-            case P5:
+            case 5:
                cell[i][j].global = path2;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
                break;
-            case P6:
+            case 6:
                cell[i][j].global = path3;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 2;
@@ -1095,42 +1089,42 @@ void recursive_calc_type_6(DTW_Table * table)
          }
       }
    }
-   cell[Tx - 1][Ty - 1].global /=(Tx + Ty);
+   cell[tx - 1][ty - 1].global /=(tx + ty);
 }
 
-void recursive_calc_type_7(DTW_Table * table)
+void calc_global_cost_type_7(Dtw_Table * table)
 {
-   int i, j, Tx = table->data[0].total, Ty = table->data[1].total;
+   int i, j, tx = table->data[0].total, ty = table->data[1].total;
    double local = 0.0, min = 0.0, path1, path2, path3, path4;
-   DTW_Cell **cell = table->cell;
-   WEIGHT weight = table->weight;
+   Dtw_Cell **cell = table->cell;
+   double *weight = table->weight;
 
-   cell[1][1].global = cell[0][0].global +weight.val[4] * cell[1][1].local;
+   cell[1][1].global = cell[0][0].global +weight[4] * cell[1][1].local;
    cell[1][1].backptr[0] = 0;
    cell[1][1].backptr[1] = 0;
 
-   cell[1][2].global = cell[0][0].global +weight.val[5] * cell[1][2].local;
+   cell[1][2].global = cell[0][0].global +weight[5] * cell[1][2].local;
    cell[1][2].backptr[0] = 0;
    cell[1][2].backptr[1] = 0;
 
-   cell[2][1].global = cell[0][0].global +weight.val[0] * cell[1][1].local +
-       weight.val[1] * cell[2][1].local;
+   cell[2][1].global = cell[0][0].global +weight[0] * cell[1][1].local +
+       weight[1] * cell[2][1].local;
    cell[2][1].backptr[0] = 0;
    cell[2][1].backptr[1] = 0;
 
-   for (j = 2; j < Ty - 1; j++) {
-      for (i = 2; i < Tx - 1; i++) {
+   for (j = 2; j < ty - 1; j++) {
+      for (i = 2; i < tx - 1; i++) {
          local = cell[i][j].local;
          if (cell[i][j].is_region == PATH_OK) {
             path1 = cell[i - 2][j - 1].global +
-                weight.val[0] * cell[i - 1][j].local + weight.val[1] * local;
+                weight[0] * cell[i - 1][j].local + weight[1] * local;
             path2 = cell[i - 2][j - 2].global +
-                weight.val[2] * cell[i - 1][j].local + weight.val[3] * local;
-            path3 = cell[i - 1][j - 1].global +weight.val[4] * local;
-            path4 = cell[i - 1][j - 2].global +weight.val[5] * local;
+                weight[2] * cell[i - 1][j].local + weight[3] * local;
+            path3 = cell[i - 1][j - 1].global +weight[4] * local;
+            path4 = cell[i - 1][j - 2].global +weight[5] * local;
 
             switch (cell[i][j].allow_path) {
-            case P1:
+            case 1:
                min = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
@@ -1151,7 +1145,7 @@ void recursive_calc_type_7(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P2:
+            case 2:
                min = path2;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 2;
@@ -1167,7 +1161,7 @@ void recursive_calc_type_7(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P3:
+            case 3:
                min = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
@@ -1183,7 +1177,7 @@ void recursive_calc_type_7(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P4:
+            case 4:
                min = path3;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
@@ -1194,7 +1188,7 @@ void recursive_calc_type_7(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P5:
+            case 5:
                min = path2;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 2;
@@ -1205,7 +1199,7 @@ void recursive_calc_type_7(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P6:
+            case 6:
                min = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
@@ -1216,17 +1210,17 @@ void recursive_calc_type_7(DTW_Table * table)
                }
                cell[i][j].global = min;
                break;
-            case P7:
+            case 7:
                cell[i][j].global = path1;
                cell[i][j].backptr[0] = i - 2;
                cell[i][j].backptr[1] = j - 1;
                break;
-            case P8:
+            case 8:
                cell[i][j].global = path3;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 1;
                break;
-            case P9:
+            case 9:
                cell[i][j].global = path4;
                cell[i][j].backptr[0] = i - 1;
                cell[i][j].backptr[1] = j - 2;
@@ -1237,34 +1231,34 @@ void recursive_calc_type_7(DTW_Table * table)
          }
       }
    }
-   cell[Tx - 1][Ty - 1].backptr[0] = Tx - 2;
-   cell[Tx - 1][Ty - 1].backptr[1] = Ty - 2;
-   cell[Tx - 1][Ty - 1].global = cell[Tx - 2][Ty - 2].global /Tx;
+   cell[tx - 1][ty - 1].backptr[0] = tx - 2;
+   cell[tx - 1][ty - 1].backptr[1] = ty - 2;
+   cell[tx - 1][ty - 1].global = cell[tx - 2][ty - 2].global /tx;
 }
 
 /* Check and mark region where global cost can be calculated */
-void check_enabled_region(DTW_Table * table)
+void check_enabled_region(Dtw_Table * table)
 {
    switch (table->path) {
-   case I:                     /* horizontal and vertical */
+   case 1:                     /* horizontal and vertical */
       check_enabled_region_type_1(table);
       break;
-   case II:                    /* horizontal, oblique and vertical */
+   case 2:                     /* horizontal, oblique and vertical */
       check_enabled_region_type_2(table);
       break;
-   case III:                   /* horizontal and oblique */
+   case 3:                     /* horizontal and oblique */
       check_enabled_region_type_3(table);
       break;
-   case IV:                    /* horizontal, oblique1, oblique2 */
+   case 4:                     /* horizontal, oblique1, oblique2 */
       check_enabled_region_type_4(table);
       break;
-   case V:                     /* default */
+   case 5:                     /* default */
       check_enabled_region_type_5(table);
       break;
-   case VI:
+   case 6:
       check_enabled_region_type_6(table);
       break;
-   case VII:
+   case 7:
       check_enabled_region_type_7(table);
       break;
    default:
@@ -1273,35 +1267,35 @@ void check_enabled_region(DTW_Table * table)
 }
 
 /* Calculate local cost */
-void calc_local_cost(DTW_Table * table)
+void calc_local_cost(Dtw_Table * table)
 {
-   int i, j, d, D = table->data[0].dim;
+   int i, j, d, tdd = table->data[0].dim;
    double sum;
-   DTW_Cell **cell = table->cell;
-   DATA *data = table->data;
-   enum Norm norm = table->norm;
+   Dtw_Cell **cell = table->cell;
+   Data *data = table->data;
+   int norm = table->norm;
 
    switch (norm) {
-   case L1:
+   case 1:
       for (i = 0; i < data[0].total; i++) {
          for (j = 0; j < data[1].total; j++) {
             if (cell[i][j].is_region == PATH_OK) {
-               for (d = 0, sum = 0.0; d < D; d++) {
-                  sum += fabs(data[0].input[i * D + d] -
-                              data[1].input[j * D + d]);
+               for (d = 0, sum = 0.0; d < tdd; d++) {
+                  sum += fabs(data[0].input[i * tdd + d] -
+                              data[1].input[j * tdd + d]);
                }
                cell[i][j].local = sum;
             }
          }
       }
       break;
-   case L2:
+   case 2:
       for (i = 0; i < data[0].total; i++) {
          for (j = 0; j < data[1].total; j++) {
             if (cell[i][j].is_region == PATH_OK) {
-               for (d = 0, sum = 0.0; d < D; d++) {
-                  sum += pow((data[0].input[i * D + d] -
-                              data[1].input[j * D + d]), 2);
+               for (d = 0, sum = 0.0; d < tdd; d++) {
+                  sum += pow((data[0].input[i * tdd + d] -
+                              data[1].input[j * tdd + d]), 2);
                }
                cell[i][j].local = sqrt(sum);
             }
@@ -1314,33 +1308,33 @@ void calc_local_cost(DTW_Table * table)
 }
 
 /* Calculate global cost recursively */
-void recursive_calc(DTW_Table * table)
+void calc_global_cost(Dtw_Table * table)
 {
    table->cell[0][0].global = table->cell[0][0].local;
    table->cell[0][0].backptr[0] = -1;
    table->cell[0][0].backptr[1] = -1;
 
    switch (table->path) {
-   case I:
-      recursive_calc_type_1(table);
+   case 1:
+      calc_global_cost_type_1(table);
       break;
-   case II:
-      recursive_calc_type_2(table);
+   case 2:
+      calc_global_cost_type_2(table);
       break;
-   case III:
-      recursive_calc_type_3(table);
+   case 3:
+      calc_global_cost_type_3(table);
       break;
-   case IV:
-      recursive_calc_type_4(table);
+   case 4:
+      calc_global_cost_type_4(table);
       break;
-   case V:
-      recursive_calc_type_5(table);
+   case 5:
+      calc_global_cost_type_5(table);
       break;
-   case VI:
-      recursive_calc_type_6(table);
+   case 6:
+      calc_global_cost_type_6(table);
       break;
-   case VII:
-      recursive_calc_type_7(table);
+   case 7:
+      calc_global_cost_type_7(table);
       break;
    default:
       break;
@@ -1348,29 +1342,29 @@ void recursive_calc(DTW_Table * table)
 }
 
 /* Obtain Viterbi path */
-void back_trace(DTW_Table * table)
+void get_viterbi_path(Dtw_Table * table)
 {
-   int k, l, Tx = table->data[0].total, Ty = table->data[1].total,
+   int k, l, tx = table->data[0].total, ty = table->data[1].total,
        *back_x, *back_y, *phi_x, *phi_y;
-   DTW_Cell **cell = table->cell;
-   DATA *data = table->data;
-   enum PATH path = table->path;
+   Dtw_Cell **cell = table->cell;
+   Data *data = table->data;
+   int path = table->path;
 
-   back_x = (int *) malloc(sizeof(int) * (Tx + Ty));
-   back_y = (int *) malloc(sizeof(int) * (Tx + Ty));
+   back_x = (int *) malloc(sizeof(int) * (tx + ty));
+   back_y = (int *) malloc(sizeof(int) * (tx + ty));
 
-   phi_x = (int *) malloc(sizeof(int) * (Tx + Ty));
-   phi_y = (int *) malloc(sizeof(int) * (Tx + Ty));
+   phi_x = (int *) malloc(sizeof(int) * (tx + ty));
+   phi_y = (int *) malloc(sizeof(int) * (tx + ty));
 
-   back_x[0] = phi_x[0] = Tx - 1;
-   back_y[0] = phi_y[0] = Ty - 1;
+   back_x[0] = phi_x[0] = tx - 1;
+   back_y[0] = phi_y[0] = ty - 1;
    k = l = 1;
 
    while (back_x[l - 1] != 0 && back_y[l - 1] != 0) {
       back_x[l] = cell[back_x[l - 1]][back_y[l - 1]].backptr[0];
       back_y[l] = cell[back_x[l - 1]][back_y[l - 1]].backptr[1];
       switch (path) {
-      case V:
+      case 5:
          if (back_x[l - 1] - back_x[l] == 2 && back_y[l - 1] - back_y[l] == 1) {
             phi_x[k] = back_x[l - 1] - 1;
             phi_y[k] = back_y[l - 1];
@@ -1391,7 +1385,7 @@ void back_trace(DTW_Table * table)
             k += 2;
          }
          break;
-      case VII:
+      case 7:
          if (back_x[l - 1] - back_x[l] == 2 && back_y[l - 1] - back_y[l] == 1) {
             phi_x[k] = back_x[l - 1] - 1;
             phi_y[k] = back_y[l - 1];
@@ -1439,12 +1433,12 @@ void back_trace(DTW_Table * table)
 }
 
 /* Concatenate two input vectors along Viterbi path */
-double *concat(DTW_Table * table)
+double *concatenate(Dtw_Table * table)
 {
    double *concat;
    int i, j, size = table->vit_leng,
        dim = table->data[0].dim + table->data[1].dim;
-   DATA *data = table->data;
+   Data *data = table->data;
 
    concat = dgetmem(size * dim);
 
@@ -1463,7 +1457,7 @@ double *concat(DTW_Table * table)
 }
 
 /* Perform dynamic time warping */
-void dtw(DTW_Table * table, double **output)
+void dtw(Dtw_Table * table, double **output)
 {
    /* Check and mark region where global cost can be calculated */
    check_enabled_region(table);
@@ -1472,13 +1466,13 @@ void dtw(DTW_Table * table, double **output)
    calc_local_cost(table);
 
    /* Calculate global cost recursively */
-   recursive_calc(table);
+   calc_global_cost(table);
 
    /* Obtain Viterbi path */
-   back_trace(table);
+   get_viterbi_path(table);
 
    /* Concatenate two input vectors along Viterbi path */
-   *output = concat(table);
+   *output = concatenate(table);
 }
 
 void usage(int status)
@@ -1490,32 +1484,37 @@ void usage(int status)
    fprintf(stderr, "       %s [ options ] reffile [ infile ] > stdout\n", cmnd);
    fprintf(stderr, "  options:\n");
    fprintf(stderr,
-           "       -m M      : order of vector                      [%d]\n",
+           "       -m M         : order of vector                      [%d]\n",
            LENG);
    fprintf(stderr,
-           "       -l L      : dimension of vector                  [m+1]\n");
+           "       -l L         : dimension of vector                  [m+1]\n");
    fprintf(stderr,
-           "       -t T      : number of test vectors               [N/A]\n");
+           "       -t T         : number of test vectors               [N/A]\n");
    fprintf(stderr,
-           "       -r R      : number of reference vectors          [N/A]\n");
+           "       -r R         : number of reference vectors          [N/A]\n");
    fprintf(stderr,
-           "       -n N      : type of norm used for calculation    [%d]\n",
-           L2);
-   fprintf(stderr, "                   of local cost\n");
+           "       -n N         : type of norm used for calculation    [2]\n");
+   fprintf(stderr, "                      of local cost\n");
    fprintf(stderr, "                      N = 1 : L1-norm\n");
    fprintf(stderr, "                      N = 2 : L2-norm\n");
    fprintf(stderr,
-           "       -p P      : local path constraint                [%d]\n", V);
+           "       -p P         : local path constraint                [5]\n");
    fprintf(stderr,
-           "       -s sfile  : output score of dynamic time warping [FALSE]\n");
-   fprintf(stderr, "                   to sfile \n");
+           "       -s sfile     : output score of dynamic time warping [FALSE]\n");
+   fprintf(stderr, "                      to sfile \n");
    fprintf(stderr,
-           "       -v vfile  : output frame number sequence         [FALSE]\n");
-   fprintf(stderr, "                   along the Viterbi path\n");
-   fprintf(stderr, "       -h        : print this message\n");
+           "       -v out_vfile : output frame number sequence         [FALSE]\n");
+   fprintf(stderr, "                      along the Viterbi path\n");
+   fprintf(stderr,
+           "       -V in_vfile  : concatenate test and reference       [FALSE]\n");
+   fprintf(stderr, "                      vectors in accordance with the\n");
+   fprintf(stderr,
+           "                      Viterbi path information written in\n");
+   fprintf(stderr, "                      in_vfile\n");
+   fprintf(stderr, "       -h           : print this message\n");
    fprintf(stderr, "  infile:\n");
    fprintf(stderr,
-           "       test vector sequence (%s)                     [stdin]\n",
+           "       test vector sequence (%s)                        [stdin]\n",
            FORMAT);
    fprintf(stderr, "  reffile:\n");
    fprintf(stderr,
@@ -1534,14 +1533,17 @@ void usage(int status)
 
 int main(int argc, char *argv[])
 {
-   char *infile2 = NULL, *Scorefile = NULL, *Viterbifile = NULL;
-   int i, dim = LENG, num_test, num_ref, length_test = 0, length_ref = 0;
+   char *infile2 = NULL, *scorefile = NULL, *viterbifile =
+       NULL, *viterbifile2 = NULL;
+   int i, dim = LENG, num_test, num_ref, length_test = 0, length_ref =
+       0, total, *viterbi = NULL;
    double *x = NULL, *y = NULL, *z = NULL;
-   enum Norm norm_type = L2;
-   enum PATH path_type = V;
-   FILE *fp = stdin, *fp2 = NULL, *fpScore = NULL, *fpViterbi = NULL;
-   Boolean outscore = FA, outViterbi = FA;
-   DTW_Table table;
+   int norm_type = 2;
+   int path_type = 5;
+   FILE *fp = stdin, *fp2 = NULL, *fp_score = NULL, *fp_viterbi =
+       NULL, *fp_viterbi2 = NULL;
+   Boolean outscore = FA, outviterbi = FA, joint = FA;
+   Dtw_Table table;
 
    if ((cmnd = strrchr(argv[0], '/')) == NULL) {
       cmnd = argv[0];
@@ -1568,23 +1570,29 @@ int main(int argc, char *argv[])
             --argc;
             break;
          case 'n':
-            norm_type = (enum PATH) atoi(*++argv);
+            norm_type = atoi(*++argv);
             --argc;
             break;
          case 'p':
-            path_type = (enum PATH) atoi(*++argv);
+            path_type = atoi(*++argv);
             --argc;
             break;
          case 's':
-            Scorefile = *++argv;
-            fpScore = getfp(Scorefile, "wb");
+            scorefile = *++argv;
+            fp_score = getfp(scorefile, "wb");
             outscore = TR;
             --argc;
             break;
          case 'v':
-            Viterbifile = *++argv;
-            fpViterbi = getfp(Viterbifile, "wb");
-            outViterbi = TR;
+            viterbifile = *++argv;
+            fp_viterbi = getfp(viterbifile, "wb");
+            outviterbi = TR;
+            --argc;
+            break;
+         case 'V':
+            viterbifile2 = *++argv;
+            fp_viterbi2 = getfp(viterbifile2, "rb");
+            joint = TR;
             --argc;
             break;
          case 'h':
@@ -1607,11 +1615,11 @@ int main(int argc, char *argv[])
       usage(EXIT_FAILURE);
    }
 
-   if (outscore == TR && fpScore == NULL) {
+   if (outscore == TR && fp_score == NULL) {
       fprintf(stderr, "%s : output file name must be specified !\n", cmnd);
       usage(EXIT_FAILURE);
    }
-   if (outViterbi == TR && fpViterbi == NULL) {
+   if (outviterbi == TR && fp_viterbi == NULL) {
       fprintf(stderr, "%s : output file name must be specified !\n", cmnd);
       usage(EXIT_FAILURE);
    }
@@ -1619,29 +1627,45 @@ int main(int argc, char *argv[])
    x = read_input(fp, dim, &num_test);  /* test vectors */
    y = read_input(fp2, dim, &num_ref);  /* reference vectors */
 
-   if (length_test != 0) {      /* if -t option is specified */
-      num_test = length_test;
-   }
-   if (length_ref != 0) {       /* if -r option is specified */
-      num_ref = length_ref;
-   }
+   if (joint == TR) {
+      fseek(fp_viterbi2, 0, SEEK_END);
+      total = (int) ((double) ftell(fp_viterbi2) / (double) sizeof(total));
+      rewind(fp_viterbi2);
+      viterbi = (int *) getmem(total, sizeof(*viterbi));
+      freadx(viterbi, total, sizeof(*viterbi), fp_viterbi2);
+      fclose(fp_viterbi2);
 
-   /* Initialize */
-   init_dtw(&table, dim, x, y, num_test, num_ref, path_type, norm_type);
+      /* make joint vector sequence along Viterbi path */
+      for (i = 0; i < total / 2; i++) {
+         fwritef(x + dim * viterbi[2 * i], sizeof(*x), dim, stdout);
+         fwritef(y + dim * viterbi[2 * i + 1], sizeof(*y), dim, stdout);
+      }
+      free(viterbi);
+   } else {
+      if (length_test != 0) {   /* if -t option is specified */
+         num_test = length_test;
+      }
+      if (length_ref != 0) {    /* if -r option is specified */
+         num_ref = length_ref;
+      }
 
-   /* Perform dynamic time warping */
-   dtw(&table, &z);
+      /* Initialize */
+      init_dtw(&table, dim, x, y, num_test, num_ref, path_type, norm_type);
 
-   /* output */
-   fwritef(z, sizeof(*z), table.vit_leng * 2 * dim, stdout);
-   if (outscore == TR) {
-      fwritef(&table.cell[num_test - 1][num_ref - 1].global,
-              sizeof(double), 1, fpScore);
-   }
-   if (outViterbi == TR) {
-      for (i = 0; i < table.vit_leng; i++) {
-         fwrite(table.data[0].viterbi + i, sizeof(int), 1, fpViterbi);
-         fwrite(table.data[1].viterbi + i, sizeof(int), 1, fpViterbi);
+      /* Perform dynamic time warping */
+      dtw(&table, &z);
+
+      /* output */
+      fwritef(z, sizeof(*z), table.vit_leng * 2 * dim, stdout);
+      if (outscore == TR) {
+         fwritef(&table.cell[num_test - 1][num_ref - 1].global,
+                 sizeof(double), 1, fp_score);
+      }
+      if (outviterbi == TR) {
+         for (i = 0; i < table.vit_leng; i++) {
+            fwrite(table.data[0].viterbi + i, sizeof(int), 1, fp_viterbi);
+            fwrite(table.data[1].viterbi + i, sizeof(int), 1, fp_viterbi);
+         }
       }
    }
 

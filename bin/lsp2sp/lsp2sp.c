@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -56,7 +56,7 @@
 *               -l l     :  frame length                [256]           *
 *               -L       :  regard input log gain as linear one  [FALSE]*
 *               -k       :  input gain                  [TRUE]          *
-*               -i i     :  input format                [0]             *
+*               -q q     :  input format                [0]             *
 *                             0 (normalized frequency <0...pi)>         *
 *                             1 (normalized frequency <0...0.5>)        *
 *                             2 (frequency (kHz))                       *
@@ -77,7 +77,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: lsp2sp.c,v 1.2 2013/12/16 09:01:59 mataki Exp $";
+static char *rcs_id = "$Id: lsp2sp.c,v 1.6 2014/12/11 08:30:40 uratec Exp $";
 
 
 /*  Standard C Libraries  */
@@ -137,7 +137,7 @@ void usage(int status)
    fprintf(stderr,
            "       -k    : input gain                            [TRUE]\n");
    fprintf(stderr,
-           "       -i i  : input format                          [%d]\n",
+           "       -q q  : input format                          [%d]\n",
            ITYPE);
    fprintf(stderr, "                 0 (normalized frequency <0...pi>)\n");
    fprintf(stderr, "                 1 (normalized frequency <0...0.5>)\n");
@@ -184,6 +184,7 @@ int main(int argc, char **argv)
          case 's':
          case 'l':
          case 'i':
+         case 'q':
          case 'o':
             if (isdigit(**(argv + 1)) == 0) {
                if ((**(argv + 1)) != '+') {
@@ -205,7 +206,7 @@ int main(int argc, char **argv)
                sampling = atof(*++argv);
             else if ((*(*argv + 1)) == 'l')
                leng = atoi(*++argv);
-            else if ((*(*argv + 1)) == 'i')
+            else if ((*(*argv + 1)) == 'i' || (*(*argv + 1)) == 'q')
                itype = atoi(*++argv);
             else if ((*(*argv + 1)) == 'o')
                otype = atoi(*++argv);
@@ -264,6 +265,9 @@ int main(int argc, char **argv)
       }
       fwritef(x, sizeof(*x), no, stdout);
    }
+
+   free(x);
+   free(lsp);
 
    return (0);
 }

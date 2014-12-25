@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -77,7 +77,7 @@
 *                                                                         *
 ***************************************************************************/
 
-static char *rcs_id = "$Id: vopr.c,v 1.26 2013/12/16 09:02:05 mataki Exp $";
+static char *rcs_id = "$Id: vopr.c,v 1.28 2014/12/11 08:30:51 uratec Exp $";
 
 
 /*  Standard C Libraries  */
@@ -168,7 +168,7 @@ void usage(int status)
    fprintf(stderr, "       data vectors (%s)\n", FORMAT);
    fprintf(stderr, "  stdout:\n");
    fprintf(stderr, "       data vectors after operations (float)\n");
-   fprintf(stderr, "  note:\n");
+   fprintf(stderr, "  notice:\n");
    fprintf(stderr, "       When both -l and -n are specified,\n");
    fprintf(stderr, "       latter argument is adopted.\n");
    fprintf(stderr, "\n");

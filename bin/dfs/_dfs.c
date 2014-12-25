@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /************************************************************************
-    $Id: _dfs.c,v 1.15 2013/12/16 09:01:55 mataki Exp $                        
+    $Id: _dfs.c,v 1.16 2014/12/11 08:30:33 uratec Exp $                        
         Standard Form Digital Filter               
         latice digital filter                  
             double dfs(x, a, m, b, n, buf, bufp)         

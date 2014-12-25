@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -59,6 +59,8 @@
 *               -R n Wf1 Wb1 [Wf2 Wb2] : order and width of regression coefficients   [N/A]  *
 *               -M magic               : magic number                                 [N/A]  *
 *               -n N                   : order of regression polynomial               [N/A]  *
+*               -e e                   : small value added to diagonal component      [0.0]  *
+*                                        for calculating regression coefficients             *
 *       infile:                                                                              *
 *              static feature sequence                                                       *
 *                      x_1(1), ..., x_1(L), x_2(1), ..., x_2(L), x_3(1), ...                 *
@@ -68,7 +70,7 @@
 *                                                                                            *
 **********************************************************************************************/
 
-static char *rcs_id = "$Id: delta.c,v 1.20 2013/12/16 09:01:55 mataki Exp $";
+static char *rcs_id = "$Id: delta.c,v 1.23 2014/12/11 08:30:33 uratec Exp $";
 
 
 /*  Standard C Libraries  */
@@ -99,6 +101,7 @@ static char *rcs_id = "$Id: delta.c,v 1.20 2013/12/16 09:01:55 mataki Exp $";
 #define MAGIC_FLAG FA
 #define POLYNOMIAL_ORDER -1
 #define POLY_FLAG FA
+#define FLOOR 0.0
 
 char *BOOL[] = { "FALSE", "TRUE" };
 
@@ -166,6 +169,13 @@ void usage(int status)
            "                                    Order must be less than or\n");
    fprintf(stderr,
            "                                    equal to the max of (Wfn + Wbn).\n");
+   fprintf(stderr,
+           "       -e e                       : small value added to            [%g]\n",
+           FLOOR);
+   fprintf(stderr,
+           "                                    diagonal component for  \n");
+   fprintf(stderr,
+           "                                    calculating regression coefficients \n");
    fprintf(stderr, "       -h                         : print this message\n");
    fprintf(stderr, "  infile:\n");
    fprintf(stderr,
@@ -184,7 +194,8 @@ void usage(int status)
 /* calculate regression polynomial coefficients */
 void get_coef(double *input, double *output, int dw_num,
               int *position, int non_magic_frame, int total, int length,
-              int *win_size_forward, int *win_size_backward, int poly_order)
+              int *win_size_forward, int *win_size_backward, int poly_order,
+              double floor)
 {
    int i, j, k, l, t, d, ind = 0, index = 0, width = 0, input_val = 0,
        num_points = 0, num_order = 0, max_points = 0,
@@ -263,7 +274,11 @@ void get_coef(double *input, double *output, int dw_num,
                }
             }
          }
-
+         if (floor != 0.0) {
+            for (i = 0; i < num_order + 1; i++) {
+               AA[i][i] += floor;
+            }
+         }
          invert(AA, inverse, num_order + 1);
 
          /* for each dimension of feature vector */
@@ -336,7 +351,7 @@ int main(int argc, char *argv[])
 {
    FILE *fp = stdin, *fpc = NULL;
    char *coef = NULL;
-   double *x = NULL, *dx = NULL, **dw_coef = NULL;
+   double floor = FLOOR, *x = NULL, *dx = NULL, **dw_coef = NULL;
    int i, j, l, d, t, tj, fsize, leng = LENG, total = T, win_buf = 0,
        poly_order = POLYNOMIAL_ORDER;
    int dw_num = 1, **dw_width = NULL, dw_calccoef = -1, dw_coeflen = 1,
@@ -508,6 +523,16 @@ int main(int argc, char *argv[])
                        cmnd);
                return (1);
             }
+            break;
+         case 'e':
+            floor = atof(*++argv);
+            if (floor < 0.0 || isdigit(**argv) == 0) {
+               fprintf(stderr,
+                       "%s : 'e' option must be specified with positive value.\n",
+                       cmnd);
+               usage(1);
+            }
+            --argc;
             break;
          case 'h':
             usage(0);
@@ -691,7 +716,7 @@ int main(int argc, char *argv[])
 
       /* calculate delta and delta-delta */
       get_coef(x, dx, dw_num, position, total, non_magic_num, leng,
-               win_size_forward, win_size_backward, poly_order);
+               win_size_forward, win_size_backward, poly_order, floor);
 
       /* output static, delta and delta-delta */
       fwritef(dx, sizeof(*dx), dw_num * total * leng, stdout);

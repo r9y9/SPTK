@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -79,7 +79,7 @@
 *              upper/lower bound of confidence interval                 *
 *                      upper(1), ..., upper(L),                         *
 *                      lower(1), ..., lower(L)                          *
-*       note:                                                           *
+*       notice:                                                         *
 *              if '-d' is specified,                                    *
 *              off-diagonal elements are suppressed.                    *
 *              '-d' and '-r' are exclusive                              *
@@ -88,7 +88,7 @@
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: vstat.c,v 1.35 2013/12/16 09:02:06 mataki Exp $";
+static char *rcs_id = "$Id: vstat.c,v 1.37 2014/12/11 08:30:51 uratec Exp $";
 
 
 /*  Standard C Libralies  */
@@ -165,7 +165,7 @@ void usage(int status)
    fprintf(stderr, "  stdout:\n");
    fprintf(stderr, "       mean(s) and covariance(s) of input vectors (%s)\n",
            FORMAT);
-   fprintf(stderr, "  note:\n");
+   fprintf(stderr, "  notice:\n");
    fprintf(stderr,
            "       if '-d' is specified, off-diagonal elements are suppressed.\n");
    fprintf(stderr,

@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -67,14 +67,14 @@
 *       stdout:                                                         *
 *               filtered sequence                                       *
 *                       , y(0), y(1), ...,                              *
-*       note:                                                           *
+*       notice:                                                         *
 *               P = 4 or 5                                              *
 *       require:                                                        *
 *               lmadf()                                                 *
 *                                                                       *
 ************************************************************************/
 
-static char *rcs_id = "$Id: lmadf.c,v 1.30 2013/12/16 09:01:59 mataki Exp $";
+static char *rcs_id = "$Id: lmadf.c,v 1.32 2014/12/11 08:30:39 uratec Exp $";
 
 
 /*  Standard C Libraries  */
@@ -141,7 +141,7 @@ void usage(int status)
    fprintf(stderr, "       filter output (%s)\n", FORMAT);
    fprintf(stderr, "  cfile:\n");
    fprintf(stderr, "       cepstrum (%s)\n", FORMAT);
-   fprintf(stderr, "  note:\n");
+   fprintf(stderr, "  notice:\n");
    fprintf(stderr, "       P = 4 or 5\n");
 #ifdef PACKAGE_VERSION
    fprintf(stderr, "\n");
