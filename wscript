@@ -1,5 +1,5 @@
 APPNAME = 'SPTK'
-VERSION = '3.7.0'
+VERSION = '3.8.0'
 
 from waflib import Options
 import sys
@@ -21,7 +21,7 @@ def options(opt):
     opt.add_option("--python",
                    action="store_true", dest="enable_python", default=False,
                    help="whether compile python bindings")
-    
+
 def configure(conf):
     conf.load('compiler_c python')
 
@@ -84,7 +84,7 @@ Generate python bindings %s
         )
 
     conf.write_config_header('src/SPTK-config.h')
-            
+
 def build(bld):
     bld.recurse(subdirs)
 
