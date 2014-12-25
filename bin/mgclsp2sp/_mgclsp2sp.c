@@ -70,7 +70,7 @@
 
 #define LOG2 (0.693147180559945)
 
-double log_conv(double x)
+double log_conv_in_mgclsp2sp(double x)
 {
    double temp;
 
@@ -81,7 +81,7 @@ double log_conv(double x)
       return temp;
 }
 
-double log_add(double x, double y)
+double log_add_in_mgclsp2sp(double x, double y)
 {
    double lmin, lmax;
 
@@ -93,7 +93,7 @@ double log_add(double x, double y)
    if (lmax > lmin + 50)
       return lmax;
    else
-      return lmax + log_conv(exp(lmin - lmax) + 1.0);
+      return lmax + log_conv_in_mgclsp2sp(exp(lmin - lmax) + 1.0);
 }
 
 double mel_conv(double a, double w)
@@ -114,21 +114,21 @@ void mgclsp2sp(double a, double g, double *lsp, const int m, double *x,
 
       if (m % 2 == 0) {
          for (i = 0; i < m / 2; i++) {
-            eq1 += 2.0 * log_conv(cos(w) - cos(lsp[2 * i + gain]));
-            eq2 += 2.0 * log_conv(cos(w) - cos(lsp[2 * i + 1 + gain]));
+            eq1 += 2.0 * log_conv_in_mgclsp2sp(cos(w) - cos(lsp[2 * i + gain]));
+            eq2 += 2.0 * log_conv_in_mgclsp2sp(cos(w) - cos(lsp[2 * i + 1 + gain]));
          }
-         eq1 += 2.0 * log_conv(cos(w / 2.0));
-         eq2 += 2.0 * log_conv(sin(w / 2.0));
+         eq1 += 2.0 * log_conv_in_mgclsp2sp(cos(w / 2.0));
+         eq2 += 2.0 * log_conv_in_mgclsp2sp(sin(w / 2.0));
 
-         ap = m * log(2.0) + log_add(eq1, eq2);
+         ap = m * log(2.0) + log_add_in_mgclsp2sp(eq1, eq2);
       } else {
          for (i = 0; i < (m + 1) / 2; i++)
-            eq1 += 2.0 * log_conv(cos(w) - cos(lsp[2 * i + gain]));
+            eq1 += 2.0 * log_conv_in_mgclsp2sp(cos(w) - cos(lsp[2 * i + gain]));
          for (i = 0; i < (m - 1) / 2; i++)
-            eq2 += 2.0 * log_conv(cos(w) - cos(lsp[2 * i + 1 + gain]));
-         eq2 += 2.0 * log_conv(sin(w));
+            eq2 += 2.0 * log_conv_in_mgclsp2sp(cos(w) - cos(lsp[2 * i + 1 + gain]));
+         eq2 += 2.0 * log_conv_in_mgclsp2sp(sin(w));
 
-         ap = (m - 1.0) * log(2.0) + log_add(eq1, eq2);
+         ap = (m - 1.0) * log(2.0) + log_add_in_mgclsp2sp(eq1, eq2);
       }
 
       x[p] = -0.5 * ap;
