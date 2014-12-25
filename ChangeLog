@@ -1,3 +1,343 @@
+2014-12-25 11:41  uratec
+
+	* bin/: lsp2lpc/lsp2lpc.c, lspcheck/lspcheck.c: fix code format.
+
+2014-12-11 18:51  uratec
+
+	* NEWS, configure.ac: update NEWS
+
+2014-12-11 17:30  uratec
+
+	* COPYING, README, configure.ac, bin/acep/_acep.c, bin/acep/acep.c,
+	  bin/acorr/_acorr.c, bin/acorr/acorr.c, bin/agcep/_agcep.c,
+	  bin/agcep/agcep.c, bin/amcep/_amcep.c, bin/amcep/amcep.c,
+	  bin/average/_average.c, bin/average/average.c, bin/b2mc/_b2mc.c,
+	  bin/b2mc/b2mc.c, bin/bcp/bcp.c, bin/bcut/bcut.c,
+	  bin/c2acr/_c2acr.c, bin/c2acr/c2acr.c, bin/c2ir/_c2ir.c,
+	  bin/c2ir/c2ir.c, bin/c2sp/_c2sp.c, bin/c2sp/c2sp.c,
+	  bin/cat2/cat2.c, bin/cdist/cdist.c, bin/clip/_clip.c,
+	  bin/clip/clip.c, bin/da/da.h, bin/da/da.in, bin/da/dawrite.c,
+	  bin/da/winplay.c, bin/da/winplay.h, bin/dct/_dct.c,
+	  bin/dct/dct.c, bin/decimate/decimate.c, bin/delay/delay.c,
+	  bin/delta/delta.c, bin/df2/_df2.c, bin/df2/df2.c, bin/dfs/_dfs.c,
+	  bin/dfs/dfs.c, bin/dmp/dmp.c, bin/ds/ds.c, bin/dtw/dtw.c,
+	  bin/echo2/echo2.c, bin/excite/excite.c, bin/extract/extract.c,
+	  bin/fd/fd.c, bin/fft/_fft.c, bin/fft/fft.c, bin/fft2/_fft2.c,
+	  bin/fft2/fft2.c, bin/fftcep/_fftcep.c, bin/fftcep/fftcep.c,
+	  bin/fftr/_fftr.c, bin/fftr/fftr.c, bin/fftr2/_fftr2.c,
+	  bin/fftr2/fftr2.c, bin/fig+fdrw/fdrw.c, bin/fig+fdrw/fig.c,
+	  bin/fig+fdrw/fig.h, bin/fig+fdrw/fig0.c, bin/fig+fdrw/fig1.c,
+	  bin/fig+fdrw/plot.c, bin/fig+fdrw/plot.h, bin/fig+fdrw/plsub.c,
+	  bin/frame/frame.c, bin/freqt/_freqt.c, bin/freqt/freqt.c,
+	  bin/gc2gc/_gc2gc.c, bin/gc2gc/gc2gc.c, bin/gcep/_gcep.c,
+	  bin/gcep/gcep.c, bin/glsadf/_glsadf.c, bin/glsadf/glsadf.c,
+	  bin/gmm/_gmm.c, bin/gmm/gmm.c, bin/gmm/gmmp.c,
+	  bin/gnorm/_gnorm.c, bin/gnorm/gnorm.c, bin/grpdelay/_grpdelay.c,
+	  bin/grpdelay/grpdelay.c, bin/histogram/_histogram.c,
+	  bin/histogram/histogram.c, bin/idct/idct.c, bin/ifft/_ifft.c,
+	  bin/ifft/ifft.c, bin/ifft2/_ifft2.c, bin/ifft2/ifft2.c,
+	  bin/ifftr/_ifftr.c, bin/ifftr/ifftr.c, bin/ignorm/_ignorm.c,
+	  bin/ignorm/ignorm.c, bin/impulse/impulse.c, bin/imsvq/_imsvq.c,
+	  bin/imsvq/imsvq.c, bin/interpolate/interpolate.c, bin/ivq/_ivq.c,
+	  bin/ivq/ivq.c, bin/lbg/_lbg.c, bin/lbg/lbg.c,
+	  bin/levdur/_levdur.c, bin/levdur/levdur.c,
+	  bin/linear_intpl/linear_intpl.c, bin/lmadf/_lmadf.c,
+	  bin/lmadf/lmadf.c, bin/lpc/_lpc.c, bin/lpc/lpc.c,
+	  bin/lpc2c/_lpc2c.c, bin/lpc2c/lpc2c.c, bin/lpc2lsp/_lpc2lsp.c,
+	  bin/lpc2lsp/lpc2lsp.c, bin/lpc2par/_lpc2par.c,
+	  bin/lpc2par/lpc2par.c, bin/lsp2lpc/_lsp2lpc.c,
+	  bin/lsp2lpc/lsp2lpc.c, bin/lsp2sp/_lsp2sp.c, bin/lsp2sp/lsp2sp.c,
+	  bin/lspcheck/_lspcheck.c, bin/lspcheck/lspcheck.c,
+	  bin/lspdf/_lspdf.c, bin/lspdf/lspdf.c, bin/ltcdf/_ltcdf.c,
+	  bin/ltcdf/ltcdf.c, bin/mc2b/_mc2b.c, bin/mc2b/mc2b.c,
+	  bin/mcep/_mcep.c, bin/mcep/mcep.c, bin/merge/merge.c,
+	  bin/mfcc/_mfcc.c, bin/mfcc/mfcc.c, bin/mgc2mgc/_mgc2mgc.c,
+	  bin/mgc2mgc/mgc2mgc.c, bin/mgc2sp/_mgc2sp.c, bin/mgc2sp/mgc2sp.c,
+	  bin/mgcep/_mgcep.c, bin/mgcep/mgcep.c, bin/mglsadf/_mglsadf.c,
+	  bin/mglsadf/mglsadf.c, bin/minmax/minmax.c, bin/mlpg/_mlpg.c,
+	  bin/mlpg/mlpg.c, bin/mlsacheck/mlsacheck.c, bin/mlsadf/_mlsadf.c,
+	  bin/mlsadf/mlsadf.c, bin/msvq/_msvq.c, bin/msvq/msvq.c,
+	  bin/nan/nan.c, bin/norm0/_norm0.c, bin/norm0/norm0.c,
+	  bin/nrand/_nrand.c, bin/nrand/nrand.c, bin/par2lpc/_par2lpc.c,
+	  bin/par2lpc/par2lpc.c, bin/pca/pca.c, bin/pca/pcas.c,
+	  bin/phase/_phase.c, bin/phase/phase.c, bin/pitch/pitch.c,
+	  bin/pitch/snack/COPYING, bin/pitch/snack/jkGetF0.c,
+	  bin/pitch/snack/jkGetF0.h, bin/pitch/snack/sigproc.c,
+	  bin/poledf/_poledf.c, bin/poledf/poledf.c, bin/psgr/dict.c,
+	  bin/psgr/eps.c, bin/psgr/plot.c, bin/psgr/psgr.c,
+	  bin/psgr/psgr.h, bin/ramp/ramp.c, bin/rawtowav/rawtowav.c,
+	  bin/reverse/_reverse.c, bin/reverse/reverse.c, bin/rmse/_rmse.c,
+	  bin/rmse/rmse.c, bin/root_pol/_root_pol.c,
+	  bin/root_pol/root_pol.c, bin/sin/sin.c, bin/smcep/_smcep.c,
+	  bin/smcep/smcep.c, bin/snr/snr.c, bin/sopr/sopr.c,
+	  bin/spec/spec.c, bin/step/step.c, bin/swab/swab.c,
+	  bin/symmetrize/symmetrize.c, bin/train/train.c,
+	  bin/transpose/_transpose.c, bin/transpose/transpose.c,
+	  bin/uels/_uels.c, bin/uels/uels.c, bin/ulaw/_ulaw.c,
+	  bin/ulaw/ulaw.c, bin/us/us.c, bin/us/us16.in, bin/us/uscd.in,
+	  bin/vc/_vc.c, bin/vc/vc.c, bin/vopr/vopr.c, bin/vq/_vq.c,
+	  bin/vq/vq.c, bin/vstat/vstat.c, bin/vsum/vsum.c,
+	  bin/wavjoin/_wavjoin.c, bin/wavjoin/wavjoin.c,
+	  bin/wavsplit/_wavsplit.c, bin/wavsplit/wavsplit.c,
+	  bin/window/_window.c, bin/window/window.c, bin/x2x/x2x.c,
+	  bin/xgr/config.h, bin/xgr/gcdata.h, bin/xgr/plot.c,
+	  bin/xgr/window.c, bin/xgr/xgr.c, bin/xgr/xgr.h,
+	  bin/zcross/_zcross.c, bin/zcross/zcross.c, bin/zerodf/_zerodf.c,
+	  bin/zerodf/zerodf.c, include/SPTK.h, lib/agexp.c, lib/cholesky.c,
+	  lib/fileio.c, lib/fillz.c, lib/getfp.c, lib/getmem.c, lib/gexp.c,
+	  lib/glog.c, lib/invert.c, lib/matrix.c, lib/movem.c, lib/mseq.c,
+	  lib/theq.c, lib/toeplitz.c, script/bell.in, script/glogsp.in,
+	  script/grlogsp.in, script/gseries.in, script/gwave.in,
+	  script/mgc2mgclsp.in, script/mgclsp2mgc.in, script/raw2wav.in,
+	  script/wav2raw.in: update copyright
+
+2014-12-11 17:27  uratec
+
+	* bin/vc/hts_engine_API/: COPYING, HTS_engine.h, HTS_hidden.h,
+	  HTS_misc.c, HTS_pstream.c, HTS_sstream.c: udpate hts_engine API
+	  to latest version
+
+2014-12-11 16:33  uratec
+
+	* bin/lsp2lpc/lsp2lpc.c, bin/lsp2sp/lsp2sp.c,
+	  bin/lspcheck/lspcheck.c, bin/mgclsp2sp/mgclsp2sp.c,
+	  include/SPTK.h: fix code format
+
+2014-12-11 11:20  artk0816
+
+	* bin/: vc/vc.c, gmm/gmmp.c: separation of invert and gconst
+	  calculations from load_GMM()
+
+2014-12-11 11:14  artk0816
+
+	* bin/gmm/_gmm.c, bin/gmm/gmm.c, include/SPTK.h: addition of map
+	  estimation for gmm
+
+2014-12-04 21:13  uratec
+
+	* bin/pitch/swipe/: COPYING, swipe.c, vector.c, vector.h: update
+	  swipe to version 1.5
+
+2014-12-04 21:09  uratec
+
+	* bin/mlsacheck/mlsacheck.c: remove compiler warning message in
+	  mlsacheck.
+
+2014-12-04 10:46  uratec
+
+	* Makefile.am, configure.ac, bin/Makefile.am, bin/acep/Makefile.am,
+	  bin/acorr/Makefile.am, bin/agcep/Makefile.am,
+	  bin/amcep/Makefile.am, bin/average/Makefile.am,
+	  bin/b2mc/Makefile.am, bin/bcp/Makefile.am, bin/bcut/Makefile.am,
+	  bin/c2acr/Makefile.am, bin/c2ir/Makefile.am,
+	  bin/c2ndps/Makefile.am, bin/c2sp/Makefile.am,
+	  bin/cat2/Makefile.am, bin/cdist/Makefile.am,
+	  bin/clip/Makefile.am, bin/da/Makefile.am, bin/dct/Makefile.am,
+	  bin/decimate/Makefile.am, bin/delay/Makefile.am,
+	  bin/delta/Makefile.am, bin/df2/Makefile.am, bin/dfs/Makefile.am,
+	  bin/dmp/Makefile.am, bin/ds/Makefile.am, bin/dtw/Makefile.am,
+	  bin/echo2/Makefile.am, bin/excite/Makefile.am,
+	  bin/extract/Makefile.am, bin/fd/Makefile.am, bin/fft/Makefile.am,
+	  bin/fft2/Makefile.am, bin/fftcep/Makefile.am,
+	  bin/fftr/Makefile.am, bin/fftr2/Makefile.am,
+	  bin/fig+fdrw/Makefile.am, bin/frame/Makefile.am,
+	  bin/freqt/Makefile.am, bin/gc2gc/Makefile.am,
+	  bin/gcep/Makefile.am, bin/glsadf/Makefile.am,
+	  bin/gmm/Makefile.am, bin/gnorm/Makefile.am,
+	  bin/grpdelay/Makefile.am, bin/histogram/Makefile.am,
+	  bin/idct/Makefile.am, bin/ifft/Makefile.am,
+	  bin/ifft2/Makefile.am, bin/ifftr/Makefile.am,
+	  bin/ignorm/Makefile.am, bin/impulse/Makefile.am,
+	  bin/imsvq/Makefile.am, bin/interpolate/Makefile.am,
+	  bin/ivq/Makefile.am, bin/lbg/Makefile.am, bin/levdur/Makefile.am,
+	  bin/linear_intpl/Makefile.am, bin/lmadf/Makefile.am,
+	  bin/lpc/Makefile.am, bin/lpc2c/Makefile.am,
+	  bin/lpc2lsp/Makefile.am, bin/lpc2par/Makefile.am,
+	  bin/lsp2lpc/Makefile.am, bin/lsp2sp/Makefile.am,
+	  bin/lspcheck/Makefile.am, bin/lspdf/Makefile.am,
+	  bin/ltcdf/Makefile.am, bin/mc2b/Makefile.am,
+	  bin/mcep/Makefile.am, bin/merge/Makefile.am,
+	  bin/mfcc/Makefile.am, bin/mgc2mgc/Makefile.am,
+	  bin/mgc2sp/Makefile.am, bin/mgcep/Makefile.am,
+	  bin/mgclsp2sp/Makefile.am, bin/mglsadf/Makefile.am,
+	  bin/minmax/Makefile.am, bin/mlpg/Makefile.am,
+	  bin/mlsacheck/Makefile.am, bin/mlsadf/Makefile.am,
+	  bin/msvq/Makefile.am, bin/nan/Makefile.am,
+	  bin/ndps2c/Makefile.am, bin/norm0/Makefile.am,
+	  bin/nrand/Makefile.am, bin/par2lpc/Makefile.am,
+	  bin/pca/Makefile.am, bin/phase/Makefile.am,
+	  bin/pitch/Makefile.am, bin/poledf/Makefile.am,
+	  bin/psgr/Makefile.am, bin/ramp/Makefile.am,
+	  bin/rawtowav/Makefile.am, bin/reverse/Makefile.am,
+	  bin/rmse/Makefile.am, bin/root_pol/Makefile.am,
+	  bin/sin/Makefile.am, bin/smcep/Makefile.am, bin/snr/Makefile.am,
+	  bin/sopr/Makefile.am, bin/spec/Makefile.am, bin/step/Makefile.am,
+	  bin/swab/Makefile.am, bin/symmetrize/Makefile.am,
+	  bin/train/Makefile.am, bin/transpose/Makefile.am,
+	  bin/uels/Makefile.am, bin/ulaw/Makefile.am, bin/us/Makefile.am,
+	  bin/vc/Makefile.am, bin/vopr/Makefile.am, bin/vq/Makefile.am,
+	  bin/vstat/Makefile.am, bin/vsum/Makefile.am,
+	  bin/wavjoin/Makefile.am, bin/wavsplit/Makefile.am,
+	  bin/window/Makefile.am, bin/x2x/Makefile.am, bin/xgr/Makefile.am,
+	  bin/zcross/Makefile.am, bin/zerodf/Makefile.am,
+	  include/Makefile.am, lib/Makefile.am, script/Makefile.am: update
+	  makefiles for automake 1.14.1
+
+2014-12-04 09:34  uratec
+
+	* bin/pitch/swipe/vector.c: fix pointer type in swipe
+
+2014-12-03 17:49  shikano
+
+	* bin/: acep/acep.c, amcep/amcep.c, bcp/bcp.c, bcut/bcut.c,
+	  fftcep/fftcep.c, glsadf/glsadf.c, lmadf/lmadf.c, mlpg/mlpg.c,
+	  vc/vc.c, vopr/vopr.c, vstat/vstat.c: change note to notice
+
+2014-12-03 11:48  artk0816
+
+	* include/SPTK.h, lib/Makefile.am, bin/Makefile.am, configure.ac,
+	  bin/wavjoin/.cvsignore, bin/wavjoin/Makefile.am,
+	  bin/wavjoin/_wavjoin.c, bin/wavjoin/wavjoin.c,
+	  bin/wavsplit/.cvsignore, bin/wavsplit/Makefile.am,
+	  bin/wavsplit/_wavsplit.c, bin/wavsplit/wavsplit.c: addition of
+	  wav format joiner and splitter, wavjoin and wavsplit
+
+2014-09-04 11:50  artk0816
+
+	* bin/delta/delta.c: fix of the explanation for -e in delta
+
+2014-07-07 13:45  uratec
+
+	* bin/pitch/swipe/swipe.c: fix frame shift calc. in swipe
+
+2014-06-30 19:53  uratec
+
+	* bin/gmm/gmm.c: remove stderr message in full covarinace calc.
+	  from gmm command.
+
+2014-06-30 16:27  artk0816
+
+	* bin/ndps2c/_ndps2c.c: fixed warning of _indps.c
+
+2014-06-30 16:00  artk0816
+
+	* bin/vc/vc.c: fixed warning of vc.c
+
+2014-06-27 13:53  artk0816
+
+	* bin/vc/vc.c: VC was added the option -e that specifies small
+	  value added to covariance
+
+2014-06-27 13:52  artk0816
+
+	* bin/delta/delta.c: DELTA was added the option -e that specifies
+	  small value added to diagonal component
+
+2014-06-10 10:46  artk0816
+
+	* bin/vc/_vc.c: fix the GMM weight calculation of vc
+
+2014-05-14 16:44  artk0816
+
+	* bin/mlsacheck/mlsacheck.c: add fast mode to mlsacheck
+
+2014-04-24 13:35  artk0816
+
+	* configure.ac, bin/Makefile.am, include/SPTK.h: add mgclsp2sp
+
+2014-04-24 13:30  artk0816
+
+	* bin/mgclsp2sp/: .cvsignore, Makefile.am, _mgclsp2sp.c,
+	  mgclsp2sp.c: add mgclsp2sp
+
+2014-04-24 11:15  artk0816
+
+	* script/mgclsp2mgc.in: modify the -i option to -q.
+
+2014-04-24 11:10  artk0816
+
+	* bin/: lsp2lpc/lsp2lpc.c, lsp2sp/lsp2sp.c, lspcheck/lspcheck.c:
+	  modify the -i option to -q.
+
+2014-03-27 18:38  uratec
+
+	* bin/: c2ndps/Makefile.am, ndps2c/Makefile.am: Remove autotools
+	  warning messages.
+
+2014-03-27 18:28  artk0816
+
+	* bin/dtw/dtw.c: refactor dtw.c
+
+2014-03-26 22:45  uratec
+
+	* bin/c2ndps/c2ndps.c: Remove gcc warning in c2ndps.
+
+2014-03-26 22:35  uratec
+
+	* configure.ac, bin/da/Makefile.am, bin/da/da.in,
+	  bin/ds/Makefile.am, bin/lsp2sp/Makefile.am,
+	  bin/pitch/Makefile.am, bin/rawtowav/Makefile.am,
+	  bin/us/Makefile.am, bin/us/us16.in, bin/us/uscd.in,
+	  bin/vc/Makefile.am, lib/Makefile.am, script/Makefile.am,
+	  script/bell.in, script/glogsp.in, script/grlogsp.in,
+	  script/gseries.in, script/gwave.in, script/mgc2mgclsp.in,
+	  script/mgclsp2mgc.in, script/raw2wav.in, script/wav2raw.in:
+	  Optimize makefiles for latest autotools.
+
+2014-02-28 02:28  artk0816
+
+	* bin/lsp2sp/: _c2ndps.c, _ndps2c.c, c2ndps.c, ndps2c.c: fix lsp2sp
+
+2014-02-28 02:02  artk0816
+
+	* bin/ndps2c/Makefile.am: fix ndps2c
+
+2014-02-27 18:53  artk0816
+
+	* bin/lsp2sp/: .cvsignore, Makefile.am: fix lsp2sp
+
+2014-02-27 18:45  artk0816
+
+	* bin/ndps2c/: .cvsignore, Makefile.am, _ndps2c.c, ndps2c.c: add
+	  new commands ndps2c
+
+2014-02-27 18:43  mataki
+
+	* bin/dtw/dtw.c: - add -V option to make joint vector sequence of
+	  test/reference data along the Viterbi path.  - change name of
+	  several functions.
+
+2014-02-27 18:39  artk0816
+
+	* bin/c2ndps/: .cvsignore, Makefile.am, _c2ndps.c, c2ndps.c: add
+	  new commands c2ndps
+
+2014-02-27 18:23  artk0816
+
+	* bin/lsp2sp/: .cvsignore, Makefile.am, _c2ndps.c, c2ndps.c,
+	  _ndps2c.c, ndps2c.c: add new commands c2ndps and ndps2c
+
+2014-02-27 18:09  artk0816
+
+	* configure.ac, bin/Makefile.am: add new commands c2ndps and ndps2c
+
+2014-02-27 18:01  artk0816
+
+	* include/SPTK.h: add new commands c2ndps and ndps2c
+
+2014-02-25 16:58  mataki
+
+	* bin/dtw/dtw.c: fix a bug suggested by Wern-Jun Wang.
+
+2014-02-20 11:29  artk0816
+
+	* bin/lsp2sp/: lsp2sp.c, _lsp2sp.c: fix lsp2sp.c to add free() and
+	  _lsp2sp.c to correct explanation
+
+2014-01-19 17:19  mataki
+
+	* configure.ac: add statement to check existance of csh.
+
 2013-12-24 19:27  mataki
 
 	* Makefile.mak: fix Makefile.mak to install files correctly.
@@ -5,10 +345,13 @@
 2013-12-23 23:27  uratec
 
 	* README, bin/Makefile.am, bin/ds/Makefile.am,
+	  bin/ds/emime/COPYING, bin/ds/emime/lpfcoef.7to4,
 	  bin/ds/titech/COPYING, bin/ds/titech/lpfcoef.7to4,
-	  bin/us/Makefile.am, bin/us/titech/COPYING,
-	  bin/us/titech/lpfcoef.3to5, bin/us/titech/lpfcoef.7to8: Fix
-	  copyrights of ds/us filter coefficients.
+	  bin/us/Makefile.am, bin/us/emime/COPYING,
+	  bin/us/emime/lpfcoef.3to5, bin/us/emime/lpfcoef.7to8,
+	  bin/us/titech/COPYING, bin/us/titech/lpfcoef.3to5,
+	  bin/us/titech/lpfcoef.7to8: Fix copyrights of ds/us filter
+	  coefficients.
 
 2013-12-23 09:40  mataki
 
@@ -26,7 +369,9 @@
 2013-12-23 01:58  uratec
 
 	* NEWS, configure.ac, bin/Makefile.am, bin/ds/Makefile.am,
-	  bin/ds/ds.c, bin/us/Makefile.am, bin/us/us.c: Add filter
+	  bin/ds/ds.c, bin/ds/emime/COPYING, bin/ds/emime/lpfcoef.7to4,
+	  bin/us/Makefile.am, bin/us/us.c, bin/us/emime/COPYING,
+	  bin/us/emime/lpfcoef.3to5, bin/us/emime/lpfcoef.7to8: Add filter
 	  coefficients for 7:4 down-sampling, 3:5 and 7:8 up-sampling.
 
 2013-12-19 11:47  mataki
@@ -2275,8 +2620,12 @@
 2009-12-16 16:39  uratec
 
 	* ChangeLog, INSTALL, NEWS, README, configure.ac, bin/Makefile.am,
-	  bin/Makefile.mak, bin/delta/.cvsignore: remove imglsadf and
-	  iglsadf commands.  update all documents to 2009 version.
+	  bin/Makefile.mak, bin/delta/.cvsignore, bin/iglsadf/.cvsignore,
+	  bin/iglsadf/Makefile.am, bin/iglsadf/_iglsadf.c,
+	  bin/iglsadf/iglsadf.c, bin/imglsadf/.cvsignore,
+	  bin/imglsadf/Makefile.am, bin/imglsadf/_imglsadf.c,
+	  bin/imglsadf/imglsadf.c: remove imglsadf and iglsadf commands.
+	  update all documents to 2009 version.
 
 2009-12-16 15:46  tatsuyaito
 
@@ -2600,10 +2949,10 @@
 2008-11-07 00:40  tatsuyaito
 
 	* bin/: agcep/agcep.c, gc2gc/gc2gc.c, gcep/gcep.c, glsadf/glsadf.c,
-	  gnorm/gnorm.c, ignorm/ignorm.c, lpc2par/lpc2par.c,
-	  mgc2mgc/mgc2mgc.c, mgc2sp/mgc2sp.c, mgcep/mgcep.c,
-	  mglsadf/mglsadf.c: Nov.07.2008 BUGFIX [ReqNo.1572567] 'mgcep -g
-	  1'
+	  gnorm/gnorm.c, iglsadf/iglsadf.c, ignorm/ignorm.c,
+	  imglsadf/imglsadf.c, lpc2par/lpc2par.c, mgc2mgc/mgc2mgc.c,
+	  mgc2sp/mgc2sp.c, mgcep/mgcep.c, mglsadf/mglsadf.c: Nov.07.2008
+	  BUGFIX [ReqNo.1572567] 'mgcep -g 1'
 
 2008-10-20 16:35  uratec
 
@@ -2688,6 +3037,7 @@
 	  bin/us/us.c, bin/us/us16.in, bin/us/uscd.in,
 	  bin/window/_window.c, bin/window/window.c, bin/fft/_fft.c,
 	  bin/fft/fft.c, bin/gcep/_gcep.c, bin/gcep/gcep.c,
+	  bin/imglsadf/_imglsadf.c, bin/imglsadf/imglsadf.c,
 	  bin/msvq/_msvq.c, bin/msvq/msvq.c, bin/nan/nan.c,
 	  bin/pitch/_pitch.c, bin/pitch/pitch.c, bin/sopr/sopr.c,
 	  bin/spec/spec.c, bin/b2mc/_b2mc.c, bin/b2mc/b2mc.c,
@@ -2730,6 +3080,7 @@
 	  bin/da/dawrite.c, bin/da/winplay.c, bin/da/winplay.h,
 	  bin/decimate/decimate.c, bin/extract/extract.c,
 	  bin/fftcep/_fftcep.c, bin/fftcep/fftcep.c, bin/frame/frame.c,
+	  bin/iglsadf/_iglsadf.c, bin/iglsadf/iglsadf.c,
 	  bin/lspcheck/_lspcheck.c, bin/lspcheck/lspcheck.c,
 	  bin/mglsadf/_mglsadf.c, bin/mglsadf/mglsadf.c,
 	  bin/minmax/minmax.c, bin/zcross/_zcross.c, bin/zcross/zcross.c,
@@ -2808,8 +3159,9 @@
 2007-10-18 02:16  heigazen
 
 	* bin/Makefile.am, bin/Makefile.mak, bin/mcep/_mcep.c,
-	  bin/mcep/mcep.c, bin/mgcep/mgcep.c, configure.ac: Merge sp2mc to
-	  mcep.
+	  bin/mcep/mcep.c, bin/mgcep/mgcep.c, bin/sp2mc/.cvsignore,
+	  bin/sp2mc/Makefile.am, bin/sp2mc/_sp2mc.c, bin/sp2mc/sp2mc.c,
+	  configure.ac: Merge sp2mc to mcep.
 
 2007-10-18 00:47  heigazen
 
@@ -2835,7 +3187,9 @@
 2007-10-17 13:57  heigazen
 
 	* bin/Makefile.am, bin/Makefile.mak, bin/mgcep/_mgcep.c,
-	  bin/mgcep/mgcep.c, include/SPTK.h: Merge sp2mgc to mgcep.
+	  bin/mgcep/mgcep.c, bin/sp2mgc/.cvsignore, bin/sp2mgc/Makefile.am,
+	  bin/sp2mgc/_sp2mgc.c, bin/sp2mgc/sp2mgc.c, include/SPTK.h: Merge
+	  sp2mgc to mgcep.
 
 2007-10-17 03:24  heigazen
 
@@ -2854,18 +3208,19 @@
 	  gc2gc/gc2gc.c, lpc2c/_lpc2c.c, lsp2lpc/_lsp2lpc.c,
 	  lsp2lpc/lsp2lpc.c, merge/merge.c, phase/_phase.c, phase/phase.c,
 	  window/_window.c, window/window.c, bcut/bcut.c, lpc/_lpc.c,
-	  lpc/lpc.c, psgr/eps.c, psgr/psgr.c, us/us.c, gcep/_gcep.c,
-	  gcep/gcep.c, msvq/_msvq.c, msvq/msvq.c, pitch/_pitch.c,
-	  pitch/pitch.c, spec/spec.c, b2mc/_b2mc.c, fft/_fft.c, fft/fft.c,
-	  fftr2/_fftr2.c, fftr2/fftr2.c, mgcep/_mgcep.c, mgcep/mgcep.c,
-	  nan/nan.c, sopr/sopr.c, b2mc/b2mc.c, fig+fdrw/fdrw.c,
-	  fig+fdrw/fig.c, ramp/ramp.c, step/step.c, ulaw/_ulaw.c,
-	  ulaw/ulaw.c, lspdf/lspdf.c, lspdf/_lspdf.c, lbg/_lbg.c,
-	  lbg/lbg.c, mc2b/_mc2b.c, norm0/_norm0.c, norm0/norm0.c,
-	  train/train.c, vopr/vopr.c, vq/_vq.c, vq/vq.c, dmp/dmp.c,
-	  echo2/echo2.c, grpdelay/_grpdelay.c, grpdelay/grpdelay.c,
-	  mc2b/mc2b.c, mgc2mgc/mgc2mgc.c, df2/_df2.c, df2/df2.c,
-	  mgc2mgc/_mgc2mgc.c, zerodf/_zerodf.c, zerodf/zerodf.c,
+	  lpc/lpc.c, psgr/eps.c, psgr/psgr.c, sp2mgc/_sp2mgc.c, us/us.c,
+	  gcep/_gcep.c, gcep/gcep.c, msvq/_msvq.c, msvq/msvq.c,
+	  pitch/_pitch.c, pitch/pitch.c, spec/spec.c, b2mc/_b2mc.c,
+	  fft/_fft.c, fft/fft.c, fftr2/_fftr2.c, fftr2/fftr2.c,
+	  imglsadf/_imglsadf.c, imglsadf/imglsadf.c, mgcep/_mgcep.c,
+	  mgcep/mgcep.c, nan/nan.c, sopr/sopr.c, b2mc/b2mc.c,
+	  fig+fdrw/fdrw.c, fig+fdrw/fig.c, ramp/ramp.c, step/step.c,
+	  ulaw/_ulaw.c, ulaw/ulaw.c, lspdf/lspdf.c, lspdf/_lspdf.c,
+	  lbg/_lbg.c, lbg/lbg.c, mc2b/_mc2b.c, norm0/_norm0.c,
+	  norm0/norm0.c, train/train.c, vopr/vopr.c, vq/_vq.c, vq/vq.c,
+	  dmp/dmp.c, echo2/echo2.c, grpdelay/_grpdelay.c,
+	  grpdelay/grpdelay.c, mc2b/mc2b.c, mgc2mgc/mgc2mgc.c, df2/_df2.c,
+	  df2/df2.c, mgc2mgc/_mgc2mgc.c, zerodf/_zerodf.c, zerodf/zerodf.c,
 	  cdist/cdist.c, mgc2sp/_mgc2sp.c, mgc2sp/mgc2sp.c,
 	  poledf/poledf.c, vsum/vsum.c, nrand/_nrand.c, nrand/nrand.c,
 	  rmse/_rmse.c, rmse/rmse.c, smcep/_smcep.c, smcep/smcep.c,
@@ -2886,10 +3241,14 @@
 	  mglsadf/_mglsadf.c, mglsadf/mglsadf.c, minmax/minmax.c,
 	  uels/_uels.c, uels/uels.c, c2ir/c2ir.c, da/da.h, da/dawrite.c,
 	  extract/extract.c, fftcep/_fftcep.c, fftcep/fftcep.c,
-	  zcross/_zcross.c, zcross/zcross.c, decimate/decimate.c,
-	  delay/delay.c, frame/frame.c, lspcheck/lspcheck.c: Arrange spaces
-	  for macros.  Wrap strrchr() by rindex() if string.h does not
-	  exist.
+	  iglsadf/_iglsadf.c, iglsadf/iglsadf.c, zcross/_zcross.c,
+	  zcross/zcross.c, decimate/decimate.c, delay/delay.c,
+	  frame/frame.c, lspcheck/lspcheck.c: Arrange spaces for macros.
+	  Wrap strrchr() by rindex() if string.h does not exist.
+
+2007-10-16 11:19  heigazen
+
+	* bin/sp2mc/.cvsignore: Add .cvsignore.
 
 2007-10-16 11:17  heigazen
 
@@ -2907,9 +3266,15 @@
 
 	* lib/fileio.c: Fix indent, add comments.
 
+2007-10-11 14:58  heigazen
+
+	* bin/: sp2mgc/sp2mgc.c, sp2mc/sp2mc.c: Fix inconsistency between
+	  reference manual and source code.
+
 2007-10-10 17:40  heigazen
 
-	* bin/Makefile.am, include/SPTK.h, bin/Makefile.mak: Add command
+	* bin/Makefile.am, bin/sp2mc/Makefile.am, bin/sp2mc/_sp2mc.c,
+	  bin/sp2mc/sp2mc.c, include/SPTK.h, bin/Makefile.mak: Add command
 	  sp2mc.
 
 2007-10-10 03:44  heigazen
@@ -2940,23 +3305,24 @@
 2007-10-09 19:06  heigazen
 
 	* bin/: average/average.c, clip/clip.c, fftr/fftr.c, gcep/gcep.c,
-	  lpc2c/lpc2c.c, phase/phase.c, reverse/reverse.c, imsvq/imsvq.c,
-	  excite/excite.c, bcut/bcut.c, dfs/dfs.c, glsadf/glsadf.c,
-	  lpc/lpc.c, merge/merge.c, par2lpc/par2lpc.c, pitch/pitch.c,
-	  spec/spec.c, swab/swab.c, vstat/vstat.c, window/window.c,
-	  c2acr/c2acr.c, acep/acep.c, agcep/agcep.c, ifft/ifft.c,
-	  mc2b/mc2b.c, mlsadf/mlsadf.c, nan/nan.c, fd/fd.c, fftr2/fftr2.c,
-	  gc2gc/gc2gc.c, interpolate/interpolate.c, lmadf/lmadf.c,
-	  lsp2lpc/lsp2lpc.c, mcep/mcep.c, mgcep/mgcep.c, sopr/sopr.c,
-	  fig+fdrw/fdrw.c, grpdelay/grpdelay.c, lspdf/lspdf.c,
+	  lpc2c/lpc2c.c, phase/phase.c, reverse/reverse.c, sp2mgc/sp2mgc.c,
+	  imsvq/imsvq.c, excite/excite.c, bcut/bcut.c, dfs/dfs.c,
+	  glsadf/glsadf.c, lpc/lpc.c, merge/merge.c, par2lpc/par2lpc.c,
+	  pitch/pitch.c, spec/spec.c, swab/swab.c, vstat/vstat.c,
+	  window/window.c, c2acr/c2acr.c, acep/acep.c, agcep/agcep.c,
+	  ifft/ifft.c, mc2b/mc2b.c, mlsadf/mlsadf.c, nan/nan.c, fd/fd.c,
+	  fftr2/fftr2.c, gc2gc/gc2gc.c, interpolate/interpolate.c,
+	  lmadf/lmadf.c, lsp2lpc/lsp2lpc.c, mcep/mcep.c, mgcep/mgcep.c,
+	  sopr/sopr.c, fig+fdrw/fdrw.c, grpdelay/grpdelay.c, lspdf/lspdf.c,
 	  mglsadf/mglsadf.c, minmax/minmax.c, uels/uels.c, ulaw/ulaw.c,
 	  bcp/bcp.c, c2ir/c2ir.c, extract/extract.c, fft/fft.c,
 	  ifft2/ifft2.c, norm0/norm0.c, root_pol/root_pol.c, vopr/vopr.c,
 	  vq/vq.c, zcross/zcross.c, dmp/dmp.c, fftcep/fftcep.c,
-	  histogram/histogram.c, mgc2mgc/mgc2mgc.c, zerodf/zerodf.c,
-	  cdist/cdist.c, frame/frame.c, lspcheck/lspcheck.c, vsum/vsum.c,
-	  b2mc/b2mc.c, freqt/freqt.c, lpc2lsp/lpc2lsp.c, mgc2sp/mgc2sp.c,
-	  msvq/msvq.c, poledf/poledf.c, decimate/decimate.c, df2/df2.c,
+	  histogram/histogram.c, imglsadf/imglsadf.c, mgc2mgc/mgc2mgc.c,
+	  zerodf/zerodf.c, cdist/cdist.c, frame/frame.c,
+	  lspcheck/lspcheck.c, vsum/vsum.c, b2mc/b2mc.c, freqt/freqt.c,
+	  lpc2lsp/lpc2lsp.c, mgc2sp/mgc2sp.c, msvq/msvq.c, poledf/poledf.c,
+	  decimate/decimate.c, df2/df2.c, iglsadf/iglsadf.c,
 	  ignorm/ignorm.c, lbg/lbg.c, rmse/rmse.c, smcep/smcep.c,
 	  x2x/x2x.c, amcep/amcep.c, c2sp/c2sp.c, fft2/fft2.c,
 	  gnorm/gnorm.c, ivq/ivq.c, levdur/levdur.c,
@@ -3017,9 +3383,10 @@
 	* bin/gcep/_gcep.c, bin/gcep/gcep.c, bin/smcep/_smcep.c,
 	  bin/smcep/smcep.c, bin/levdur/levdur.c, bin/lpc/_lpc.c,
 	  bin/lpc/lpc.c, bin/mcep/_mcep.c, bin/mcep/mcep.c,
-	  bin/mgcep/_mgcep.c, bin/mgcep/mgcep.c, include/SPTK.h: Tracker
-	  1808271: Add option to give minimum value of the determinant of
-	  the normal matrix for theq() and levdur().
+	  bin/mgcep/_mgcep.c, bin/mgcep/mgcep.c, bin/sp2mgc/_sp2mgc.c,
+	  bin/sp2mgc/sp2mgc.c, include/SPTK.h: Tracker 1808271: Add option
+	  to give minimum value of the determinant of the normal matrix for
+	  theq() and levdur().
 
 2007-10-09 12:29  heigazen
 
@@ -3050,15 +3417,16 @@
 	  fft2/_fft2.c, fft2/fft2.c, gc2gc/_gc2gc.c, gc2gc/gc2gc.c,
 	  impulse/impulse.c, lpc/_lpc.c, lpc/lpc.c, lpc2c/_lpc2c.c,
 	  lpc2c/lpc2c.c, lsp2lpc/_lsp2lpc.c, lsp2lpc/lsp2lpc.c,
-	  phase/_phase.c, phase/phase.c, window/_window.c, window/window.c,
-	  fft/_fft.c, fft/fft.c, fftr2/_fftr2.c, fftr2/fftr2.c,
-	  gcep/_gcep.c, gcep/gcep.c, mgcep/_mgcep.c, mgcep/mgcep.c,
-	  msvq/_msvq.c, pitch/_pitch.c, pitch/pitch.c, sopr/sopr.c,
-	  spec/spec.c, b2mc/_b2mc.c, b2mc/b2mc.c, fig+fdrw/fdrw.c,
-	  fig+fdrw/fig.c, lbg/_lbg.c, lspdf/_lspdf.c, lspdf/lspdf.c,
-	  norm0/_norm0.c, norm0/norm0.c, ramp/ramp.c, step/step.c,
-	  train/train.c, ulaw/_ulaw.c, ulaw/ulaw.c, vopr/vopr.c,
-	  cdist/cdist.c, df2/_df2.c, df2/df2.c, echo2/echo2.c,
+	  phase/_phase.c, phase/phase.c, sp2mgc/_sp2mgc.c, sp2mgc/sp2mgc.c,
+	  window/_window.c, window/window.c, fft/_fft.c, fft/fft.c,
+	  fftr2/_fftr2.c, fftr2/fftr2.c, gcep/_gcep.c, gcep/gcep.c,
+	  imglsadf/_imglsadf.c, imglsadf/imglsadf.c, mgcep/_mgcep.c,
+	  mgcep/mgcep.c, msvq/_msvq.c, pitch/_pitch.c, pitch/pitch.c,
+	  sopr/sopr.c, spec/spec.c, b2mc/_b2mc.c, b2mc/b2mc.c,
+	  fig+fdrw/fdrw.c, fig+fdrw/fig.c, lbg/_lbg.c, lspdf/_lspdf.c,
+	  lspdf/lspdf.c, norm0/_norm0.c, norm0/norm0.c, ramp/ramp.c,
+	  step/step.c, train/train.c, ulaw/_ulaw.c, ulaw/ulaw.c,
+	  vopr/vopr.c, cdist/cdist.c, df2/_df2.c, df2/df2.c, echo2/echo2.c,
 	  grpdelay/_grpdelay.c, grpdelay/grpdelay.c, mc2b/_mc2b.c,
 	  mc2b/mc2b.c, mgc2mgc/_mgc2mgc.c, mgc2mgc/mgc2mgc.c,
 	  mgc2sp/_mgc2sp.c, mgc2sp/mgc2sp.c, poledf/poledf.c, vsum/vsum.c,
@@ -3076,12 +3444,12 @@
 	  gnorm/gnorm.c, ifft2/_ifft2.c, ifft2/ifft2.c, lmadf/_lmadf.c,
 	  lmadf/lmadf.c, mlsadf/_mlsadf.c, mlsadf/mlsadf.c, vstat/vstat.c,
 	  c2ir/c2ir.c, fftcep/_fftcep.c, fftcep/fftcep.c,
-	  interpolate/interpolate.c, lspcheck/lspcheck.c,
-	  mglsadf/_mglsadf.c, mglsadf/mglsadf.c, minmax/minmax.c,
-	  uels/_uels.c, uels/uels.c, zcross/_zcross.c, zcross/zcross.c,
-	  decimate/decimate.c, delay/delay.c, vq/_vq.c: #include <SPTK.h>
-	  -> #if defined(WIN32) #include "SPTK.h" #else #include <SPTK.h>
-	  #endif
+	  iglsadf/_iglsadf.c, iglsadf/iglsadf.c, interpolate/interpolate.c,
+	  lspcheck/lspcheck.c, mglsadf/_mglsadf.c, mglsadf/mglsadf.c,
+	  minmax/minmax.c, uels/_uels.c, uels/uels.c, zcross/_zcross.c,
+	  zcross/zcross.c, decimate/decimate.c, delay/delay.c, vq/_vq.c:
+	  #include <SPTK.h> -> #if defined(WIN32) #include "SPTK.h" #else
+	  #include <SPTK.h> #endif
 
 2007-10-09 01:45  heigazen
 
@@ -3169,11 +3537,12 @@
 2007-10-01 03:37  heigazen
 
 	* bin/zcross/zcross.c, bin/fft/fft.c, bin/fftcep/fftcep.c,
-	  bin/lpc2c/lpc2c.c, bin/lpc2par/lpc2par.c, bin/mgc2sp/mgc2sp.c,
-	  bin/phase/phase.c, bin/snr/snr.c, bin/sopr/sopr.c,
-	  bin/vopr/vopr.c, script/glogsp.in, script/gwave.in, bin/ds/ds.c,
-	  bin/mlpg/mlpg.c, bin/window/window.c, bin/xgr/xgr.c: Fix many
-	  typo in help messages.
+	  bin/imglsadf/imglsadf.c, bin/lpc2c/lpc2c.c,
+	  bin/lpc2par/lpc2par.c, bin/mgc2sp/mgc2sp.c, bin/phase/phase.c,
+	  bin/snr/snr.c, bin/sopr/sopr.c, bin/vopr/vopr.c,
+	  script/glogsp.in, script/gwave.in, bin/ds/ds.c, bin/mlpg/mlpg.c,
+	  bin/window/window.c, bin/xgr/xgr.c: Fix many typo in help
+	  messages.
 
 2007-10-01 01:20  heigazen
 
@@ -3190,31 +3559,32 @@
 	  bin/lspdf/lspdf.c, bin/ramp/ramp.c, bin/step/step.c,
 	  bin/dmp/dmp.c, bin/norm0/norm0.c, bin/train/train.c,
 	  bin/ulaw/ulaw.c, bin/vopr/vopr.c, bin/vq/vq.c, bin/echo2/echo2.c,
-	  bin/cdist/cdist.c, bin/histogram/histogram.c,
-	  bin/mgc2mgc/mgc2mgc.c, bin/msvq/msvq.c, bin/vsum/vsum.c,
-	  bin/zerodf/zerodf.c, bin/b2mc/b2mc.c, bin/lpc2lsp/lpc2lsp.c,
-	  bin/mgc2sp/mgc2sp.c, bin/poledf/poledf.c, bin/smcep/_smcep.c,
-	  bin/smcep/smcep.c, bin/c2sp/c2sp.c, bin/df2/df2.c,
-	  bin/fft2/fft2.c, bin/ivq/ivq.c, bin/lbg/lbg.c,
-	  bin/levdur/levdur.c, bin/lpc2par/lpc2par.c, bin/rmse/rmse.c,
-	  bin/snr/snr.c, bin/x2x/x2x.c, bin/linear_intpl/linear_intpl.c,
-	  bin/ltcdf/ltcdf.c, bin/mcep/_mcep.c, bin/mcep/mcep.c,
-	  script/glogsp.in, script/grlogsp.in, script/gwave.in,
-	  bin/acorr/acorr.c, bin/mlpg/mlpg.c, bin/root_pol/_root_pol.c,
+	  bin/imglsadf/imglsadf.c, bin/cdist/cdist.c,
+	  bin/histogram/histogram.c, bin/mgc2mgc/mgc2mgc.c,
+	  bin/msvq/msvq.c, bin/vsum/vsum.c, bin/zerodf/zerodf.c,
+	  bin/b2mc/b2mc.c, bin/lpc2lsp/lpc2lsp.c, bin/mgc2sp/mgc2sp.c,
+	  bin/poledf/poledf.c, bin/smcep/_smcep.c, bin/smcep/smcep.c,
+	  bin/c2sp/c2sp.c, bin/df2/df2.c, bin/fft2/fft2.c, bin/ivq/ivq.c,
+	  bin/lbg/lbg.c, bin/levdur/levdur.c, bin/lpc2par/lpc2par.c,
+	  bin/rmse/rmse.c, bin/snr/snr.c, bin/x2x/x2x.c,
+	  bin/linear_intpl/linear_intpl.c, bin/ltcdf/ltcdf.c,
+	  bin/mcep/_mcep.c, bin/mcep/mcep.c, script/glogsp.in,
+	  script/grlogsp.in, script/gwave.in, bin/acorr/acorr.c,
+	  bin/mlpg/mlpg.c, bin/root_pol/_root_pol.c,
 	  bin/root_pol/root_pol.c, bin/glsadf/glsadf.c, bin/imsvq/imsvq.c,
 	  bin/par2lpc/par2lpc.c, bin/reverse/reverse.c, bin/sin/sin.c,
-	  bin/swab/swab.c, bin/vstat/vstat.c, bin/acep/acep.c,
-	  bin/c2acr/c2acr.c, bin/lmadf/lmadf.c, bin/mc2b/mc2b.c,
-	  bin/mlsadf/mlsadf.c, bin/uels/_uels.c, bin/uels/uels.c,
-	  bin/fd/fd.c, bin/grpdelay/grpdelay.c,
+	  bin/sp2mgc/sp2mgc.c, bin/swab/swab.c, bin/vstat/vstat.c,
+	  bin/acep/acep.c, bin/c2acr/c2acr.c, bin/lmadf/lmadf.c,
+	  bin/mc2b/mc2b.c, bin/mlsadf/mlsadf.c, bin/uels/_uels.c,
+	  bin/uels/uels.c, bin/fd/fd.c, bin/grpdelay/grpdelay.c,
 	  bin/interpolate/interpolate.c, bin/lsp2lpc/lsp2lpc.c,
 	  bin/mglsadf/mglsadf.c, bin/minmax/minmax.c, bin/bcp/bcp.c,
 	  bin/c2ir/c2ir.c, bin/da/da.in, bin/da/dawrite.c,
 	  bin/extract/extract.c, bin/fftcep/fftcep.c, bin/xgr/xgr.c,
 	  bin/zcross/zcross.c, bin/amcep/amcep.c, bin/decimate/decimate.c,
 	  bin/frame/frame.c, bin/freqt/freqt.c, bin/gnorm/gnorm.c,
-	  bin/ignorm/ignorm.c, bin/lspcheck/lspcheck.c, bin/delay/delay.c:
-	  Fix error messages.
+	  bin/iglsadf/iglsadf.c, bin/ignorm/ignorm.c,
+	  bin/lspcheck/lspcheck.c, bin/delay/delay.c: Fix error messages.
 
 2007-09-30 16:34  heigazen
 
@@ -3232,6 +3602,11 @@
 2007-09-30 01:48  heigazen
 
 	* lib/theq.c: Check det using isnan().
+
+2007-09-30 01:46  heigazen
+
+	* bin/sp2mgc/_sp2mgc.c: Fix bug: the final argument of newton()
+	  should be j rather than i.
 
 2007-09-28 19:22  s_sako
 
@@ -3310,10 +3685,11 @@
 	  bin/freqt/.cvsignore, bin/gc2gc/.cvsignore, bin/gcep/.cvsignore,
 	  bin/glsadf/.cvsignore, bin/gnorm/.cvsignore,
 	  bin/grpdelay/.cvsignore, bin/histogram/.cvsignore,
-	  bin/ifft/.cvsignore, bin/ifft2/.cvsignore, bin/ignorm/.cvsignore,
-	  bin/impulse/.cvsignore, bin/imsvq/.cvsignore,
-	  bin/interpolate/.cvsignore, bin/ivq/.cvsignore,
-	  bin/lbg/.cvsignore, bin/levdur/.cvsignore,
+	  bin/ifft/.cvsignore, bin/ifft2/.cvsignore,
+	  bin/iglsadf/.cvsignore, bin/ignorm/.cvsignore,
+	  bin/imglsadf/.cvsignore, bin/impulse/.cvsignore,
+	  bin/imsvq/.cvsignore, bin/interpolate/.cvsignore,
+	  bin/ivq/.cvsignore, bin/lbg/.cvsignore, bin/levdur/.cvsignore,
 	  bin/linear_intpl/.cvsignore, bin/lmadf/.cvsignore,
 	  bin/lpc/.cvsignore, bin/lpc2c/.cvsignore, bin/lpc2lsp/.cvsignore,
 	  bin/lpc2par/.cvsignore, bin/lsp2lpc/.cvsignore,
@@ -3329,13 +3705,13 @@
 	  bin/ramp/.cvsignore, bin/reverse/.cvsignore, bin/rmse/.cvsignore,
 	  bin/root_pol/.cvsignore, bin/sin/.cvsignore,
 	  bin/smcep/.cvsignore, bin/snr/.cvsignore, bin/sopr/.cvsignore,
-	  bin/spec/.cvsignore, bin/step/.cvsignore, bin/swab/.cvsignore,
-	  bin/train/.cvsignore, bin/uels/.cvsignore, bin/ulaw/.cvsignore,
-	  bin/us/.cvsignore, bin/vopr/.cvsignore, bin/vq/.cvsignore,
-	  bin/vstat/.cvsignore, bin/vsum/.cvsignore, bin/window/.cvsignore,
-	  bin/x2x/.cvsignore, bin/xgr/.cvsignore, bin/zcross/.cvsignore,
-	  bin/zerodf/.cvsignore, lib/.cvsignore, script/.cvsignore: Update
-	  .cvsignore.
+	  bin/sp2mgc/.cvsignore, bin/spec/.cvsignore, bin/step/.cvsignore,
+	  bin/swab/.cvsignore, bin/train/.cvsignore, bin/uels/.cvsignore,
+	  bin/ulaw/.cvsignore, bin/us/.cvsignore, bin/vopr/.cvsignore,
+	  bin/vq/.cvsignore, bin/vstat/.cvsignore, bin/vsum/.cvsignore,
+	  bin/window/.cvsignore, bin/x2x/.cvsignore, bin/xgr/.cvsignore,
+	  bin/zcross/.cvsignore, bin/zerodf/.cvsignore, lib/.cvsignore,
+	  script/.cvsignore: Update .cvsignore.
 
 2007-09-24 01:23  heigazen
 
@@ -3355,7 +3731,8 @@
 	  bin/fig+fdrw/fdrw.c, bin/freqt/freqt.c, bin/gc2gc/gc2gc.c,
 	  bin/gcep/gcep.c, bin/glsadf/glsadf.c, bin/gnorm/gnorm.c,
 	  bin/grpdelay/grpdelay.c, bin/histogram/histogram.c,
-	  bin/ifft/ifft.c, bin/ifft2/ifft2.c, bin/ignorm/ignorm.c,
+	  bin/ifft/ifft.c, bin/ifft2/ifft2.c, bin/iglsadf/iglsadf.c,
+	  bin/ignorm/ignorm.c, bin/imglsadf/imglsadf.c,
 	  bin/impulse/impulse.c, bin/imsvq/imsvq.c,
 	  bin/interpolate/interpolate.c, bin/ivq/ivq.c, bin/lbg/lbg.c,
 	  bin/levdur/levdur.c, bin/linear_intpl/linear_intpl.c,
@@ -3370,11 +3747,12 @@
 	  bin/phase/phase.c, bin/pitch/pitch.c, bin/poledf/poledf.c,
 	  bin/ramp/ramp.c, bin/reverse/reverse.c, bin/rmse/rmse.c,
 	  bin/root_pol/root_pol.c, bin/sin/sin.c, bin/smcep/smcep.c,
-	  bin/sopr/sopr.c, bin/spec/spec.c, bin/step/step.c,
-	  bin/train/train.c, bin/uels/uels.c, bin/ulaw/ulaw.c, bin/us/us.c,
-	  bin/vopr/vopr.c, bin/vq/vq.c, bin/vstat/vstat.c, bin/vsum/vsum.c,
-	  bin/window/window.c, bin/zcross/zcross.c, bin/zerodf/zerodf.c:
-	  Use -DFORMAT=\"double\" instead of char *FORMAT="double".
+	  bin/sopr/sopr.c, bin/sp2mgc/sp2mgc.c, bin/spec/spec.c,
+	  bin/step/step.c, bin/train/train.c, bin/uels/uels.c,
+	  bin/ulaw/ulaw.c, bin/us/us.c, bin/vopr/vopr.c, bin/vq/vq.c,
+	  bin/vstat/vstat.c, bin/vsum/vsum.c, bin/window/window.c,
+	  bin/zcross/zcross.c, bin/zerodf/zerodf.c: Use -DFORMAT=\"double\"
+	  instead of char *FORMAT="double".
 
 2007-09-23 22:54  heigazen
 
@@ -3392,10 +3770,11 @@
 	  fftr2/fftr2.c, fig+fdrw/fdrw.c, fig+fdrw/fig.c, frame/frame.c,
 	  freqt/freqt.c, gc2gc/gc2gc.c, gcep/gcep.c, glsadf/glsadf.c,
 	  gnorm/gnorm.c, grpdelay/grpdelay.c, histogram/histogram.c,
-	  ifft/ifft.c, ifft2/ifft2.c, ignorm/ignorm.c, impulse/impulse.c,
-	  imsvq/imsvq.c, interpolate/interpolate.c, ivq/ivq.c, lbg/lbg.c,
-	  levdur/levdur.c, linear_intpl/linear_intpl.c, lmadf/lmadf.c,
-	  lpc/lpc.c, lpc2c/lpc2c.c, lpc2lsp/lpc2lsp.c, lpc2par/lpc2par.c,
+	  ifft/ifft.c, ifft2/ifft2.c, iglsadf/iglsadf.c, ignorm/ignorm.c,
+	  imglsadf/imglsadf.c, impulse/impulse.c, imsvq/imsvq.c,
+	  interpolate/interpolate.c, ivq/ivq.c, lbg/lbg.c, levdur/levdur.c,
+	  linear_intpl/linear_intpl.c, lmadf/lmadf.c, lpc/lpc.c,
+	  lpc2c/lpc2c.c, lpc2lsp/lpc2lsp.c, lpc2par/lpc2par.c,
 	  lsp2lpc/lsp2lpc.c, lspcheck/lspcheck.c, lspdf/lspdf.c,
 	  ltcdf/ltcdf.c, mc2b/mc2b.c, mcep/mcep.c, merge/merge.c,
 	  mgc2mgc/mgc2mgc.c, mgc2sp/mgc2sp.c, mgcep/mgcep.c,
@@ -3404,11 +3783,11 @@
 	  par2lpc/par2lpc.c, phase/phase.c, pitch/pitch.c, poledf/poledf.c,
 	  psgr/psgr.c, ramp/ramp.c, reverse/reverse.c, rmse/rmse.c,
 	  root_pol/root_pol.c, sin/sin.c, smcep/smcep.c, snr/snr.c,
-	  sopr/sopr.c, spec/spec.c, step/step.c, swab/swab.c,
-	  train/train.c, uels/uels.c, ulaw/ulaw.c, us/us.c, vopr/vopr.c,
-	  vq/vq.c, vstat/vstat.c, vsum/vsum.c, window/window.c, x2x/x2x.c,
-	  xgr/xgr.c, zcross/zcross.c, zerodf/zerodf.c: SPTK_VERSION ->
-	  PACKAGE_VERSION.
+	  sopr/sopr.c, sp2mgc/sp2mgc.c, spec/spec.c, step/step.c,
+	  swab/swab.c, train/train.c, uels/uels.c, ulaw/ulaw.c, us/us.c,
+	  vopr/vopr.c, vq/vq.c, vstat/vstat.c, vsum/vsum.c,
+	  window/window.c, x2x/x2x.c, xgr/xgr.c, zcross/zcross.c,
+	  zerodf/zerodf.c: SPTK_VERSION -> PACKAGE_VERSION.
 
 2007-09-23 22:15  heigazen
 
@@ -3482,12 +3861,13 @@
 	  bin/us/Makefile.in, bin/average/Makefile.in,
 	  bin/echo2/Makefile.in, bin/lspdf/Makefile.in,
 	  bin/ltcdf/Makefile.in, bin/mgc2sp/Makefile.in,
-	  bin/df2/Makefile.in, bin/ifft2/Makefile.in,
-	  bin/pitch/Makefile.in, bin/vopr/Makefile.in, bin/bcp/Makefile.in,
-	  bin/fftr/Makefile.in, bin/interpolate/Makefile.in,
-	  bin/lsp2lpc/Makefile.in, bin/window/Makefile.in,
-	  bin/zcross/Makefile.in, bin/ds/Makefile.in, bin/ifft/Makefile.in,
-	  bin/lbg/Makefile.in, bin/mlsadf/Makefile.in, bin/nan/Makefile.in,
+	  bin/sp2mgc/Makefile.in, bin/df2/Makefile.in,
+	  bin/ifft2/Makefile.in, bin/pitch/Makefile.in,
+	  bin/vopr/Makefile.in, bin/bcp/Makefile.in, bin/fftr/Makefile.in,
+	  bin/interpolate/Makefile.in, bin/lsp2lpc/Makefile.in,
+	  bin/window/Makefile.in, bin/zcross/Makefile.in,
+	  bin/ds/Makefile.in, bin/ifft/Makefile.in, bin/lbg/Makefile.in,
+	  bin/mlsadf/Makefile.in, bin/nan/Makefile.in,
 	  bin/c2acr/Makefile.in, bin/fft/Makefile.in,
 	  bin/nrand/Makefile.in, bin/phase/Makefile.in,
 	  bin/train/Makefile.in, bin/acorr/Makefile.in,
@@ -3496,14 +3876,15 @@
 	  bin/msvq/Makefile.in, bin/reverse/Makefile.in,
 	  bin/step/Makefile.in, bin/impulse/Makefile.in,
 	  bin/ivq/Makefile.in, bin/mgc2mgc/Makefile.in,
-	  bin/snr/Makefile.in, bin/linear_intpl/Makefile.in,
-	  bin/root_pol/Makefile.in, bin/x2x/Makefile.in,
-	  bin/decimate/Makefile.in, bin/fft2/Makefile.in,
-	  bin/fig+fdrw/Makefile.in, bin/lpc/Makefile.in,
-	  bin/dfs/Makefile.in, bin/fd/Makefile.in, bin/lmadf/Makefile.in,
-	  bin/psgr/Makefile.in, bin/sopr/Makefile.in, bin/gcep/Makefile.in,
-	  bin/ramp/Makefile.in, bin/rmse/Makefile.in,
-	  bin/fftr2/Makefile.in, bin/swab/Makefile.in,
+	  bin/snr/Makefile.in, bin/iglsadf/Makefile.in,
+	  bin/linear_intpl/Makefile.in, bin/root_pol/Makefile.in,
+	  bin/x2x/Makefile.in, bin/decimate/Makefile.in,
+	  bin/fft2/Makefile.in, bin/fig+fdrw/Makefile.in,
+	  bin/lpc/Makefile.in, bin/dfs/Makefile.in, bin/fd/Makefile.in,
+	  bin/lmadf/Makefile.in, bin/psgr/Makefile.in,
+	  bin/sopr/Makefile.in, bin/gcep/Makefile.in, bin/ramp/Makefile.in,
+	  bin/rmse/Makefile.in, bin/fftr2/Makefile.in,
+	  bin/imglsadf/Makefile.in, bin/swab/Makefile.in,
 	  bin/b2mc/Makefile.in, bin/dmp/Makefile.in,
 	  bin/extract/Makefile.in, bin/grpdelay/Makefile.in,
 	  bin/lpc2par/Makefile.in, bin/merge/Makefile.in,
@@ -3545,8 +3926,9 @@
 	  bin/mlpg/Makefile.am, bin/us/Makefile.am, bin/bcp/Makefile.am,
 	  bin/df2/Makefile.am, bin/fftr/Makefile.am, bin/ifft2/Makefile.am,
 	  bin/interpolate/Makefile.am, bin/lsp2lpc/Makefile.am,
-	  bin/pitch/Makefile.am, bin/vopr/Makefile.am, bin/ds/Makefile.am,
-	  bin/fft/Makefile.am, bin/ifft/Makefile.am, bin/lbg/Makefile.am,
+	  bin/pitch/Makefile.am, bin/sp2mgc/Makefile.am,
+	  bin/vopr/Makefile.am, bin/ds/Makefile.am, bin/fft/Makefile.am,
+	  bin/ifft/Makefile.am, bin/lbg/Makefile.am,
 	  bin/mlsadf/Makefile.am, bin/nan/Makefile.am,
 	  bin/nrand/Makefile.am, bin/phase/Makefile.am,
 	  bin/window/Makefile.am, bin/zcross/Makefile.am,
@@ -3558,11 +3940,12 @@
 	  bin/impulse/Makefile.am, bin/mgc2mgc/Makefile.am,
 	  bin/snr/Makefile.am, bin/x2x/Makefile.am,
 	  bin/linear_intpl/Makefile.am, bin/root_pol/Makefile.am,
-	  bin/fft2/Makefile.am, bin/lpc/Makefile.am,
-	  bin/decimate/Makefile.am, bin/dfs/Makefile.am,
-	  bin/fd/Makefile.am, bin/fig+fdrw/Makefile.am,
-	  bin/lmadf/Makefile.am, bin/psgr/Makefile.am,
-	  bin/rmse/Makefile.am, bin/sopr/Makefile.am, bin/gcep/Makefile.am,
+	  bin/fft2/Makefile.am, bin/iglsadf/Makefile.am,
+	  bin/lpc/Makefile.am, bin/decimate/Makefile.am,
+	  bin/dfs/Makefile.am, bin/fd/Makefile.am,
+	  bin/fig+fdrw/Makefile.am, bin/lmadf/Makefile.am,
+	  bin/psgr/Makefile.am, bin/rmse/Makefile.am, bin/sopr/Makefile.am,
+	  bin/gcep/Makefile.am, bin/imglsadf/Makefile.am,
 	  bin/ramp/Makefile.am, bin/extract/Makefile.am,
 	  bin/fftr2/Makefile.am, bin/grpdelay/Makefile.am,
 	  bin/lpc2par/Makefile.am, bin/swab/Makefile.am,
@@ -3593,8 +3976,8 @@
 	  bin/vq/.cvsignore, bin/average/.cvsignore, bin/df2/.cvsignore,
 	  bin/echo2/.cvsignore, bin/ifft2/.cvsignore, bin/lspdf/.cvsignore,
 	  bin/ltcdf/.cvsignore, bin/mgc2sp/.cvsignore,
-	  bin/pitch/.cvsignore, bin/bcp/.cvsignore, bin/ds/.cvsignore,
-	  bin/fftr/.cvsignore, bin/ifft/.cvsignore,
+	  bin/pitch/.cvsignore, bin/sp2mgc/.cvsignore, bin/bcp/.cvsignore,
+	  bin/ds/.cvsignore, bin/fftr/.cvsignore, bin/ifft/.cvsignore,
 	  bin/interpolate/.cvsignore, bin/lbg/.cvsignore,
 	  bin/lsp2lpc/.cvsignore, bin/mlsadf/.cvsignore,
 	  bin/nan/.cvsignore, bin/vopr/.cvsignore, bin/window/.cvsignore,
@@ -3607,15 +3990,17 @@
 	  bin/linear_intpl/.cvsignore, bin/mgc2mgc/.cvsignore,
 	  bin/msvq/.cvsignore, bin/snr/.cvsignore, bin/step/.cvsignore,
 	  bin/x2x/.cvsignore, bin/decimate/.cvsignore, bin/fft2/.cvsignore,
-	  bin/fig+fdrw/.cvsignore, bin/lmadf/.cvsignore,
-	  bin/lpc/.cvsignore, bin/root_pol/.cvsignore, bin/sopr/.cvsignore,
-	  bin/dfs/.cvsignore, bin/fd/.cvsignore, bin/psgr/.cvsignore,
-	  bin/ramp/.cvsignore, bin/rmse/.cvsignore, bin/extract/.cvsignore,
+	  bin/fig+fdrw/.cvsignore, bin/iglsadf/.cvsignore,
+	  bin/lmadf/.cvsignore, bin/lpc/.cvsignore,
+	  bin/root_pol/.cvsignore, bin/sopr/.cvsignore, bin/dfs/.cvsignore,
+	  bin/fd/.cvsignore, bin/psgr/.cvsignore, bin/ramp/.cvsignore,
+	  bin/rmse/.cvsignore, bin/extract/.cvsignore,
 	  bin/fftr2/.cvsignore, bin/gcep/.cvsignore,
-	  bin/grpdelay/.cvsignore, bin/lpc2par/.cvsignore,
-	  bin/merge/.cvsignore, bin/swab/.cvsignore, bin/zerodf/.cvsignore,
-	  bin/agcep/.cvsignore, bin/b2mc/.cvsignore, bin/bcut/.cvsignore,
-	  bin/dmp/.cvsignore, bin/histogram/.cvsignore, bin/sin/.cvsignore,
+	  bin/grpdelay/.cvsignore, bin/imglsadf/.cvsignore,
+	  bin/lpc2par/.cvsignore, bin/merge/.cvsignore,
+	  bin/swab/.cvsignore, bin/zerodf/.cvsignore, bin/agcep/.cvsignore,
+	  bin/b2mc/.cvsignore, bin/bcut/.cvsignore, bin/dmp/.cvsignore,
+	  bin/histogram/.cvsignore, bin/sin/.cvsignore,
 	  bin/vstat/.cvsignore, bin/vsum/.cvsignore, bin/c2ir/.cvsignore,
 	  bin/da/.cvsignore, bin/excite/.cvsignore, bin/ignorm/.cvsignore,
 	  bin/minmax/.cvsignore, bin/uels/.cvsignore, bin/ulaw/.cvsignore,
@@ -3636,21 +4021,22 @@
 
 	* bin/: average/average.c, clip/clip.c, fftr/fftr.c, gcep/gcep.c,
 	  ds/ds.c, fig+fdrw/fdrw.c, fig+fdrw/fig.c, merge/merge.c,
-	  phase/phase.c, reverse/reverse.c, sin/sin.c, vstat/vstat.c,
-	  window/window.c, bcut/bcut.c, dfs/dfs.c, glsadf/glsadf.c,
-	  pitch/pitch.c, spec/spec.c, swab/swab.c, us/us.c, acep/acep.c,
-	  agcep/agcep.c, c2acr/c2acr.c, mlsadf/mlsadf.c, nan/nan.c,
-	  gc2gc/gc2gc.c, ifft/ifft.c, lmadf/lmadf.c, mc2b/mc2b.c,
-	  mcep/mcep.c, mgcep/mgcep.c, sopr/sopr.c, fd/fd.c, fftr2/fftr2.c,
-	  grpdelay/grpdelay.c, lsp2lpc/lsp2lpc.c, mglsadf/mglsadf.c,
-	  step/step.c, uels/uels.c, lspdf/lspdf.c, ramp/ramp.c,
-	  root_pol/root_pol.c, ulaw/ulaw.c, xgr/xgr.c, bcp/bcp.c,
-	  c2ir/c2ir.c, da/dawrite.c, echo2/echo2.c, extract/extract.c,
-	  ifft2/ifft2.c, train/train.c, vopr/vopr.c, vq/vq.c,
-	  zcross/zcross.c, dmp/dmp.c, mgc2mgc/mgc2mgc.c, fftcep/fftcep.c,
-	  histogram/histogram.c, vsum/vsum.c, zerodf/zerodf.c,
-	  lpc2lsp/lpc2lsp.c, lspcheck/lspcheck.c, mgc2sp/mgc2sp.c,
-	  msvq/msvq.c, smcep/smcep.c, x2x/x2x.c, df2/df2.c, nrand/nrand.c,
+	  phase/phase.c, reverse/reverse.c, sin/sin.c, sp2mgc/sp2mgc.c,
+	  vstat/vstat.c, window/window.c, bcut/bcut.c, dfs/dfs.c,
+	  glsadf/glsadf.c, pitch/pitch.c, spec/spec.c, swab/swab.c,
+	  us/us.c, acep/acep.c, agcep/agcep.c, c2acr/c2acr.c,
+	  mlsadf/mlsadf.c, nan/nan.c, gc2gc/gc2gc.c, ifft/ifft.c,
+	  lmadf/lmadf.c, mc2b/mc2b.c, mcep/mcep.c, mgcep/mgcep.c,
+	  sopr/sopr.c, fd/fd.c, fftr2/fftr2.c, grpdelay/grpdelay.c,
+	  lsp2lpc/lsp2lpc.c, mglsadf/mglsadf.c, step/step.c, uels/uels.c,
+	  lspdf/lspdf.c, ramp/ramp.c, root_pol/root_pol.c, ulaw/ulaw.c,
+	  xgr/xgr.c, bcp/bcp.c, c2ir/c2ir.c, da/dawrite.c, echo2/echo2.c,
+	  extract/extract.c, ifft2/ifft2.c, train/train.c, vopr/vopr.c,
+	  vq/vq.c, zcross/zcross.c, dmp/dmp.c, imglsadf/imglsadf.c,
+	  mgc2mgc/mgc2mgc.c, fftcep/fftcep.c, histogram/histogram.c,
+	  vsum/vsum.c, zerodf/zerodf.c, lpc2lsp/lpc2lsp.c,
+	  lspcheck/lspcheck.c, mgc2sp/mgc2sp.c, msvq/msvq.c, smcep/smcep.c,
+	  x2x/x2x.c, df2/df2.c, iglsadf/iglsadf.c, nrand/nrand.c,
 	  rmse/rmse.c, ignorm/ignorm.c, lbg/lbg.c, snr/snr.c,
 	  amcep/amcep.c, ivq/ivq.c, lpc2par/lpc2par.c, c2sp/c2sp.c,
 	  fft2/fft2.c, gnorm/gnorm.c, levdur/levdur.c,
@@ -3731,6 +4117,10 @@
 2007-09-18 12:38  heigazen
 
 	* bin/xgr/plot.c: m_flg -> mono_flg.
+
+2007-09-18 11:01  heigazen
+
+	* bin/sp2mgc/sp2mgc.c: Use size_t instead of int.
 
 2007-09-18 10:57  heigazen
 
@@ -3892,7 +4282,8 @@
 	  bin/lspdf/_lspdf.c, bin/lspdf/lspdf.c, bin/mcep/Makefile.in,
 	  bin/mcep/_mcep.c, bin/mcep/mcep.c, bin/mglsadf/Makefile.in,
 	  bin/mglsadf/_mglsadf.c, bin/mglsadf/mglsadf.c,
-	  bin/sopr/Makefile.in, bin/sopr/sopr.c, bin/b2mc/Makefile.in,
+	  bin/sopr/Makefile.in, bin/sopr/sopr.c, bin/sp2mgc/Makefile.in,
+	  bin/sp2mgc/_sp2mgc.c, bin/sp2mgc/sp2mgc.c, bin/b2mc/Makefile.in,
 	  bin/b2mc/_b2mc.c, bin/b2mc/b2mc.c, bin/impulse/Makefile.in,
 	  bin/impulse/impulse.c, bin/mc2b/Makefile.in, bin/mc2b/_mc2b.c,
 	  bin/mc2b/mc2b.c, bin/mgcep/Makefile.in, bin/mgcep/_mgcep.c,
@@ -3950,34 +4341,40 @@
 	  bin/c2ir/Makefile.in, bin/c2ir/_c2ir.c, bin/c2ir/c2ir.c,
 	  bin/decimate/Makefile.in, bin/decimate/decimate.c,
 	  bin/freqt/Makefile.in, bin/freqt/_freqt.c, bin/freqt/freqt.c,
-	  bin/interpolate/Makefile.in, bin/interpolate/interpolate.c,
-	  bin/mgc2mgc/Makefile.in, bin/mgc2mgc/_mgc2mgc.c,
-	  bin/mgc2mgc/mgc2mgc.c, bin/ramp/Makefile.in, bin/ramp/ramp.c,
-	  bin/vq/Makefile.in, bin/vq/_vq.c, bin/vq/vq.c,
-	  bin/bcut/Makefile.in, bin/bcut/bcut.c, bin/c2acr/Makefile.in,
-	  bin/c2acr/_c2acr.c, bin/c2acr/c2acr.c, bin/dfs/Makefile.in,
-	  bin/dfs/_dfs.c, bin/dfs/dfs.c, bin/dmp/Makefile.in,
-	  bin/dmp/dmp.c, bin/ds/Makefile.in, bin/ds/ds.c,
-	  bin/excite/Makefile.in, bin/excite/excite.c,
+	  bin/iglsadf/Makefile.in, bin/iglsadf/_iglsadf.c,
+	  bin/iglsadf/iglsadf.c, bin/interpolate/Makefile.in,
+	  bin/interpolate/interpolate.c, bin/mgc2mgc/Makefile.in,
+	  bin/mgc2mgc/_mgc2mgc.c, bin/mgc2mgc/mgc2mgc.c,
+	  bin/ramp/Makefile.in, bin/ramp/ramp.c, bin/vq/Makefile.in,
+	  bin/vq/_vq.c, bin/vq/vq.c, bin/bcut/Makefile.in, bin/bcut/bcut.c,
+	  bin/c2acr/Makefile.in, bin/c2acr/_c2acr.c, bin/c2acr/c2acr.c,
+	  bin/dfs/Makefile.in, bin/dfs/_dfs.c, bin/dfs/dfs.c,
+	  bin/dmp/Makefile.in, bin/dmp/dmp.c, bin/ds/Makefile.in,
+	  bin/ds/ds.c, bin/excite/Makefile.in, bin/excite/excite.c,
 	  bin/fft2/Makefile.in, bin/fft2/_fft2.c, bin/fft2/fft2.c,
 	  bin/mgc2sp/Makefile.in, bin/mgc2sp/_mgc2sp.c,
 	  bin/mgc2sp/mgc2sp.c, bin/vstat/Makefile.in, bin/vstat/vstat.c,
 	  bin/lpc/Makefile.in, bin/lpc/_lpc.c, bin/lpc/lpc.c,
 	  bin/pitch/Makefile.in, bin/pitch/_pitch.c, bin/pitch/pitch.c,
-	  bin/echo2/Makefile.in, bin/echo2/echo2.c, bin/nan/Makefile.in,
-	  bin/nan/nan.c, bin/sin/Makefile.in, bin/sin/sin.c,
-	  bin/vopr/Makefile.in, bin/vopr/vopr.c, Makefile.in,
-	  bin/Makefile.in, bin/bcp/Makefile.in, bin/bcp/bcp.c,
-	  bin/extract/Makefile.in, bin/extract/extract.c,
-	  bin/glsadf/Makefile.in, bin/glsadf/_glsadf.c,
-	  bin/glsadf/glsadf.c, bin/mlsadf/Makefile.in,
-	  bin/mlsadf/_mlsadf.c, bin/mlsadf/mlsadf.c,
-	  bin/reverse/Makefile.in, bin/reverse/_reverse.c,
-	  bin/reverse/reverse.c: Update license.
+	  bin/echo2/Makefile.in, bin/echo2/echo2.c,
+	  bin/imglsadf/Makefile.in, bin/imglsadf/_imglsadf.c,
+	  bin/imglsadf/imglsadf.c, bin/nan/Makefile.in, bin/nan/nan.c,
+	  bin/sin/Makefile.in, bin/sin/sin.c, bin/vopr/Makefile.in,
+	  bin/vopr/vopr.c, Makefile.in, bin/Makefile.in,
+	  bin/bcp/Makefile.in, bin/bcp/bcp.c, bin/extract/Makefile.in,
+	  bin/extract/extract.c, bin/glsadf/Makefile.in,
+	  bin/glsadf/_glsadf.c, bin/glsadf/glsadf.c,
+	  bin/mlsadf/Makefile.in, bin/mlsadf/_mlsadf.c,
+	  bin/mlsadf/mlsadf.c, bin/reverse/Makefile.in,
+	  bin/reverse/_reverse.c, bin/reverse/reverse.c: Update license.
 
 2007-09-12 16:01  heigazen
 
 	* bin/mglsadf/mglsadf.c: Update comments.
+
+2007-09-12 15:54  heigazen
+
+	* bin/: iglsadf/iglsadf.c, imglsadf/imglsadf.c: Update comments.
 
 2007-09-12 15:53  heigazen
 
@@ -4011,12 +4408,17 @@
 2007-09-11 17:33  heigazen
 
 	* bin/: mgc2sp/mgc2sp.c, gc2gc/gc2gc.c, gnorm/gnorm.c,
-	  ignorm/ignorm.c, mgc2mgc/mgc2mgc.c, mgcep/mgcep.c: If g>1.0 then
-	  g=-1/g.
+	  ignorm/ignorm.c, mgc2mgc/mgc2mgc.c, mgcep/mgcep.c,
+	  sp2mgc/sp2mgc.c: If g>1.0 then g=-1/g.
+
+2007-09-11 17:25  heigazen
+
+	* bin/imglsadf/imglsadf.c: Arrange spaces.
 
 2007-09-11 16:46  heigazen
 
-	* bin/: agcep/agcep.c, glsadf/glsadf.c: Update gamma handling.
+	* bin/: agcep/agcep.c, glsadf/glsadf.c, iglsadf/iglsadf.c: Update
+	  gamma handling.
 
 2007-09-11 15:30  heigazen
 
@@ -4062,27 +4464,28 @@
 2007-09-11 03:10  heigazen
 
 	* bin/: clip/clip.c, fftr/fftr.c, gcep/gcep.c, impulse/impulse.c,
-	  lpc2c/lpc2c.c, reverse/reverse.c, phase/phase.c, excite/excite.c,
-	  imsvq/imsvq.c, sin/sin.c, vstat/vstat.c, ds/ds.c,
-	  par2lpc/par2lpc.c, window/window.c, glsadf/glsadf.c, lpc/lpc.c,
-	  pitch/pitch.c, spec/spec.c, c2acr/c2acr.c, gc2gc/gc2gc.c,
-	  ifft/ifft.c, lmadf/lmadf.c, mc2b/mc2b.c, mlsadf/mlsadf.c,
-	  nan/nan.c, sopr/sopr.c, fftr2/fftr2.c, interpolate/interpolate.c,
-	  lsp2lpc/lsp2lpc.c, mcep/mcep.c, mgcep/mgcep.c, c2ir/c2ir.c,
-	  fig+fdrw/fdrw.c, grpdelay/grpdelay.c, mglsadf/mglsadf.c,
-	  minmax/minmax.c, ramp/ramp.c, root_pol/root_pol.c, step/step.c,
-	  uels/uels.c, ulaw/ulaw.c, vq/vq.c, extract/extract.c, fft/fft.c,
-	  ifft2/ifft2.c, norm0/norm0.c, train/train.c, vopr/vopr.c,
+	  lpc2c/lpc2c.c, reverse/reverse.c, sp2mgc/sp2mgc.c, phase/phase.c,
+	  excite/excite.c, imsvq/imsvq.c, sin/sin.c, vstat/vstat.c,
+	  ds/ds.c, par2lpc/par2lpc.c, window/window.c, glsadf/glsadf.c,
+	  lpc/lpc.c, pitch/pitch.c, spec/spec.c, c2acr/c2acr.c,
+	  gc2gc/gc2gc.c, ifft/ifft.c, lmadf/lmadf.c, mc2b/mc2b.c,
+	  mlsadf/mlsadf.c, nan/nan.c, sopr/sopr.c, fftr2/fftr2.c,
+	  interpolate/interpolate.c, lsp2lpc/lsp2lpc.c, mcep/mcep.c,
+	  mgcep/mgcep.c, c2ir/c2ir.c, fig+fdrw/fdrw.c, grpdelay/grpdelay.c,
+	  mglsadf/mglsadf.c, minmax/minmax.c, ramp/ramp.c,
+	  root_pol/root_pol.c, step/step.c, uels/uels.c, ulaw/ulaw.c,
+	  vq/vq.c, extract/extract.c, fft/fft.c, ifft2/ifft2.c,
+	  imglsadf/imglsadf.c, norm0/norm0.c, train/train.c, vopr/vopr.c,
 	  zcross/zcross.c, cdist/cdist.c, fftcep/fftcep.c,
 	  histogram/histogram.c, lspcheck/lspcheck.c, mgc2mgc/mgc2mgc.c,
 	  poledf/poledf.c, vsum/vsum.c, zerodf/zerodf.c, b2mc/b2mc.c,
 	  decimate/decimate.c, freqt/freqt.c, mgc2sp/mgc2sp.c, msvq/msvq.c,
-	  smcep/smcep.c, df2/df2.c, ignorm/ignorm.c, ivq/ivq.c, lbg/lbg.c,
-	  lpc2par/lpc2par.c, nrand/nrand.c, rmse/rmse.c, c2sp/c2sp.c,
-	  fft2/fft2.c, gnorm/gnorm.c, levdur/levdur.c,
-	  linear_intpl/linear_intpl.c, ltcdf/ltcdf.c, delay/delay.c:
-	  Tracker:Bugs 1572611.  Output proper help messages when compiled
-	  with '-DDOUBLE' option.
+	  smcep/smcep.c, df2/df2.c, iglsadf/iglsadf.c, ignorm/ignorm.c,
+	  ivq/ivq.c, lbg/lbg.c, lpc2par/lpc2par.c, nrand/nrand.c,
+	  rmse/rmse.c, c2sp/c2sp.c, fft2/fft2.c, gnorm/gnorm.c,
+	  levdur/levdur.c, linear_intpl/linear_intpl.c, ltcdf/ltcdf.c,
+	  delay/delay.c: Tracker:Bugs 1572611.	Output proper help messages
+	  when compiled with '-DDOUBLE' option.
 
 2007-09-11 03:03  heigazen
 
@@ -4128,23 +4531,25 @@
 	  gc2gc/gc2gc.c, impulse/impulse.c, lpc2c/_lpc2c.c, lpc2c/lpc2c.c,
 	  ltcdf/_ltcdf.c, ltcdf/ltcdf.c, merge/merge.c, phase/_phase.c,
 	  phase/phase.c, bcut/bcut.c, dfs/_dfs.c, dfs/dfs.c, ds/ds.c,
-	  lsp2lpc/_lsp2lpc.c, lsp2lpc/lsp2lpc.c, us/us.c, us/us16.sh,
-	  window/_window.c, window/window.c, fft/_fft.c, fft/fft.c,
-	  fftr2/_fftr2.c, fftr2/fftr2.c, gcep/_gcep.c, gcep/gcep.c,
-	  lpc/_lpc.c, lpc/lpc.c, mgcep/_mgcep.c, mgcep/mgcep.c,
-	  msvq/_msvq.c, msvq/msvq.c, nan/nan.c, pitch/_pitch.c,
-	  pitch/pitch.c, sopr/sopr.c, spec/spec.c, lbg/_lbg.c, lbg/lbg.c,
-	  lspdf/_lspdf.c, lspdf/lspdf.c, ramp/ramp.c, step/step.c,
-	  train/train.c, ulaw/_ulaw.c, ulaw/ulaw.c, vq/_vq.c, vq/vq.c,
-	  df2/_df2.c, df2/df2.c, dmp/dmp.c, echo2/echo2.c,
-	  grpdelay/_grpdelay.c, grpdelay/grpdelay.c, histogram/histogram.c,
-	  mc2b/_mc2b.c, mc2b/mc2b.c, mgc2mgc/_mgc2mgc.c, mgc2mgc/mgc2mgc.c,
-	  norm0/_norm0.c, norm0/norm0.c, vopr/vopr.c, vsum/vsum.c,
-	  zerodf/_zerodf.c, zerodf/zerodf.c, b2mc/b2mc.c, cdist/cdist.c,
-	  lpc2par/_lpc2par.c, lpc2par/lpc2par.c, mgc2sp/_mgc2sp.c,
-	  mgc2sp/mgc2sp.c, nrand/_nrand.c, nrand/nrand.c, poledf/_poledf.c,
-	  poledf/poledf.c, rmse/_rmse.c, rmse/rmse.c, smcep/_smcep.c,
-	  smcep/smcep.c, snr/snr.c, x2x/x2x.c, c2sp/_c2sp.c, c2sp/c2sp.c,
+	  lsp2lpc/_lsp2lpc.c, lsp2lpc/lsp2lpc.c, sp2mgc/_sp2mgc.c,
+	  sp2mgc/sp2mgc.c, us/us.c, us/us16.sh, window/_window.c,
+	  window/window.c, fft/_fft.c, fft/fft.c, fftr2/_fftr2.c,
+	  fftr2/fftr2.c, gcep/_gcep.c, gcep/gcep.c, imglsadf/_imglsadf.c,
+	  imglsadf/imglsadf.c, lpc/_lpc.c, lpc/lpc.c, mgcep/_mgcep.c,
+	  mgcep/mgcep.c, msvq/_msvq.c, msvq/msvq.c, nan/nan.c,
+	  pitch/_pitch.c, pitch/pitch.c, sopr/sopr.c, spec/spec.c,
+	  lbg/_lbg.c, lbg/lbg.c, lspdf/_lspdf.c, lspdf/lspdf.c,
+	  ramp/ramp.c, step/step.c, train/train.c, ulaw/_ulaw.c,
+	  ulaw/ulaw.c, vq/_vq.c, vq/vq.c, df2/_df2.c, df2/df2.c, dmp/dmp.c,
+	  echo2/echo2.c, grpdelay/_grpdelay.c, grpdelay/grpdelay.c,
+	  histogram/histogram.c, mc2b/_mc2b.c, mc2b/mc2b.c,
+	  mgc2mgc/_mgc2mgc.c, mgc2mgc/mgc2mgc.c, norm0/_norm0.c,
+	  norm0/norm0.c, vopr/vopr.c, vsum/vsum.c, zerodf/_zerodf.c,
+	  zerodf/zerodf.c, b2mc/b2mc.c, cdist/cdist.c, lpc2par/_lpc2par.c,
+	  lpc2par/lpc2par.c, mgc2sp/_mgc2sp.c, mgc2sp/mgc2sp.c,
+	  nrand/_nrand.c, nrand/nrand.c, poledf/_poledf.c, poledf/poledf.c,
+	  rmse/_rmse.c, rmse/rmse.c, smcep/_smcep.c, smcep/smcep.c,
+	  snr/snr.c, x2x/x2x.c, c2sp/_c2sp.c, c2sp/c2sp.c,
 	  ignorm/_ignorm.c, ignorm/ignorm.c, imsvq/_imsvq.c, imsvq/imsvq.c,
 	  ivq/_ivq.c, ivq/ivq.c, levdur/_levdur.c, levdur/levdur.c,
 	  linear_intpl/linear_intpl.c, mcep/_mcep.c, mcep/mcep.c,
@@ -4159,11 +4564,11 @@
 	  lspcheck/_lspcheck.c, lspcheck/lspcheck.c, mglsadf/_mglsadf.c,
 	  mglsadf/mglsadf.c, minmax/minmax.c, mlsadf/_mlsadf.c,
 	  mlsadf/mlsadf.c, uels/_uels.c, uels/uels.c, extract/extract.c,
-	  fftcep/_fftcep.c, fftcep/fftcep.c, zcross/_zcross.c,
-	  zcross/zcross.c, amcep/amcep.c, decimate/decimate.c,
-	  delay/delay.c, frame/frame.c: Fix tabs in comments.  Replace
-	  exit() in main() by return().  Declare 'static' if this function
-	  is not called from other files.
+	  fftcep/_fftcep.c, fftcep/fftcep.c, iglsadf/_iglsadf.c,
+	  iglsadf/iglsadf.c, zcross/_zcross.c, zcross/zcross.c,
+	  amcep/amcep.c, decimate/decimate.c, delay/delay.c, frame/frame.c:
+	  Fix tabs in comments.  Replace exit() in main() by return().
+	  Declare 'static' if this function is not called from other files.
 
 2007-09-10 11:48  heigazen
 
@@ -4199,7 +4604,7 @@
 
 2007-09-08 02:27  heigazen
 
-	* bin/gcep/gcep.c: g>1.0 -> g>=1.0
+	* bin/: gcep/gcep.c, sp2mgc/sp2mgc.c: g>1.0 -> g>=1.0
 
 2007-09-08 02:18  heigazen
 
@@ -4222,8 +4627,8 @@
 2007-09-07 14:50  heigazen
 
 	* bin/: mgc2sp/mgc2sp.c, agcep/agcep.c, glsadf/glsadf.c,
-	  mgc2mgc/mgc2mgc.c, mglsadf/mglsadf.c: Check gamma to avoid zero
-	  division.
+	  iglsadf/iglsadf.c, imglsadf/imglsadf.c, mgc2mgc/mgc2mgc.c,
+	  mglsadf/mglsadf.c: Check gamma to avoid zero division.
 
 2007-09-05 17:00  heigazen
 
@@ -4258,13 +4663,27 @@
 	* bin/vstat/vstat.c: Add option '-i' to output inverse covariance
 	  instead of covariance matrix.
 
+2007-08-07 16:20  heigazen
+
+	* bin/sp2mgc/.cvsignore: Add Makefile to .cvsignore.
+
 2007-08-07 16:17  heigazen
 
-	* configure, configure.ac, include/SPTK.h: Add sp2mgc.
+	* configure, configure.ac, bin/sp2mgc/.cvsignore,
+	  bin/sp2mgc/Makefile.in, bin/sp2mgc/_sp2mgc.c,
+	  bin/sp2mgc/sp2mgc.c, include/SPTK.h: Add sp2mgc.
 
 2007-08-07 15:13  heigazen
 
-	* configure, configure.ac: Remove unused programs.
+	* configure, configure.ac, bin/mgcep2/.cvsignore,
+	  bin/mgcep2/Makefile.in, bin/mgcep2/_mgcep2.c,
+	  bin/mgcep2/mgcep2.c, bin/rndpg/.cvsignore, bin/rndpg/Makefile.in,
+	  bin/rndpg/rndpg.c, bin/srcnv/.cvsignore, bin/srcnv/Makefile.in,
+	  bin/srcnv/lpfcoef.2to3f, bin/srcnv/lpfcoef.2to3s,
+	  bin/srcnv/lpfcoef.3to4, bin/srcnv/lpfcoef.4to5,
+	  bin/srcnv/lpfcoef.5to7, bin/srcnv/lpfcoef.5to8,
+	  bin/srcnv/srcnv.c, bin/ccp/.cvsignore, bin/ccp/Makefile.in,
+	  bin/ccp/ccp.c: Remove unused programs.
 
 2007-08-07 15:10  heigazen
 
@@ -4391,13 +4810,14 @@
 	  window/window.c, x2x/.cvsignore, x2x/x2x.c, root_pol/.cvsignore,
 	  root_pol/_root_pol.c, root_pol/root_pol.c, ramp/.cvsignore,
 	  ramp/ramp.c, rmse/.cvsignore, rmse/_rmse.c, rmse/rmse.c,
-	  sopr/.cvsignore, sopr/sopr.c, spec/.cvsignore, spec/spec.c,
-	  step/.cvsignore, step/step.c, swab/.cvsignore, swab/swab.c,
-	  uels/.cvsignore, uels/_uels.c, uels/uels.c, reverse/.cvsignore,
-	  reverse/_reverse.c, reverse/reverse.c, sin/.cvsignore, sin/sin.c,
-	  smcep/.cvsignore, smcep/_smcep.c, smcep/smcep.c, snr/.cvsignore,
-	  snr/snr.c, train/.cvsignore, train/train.c, ulaw/.cvsignore,
-	  ulaw/_ulaw.c, ulaw/ulaw.c: Cleanup source code.
+	  rndpg/.cvsignore, rndpg/rndpg.c, sopr/.cvsignore, sopr/sopr.c,
+	  spec/.cvsignore, spec/spec.c, step/.cvsignore, step/step.c,
+	  swab/.cvsignore, swab/swab.c, uels/.cvsignore, uels/_uels.c,
+	  uels/uels.c, reverse/.cvsignore, reverse/_reverse.c,
+	  reverse/reverse.c, sin/.cvsignore, sin/sin.c, smcep/.cvsignore,
+	  smcep/_smcep.c, smcep/smcep.c, snr/.cvsignore, snr/snr.c,
+	  train/.cvsignore, train/train.c, ulaw/.cvsignore, ulaw/_ulaw.c,
+	  ulaw/ulaw.c: Cleanup source code.
 
 2007-08-07 14:01  heigazen
 
@@ -4437,9 +4857,19 @@
 
 	* bin/impulse/: .cvsignore, impulse.c: Cleanup source code.
 
+2007-08-07 13:57  heigazen
+
+	* bin/imglsadf/: .cvsignore, imglsadf.c: Add char *BOOL[].  Add
+	  imglsadf to .cvsignore.
+
 2007-08-07 13:56  heigazen
 
 	* bin/ignorm/: .cvsignore, _ignorm.c: Add ignorm to .cvsignore.
+
+2007-08-07 13:55  heigazen
+
+	* bin/iglsadf/: .cvsignore, _iglsadf.c, iglsadf.c: Add char
+	  *BOOL[].  Add iglsadf to .cvsignore.	Include SPTK.h
 
 2007-08-07 13:54  heigazen
 
@@ -4606,31 +5036,34 @@
 	  bin/nan/.cvsignore, bin/sin/.cvsignore, bin/sin/sin.c,
 	  bin/phase/.cvsignore, bin/reverse/.cvsignore,
 	  bin/levdur/.cvsignore, bin/levdur/_levdur.c, bin/mcep/.cvsignore,
-	  bin/mcep/_mcep.c, bin/linear_intpl/.cvsignore,
-	  bin/pitch/_pitch.c, bin/window/.cvsignore, bin/window/_window.c,
-	  bin/msvq/.cvsignore, bin/pitch/.cvsignore, bin/ulaw/.cvsignore,
-	  bin/ulaw/_ulaw.c, bin/xgr/.cvsignore, bin/xgr/plot.c,
-	  bin/xgr/window.c, bin/imsvq/.cvsignore, bin/imsvq/_imsvq.c,
-	  bin/lpc2par/.cvsignore, bin/merge/.cvsignore,
-	  bin/poledf/.cvsignore, bin/snr/.cvsignore,
+	  bin/mcep/_mcep.c, bin/ccp/.cvsignore,
+	  bin/linear_intpl/.cvsignore, bin/pitch/_pitch.c,
+	  bin/window/.cvsignore, bin/window/_window.c, bin/msvq/.cvsignore,
+	  bin/pitch/.cvsignore, bin/ulaw/.cvsignore, bin/ulaw/_ulaw.c,
+	  bin/xgr/.cvsignore, bin/xgr/plot.c, bin/xgr/window.c,
+	  bin/imsvq/.cvsignore, bin/imsvq/_imsvq.c, bin/lpc2par/.cvsignore,
+	  bin/merge/.cvsignore, bin/poledf/.cvsignore, bin/snr/.cvsignore,
 	  bin/lpc2lsp/_lpc2lsp.c, bin/rmse/.cvsignore, bin/rmse/_rmse.c,
-	  bin/rmse/rmse.c, bin/lbg/.cvsignore, bin/lpc2lsp/.cvsignore,
-	  bin/step/.cvsignore, bin/spec/spec.c, bin/mgc2sp/.cvsignore,
-	  bin/mgc2sp/mgc2sp.c, bin/ramp/.cvsignore, bin/sopr/.cvsignore,
-	  bin/sopr/sopr.c, bin/spec/.cvsignore, bin/swab/.cvsignore,
-	  bin/interpolate/.cvsignore, bin/train/.cvsignore,
-	  bin/train/train.c, bin/uels/.cvsignore, bin/uels/_uels.c,
-	  bin/us/.cvsignore, include/SPTK.h, bin/impulse/.cvsignore,
-	  bin/par2lpc/.cvsignore, include/.cvsignore, .cvsignore,
-	  bin/mlpg/.cvsignore, bin/root_pol/.cvsignore,
-	  bin/vopr/.cvsignore, bin/zcross/.cvsignore, script/.cvsignore,
-	  bin/.cvsignore, bin/norm0/.cvsignore, bin/psgr/.cvsignore,
+	  bin/rmse/rmse.c, bin/rndpg/.cvsignore, bin/rndpg/rndpg.c,
+	  bin/lbg/.cvsignore, bin/lpc2lsp/.cvsignore, bin/step/.cvsignore,
+	  bin/spec/spec.c, bin/mgc2sp/.cvsignore, bin/mgc2sp/mgc2sp.c,
+	  bin/ramp/.cvsignore, bin/sopr/.cvsignore, bin/sopr/sopr.c,
+	  bin/spec/.cvsignore, bin/swab/.cvsignore,
+	  bin/interpolate/.cvsignore, bin/mgcep2/.cvsignore,
+	  bin/mgcep2/_mgcep2.c, bin/train/.cvsignore, bin/train/train.c,
+	  bin/uels/.cvsignore, bin/uels/_uels.c, bin/us/.cvsignore,
+	  include/SPTK.h, bin/impulse/.cvsignore, bin/par2lpc/.cvsignore,
+	  include/.cvsignore, .cvsignore, bin/mlpg/.cvsignore,
+	  bin/root_pol/.cvsignore, bin/vopr/.cvsignore,
+	  bin/zcross/.cvsignore, script/.cvsignore, bin/.cvsignore,
+	  bin/norm0/.cvsignore, bin/psgr/.cvsignore, bin/srcnv/.cvsignore,
 	  bin/zerodf/.cvsignore: Cleanup source codes.	Add .cvsinore.
 
 2007-08-02 17:05  heigazen
 
-	* bin/ignorm/: .cvsignore, _ignorm.c, ignorm.c: Cleanup source
-	  codes.  Add .cvsinore.
+	* bin/: ignorm/.cvsignore, ignorm/_ignorm.c, ignorm/ignorm.c,
+	  imglsadf/.cvsignore, imglsadf/_imglsadf.c, imglsadf/imglsadf.c:
+	  Cleanup source codes.  Add .cvsinore.
 
 2007-08-01 16:36  heigazen
 
@@ -4639,6 +5072,7 @@
 2007-08-01 16:36  heigazen
 
 	* bin/: ifft2/.cvsignore, ifft2/_ifft2.c, ifft2/ifft2.c,
+	  iglsadf/.cvsignore, iglsadf/_iglsadf.c, iglsadf/iglsadf.c,
 	  lpc/.cvsignore, lpc/_lpc.c, lpc/lpc.c: Cleanup source codes.	Add
 	  .cvsinore.
 
@@ -4763,7 +5197,7 @@
 
 2007-07-23 11:34  mr_alex
 
-	* bin/da/dawrite.c:
+	* bin/: da/dawrite.c, ccp/ccp.c:
 	  register char --> char
 
 2007-07-23 11:33  mr_alex
@@ -4778,7 +5212,8 @@
 
 2007-07-23 11:27  mr_alex
 
-	* bin/: lspcheck/_lspcheck.c, lpc2c/_lpc2c.c:
+	* bin/: lspcheck/_lspcheck.c, lpc2c/_lpc2c.c, imglsadf/_imglsadf.c:
+
 	  register int --> int
 
 2007-07-23 11:24  mr_alex
@@ -4871,15 +5306,16 @@
 	  lib/Makefile.lib, lib/Makefile.lib.in, bin/b2mc/Makefile,
 	  bin/b2mc/Makefile.in, bin/dfs/Makefile, bin/dfs/Makefile.in,
 	  bin/mc2b/Makefile, bin/mc2b/Makefile.in, bin/fft2/Makefile,
-	  bin/fft2/Makefile.in, bin/impulse/Makefile,
-	  bin/impulse/Makefile.in, bin/ulaw/Makefile, bin/ulaw/Makefile.in,
-	  bin/x2x/Makefile, bin/x2x/Makefile.in, bin/bcut/Makefile,
-	  bin/bcut/Makefile.in, bin/cat2/Makefile, bin/cat2/Makefile.in,
-	  bin/clip/Makefile, bin/clip/Makefile.in, bin/fftcep/Makefile,
-	  bin/fftcep/Makefile.in, bin/fftr2/Makefile,
+	  bin/fft2/Makefile.in, bin/imglsadf/Makefile,
+	  bin/impulse/Makefile, bin/impulse/Makefile.in, bin/ulaw/Makefile,
+	  bin/ulaw/Makefile.in, bin/x2x/Makefile, bin/x2x/Makefile.in,
+	  bin/bcut/Makefile, bin/bcut/Makefile.in, bin/cat2/Makefile,
+	  bin/cat2/Makefile.in, bin/clip/Makefile, bin/clip/Makefile.in,
+	  bin/fftcep/Makefile, bin/fftcep/Makefile.in, bin/fftr2/Makefile,
 	  bin/fftr2/Makefile.in, bin/gc2gc/Makefile, bin/gc2gc/Makefile.in,
-	  bin/linear_intpl/Makefile, bin/linear_intpl/Makefile.in,
-	  bin/merge/Makefile, bin/merge/Makefile.in, bin/minmax/Makefile,
+	  bin/imglsadf/Makefile.in, bin/linear_intpl/Makefile,
+	  bin/linear_intpl/Makefile.in, bin/merge/Makefile,
+	  bin/merge/Makefile.in, bin/minmax/Makefile,
 	  bin/minmax/Makefile.in, bin/c2sp/Makefile, bin/c2sp/Makefile.in,
 	  bin/fd/Makefile, bin/fd/Makefile.in, bin/glsadf/Makefile,
 	  bin/glsadf/Makefile.in, bin/ifft/Makefile, bin/ifft/Makefile.in,
@@ -4894,40 +5330,43 @@
 	  bin/train/Makefile.in, bin/average/Makefile,
 	  bin/average/Makefile.in, bin/c2acr/Makefile,
 	  bin/c2acr/Makefile.in, bin/delay/Makefile, bin/delay/Makefile.in,
-	  bin/gcep/Makefile, bin/gcep/Makefile.in, bin/lpc2c/Makefile,
+	  bin/gcep/Makefile, bin/gcep/Makefile.in, bin/iglsadf/Makefile,
+	  bin/iglsadf/Makefile.in, bin/lpc2c/Makefile,
 	  bin/lpc2c/Makefile.in, bin/train/Makefile, bin/acorr/Makefile,
 	  bin/acorr/Makefile.in, bin/da/Makefile, bin/da/Makefile.in,
 	  bin/pitch/Makefile, bin/pitch/Makefile.in, bin/psgr/Makefile,
 	  bin/psgr/Makefile.in, bin/ramp/Makefile, bin/ramp/Makefile.in,
-	  bin/root_pol/Makefile, bin/root_pol/Makefile.in,
-	  bin/sin/Makefile, bin/sin/Makefile.in, bin/step/Makefile,
+	  bin/rndpg/Makefile, bin/root_pol/Makefile,
+	  bin/root_pol/Makefile.in, bin/sin/Makefile, bin/sin/Makefile.in,
+	  bin/srcnv/Makefile, bin/srcnv/Makefile.in, bin/step/Makefile,
 	  bin/step/Makefile.in, bin/vq/Makefile, bin/vq/Makefile.in,
 	  script/Makefile, script/Makefile.in, bin/cdist/Makefile,
 	  bin/cdist/Makefile.in, bin/fig+fdrw/Makefile,
 	  bin/fig+fdrw/Makefile.in, bin/lbg/Makefile, bin/lbg/Makefile.in,
-	  bin/lspdf/Makefile, bin/lspdf/Makefile.in, bin/vstat/Makefile,
-	  bin/vstat/Makefile.in, bin/histogram/Makefile,
-	  bin/histogram/Makefile.in, bin/ignorm/Makefile,
-	  bin/ignorm/Makefile.in, bin/snr/Makefile, bin/snr/Makefile.in,
-	  bin/vsum/Makefile, bin/vsum/Makefile.in, bin/window/Makefile,
-	  bin/window/Makefile.in, include/Makefile, include/Makefile.in,
-	  bin/c2ir/Makefile, bin/c2ir/Makefile.in, bin/excite/Makefile,
-	  bin/excite/Makefile.in, bin/lpc2par/Makefile,
-	  bin/lpc2par/Makefile.in, bin/mgc2mgc/Makefile,
-	  bin/mgc2mgc/Makefile.in, bin/norm0/Makefile,
-	  bin/norm0/Makefile.in, bin/reverse/Makefile,
+	  bin/lspdf/Makefile, bin/lspdf/Makefile.in, bin/rndpg/Makefile.in,
+	  bin/vstat/Makefile, bin/vstat/Makefile.in,
+	  bin/histogram/Makefile, bin/histogram/Makefile.in,
+	  bin/ignorm/Makefile, bin/ignorm/Makefile.in, bin/snr/Makefile,
+	  bin/snr/Makefile.in, bin/vsum/Makefile, bin/vsum/Makefile.in,
+	  bin/window/Makefile, bin/window/Makefile.in, include/Makefile,
+	  include/Makefile.in, bin/c2ir/Makefile, bin/c2ir/Makefile.in,
+	  bin/excite/Makefile, bin/excite/Makefile.in,
+	  bin/lpc2par/Makefile, bin/lpc2par/Makefile.in,
+	  bin/mgc2mgc/Makefile, bin/mgc2mgc/Makefile.in,
+	  bin/norm0/Makefile, bin/norm0/Makefile.in, bin/reverse/Makefile,
 	  bin/reverse/Makefile.in, bin/bcp/Makefile, bin/bcp/Makefile.in,
 	  bin/echo2/Makefile, bin/echo2/Makefile.in,
 	  bin/extract/Makefile.in, bin/fft/Makefile, bin/fft/Makefile.in,
 	  bin/msvq/Makefile, bin/msvq/Makefile.in, bin/nan/Makefile,
 	  bin/nan/Makefile.in, bin/poledf/Makefile, bin/poledf/Makefile.in,
-	  bin/amcep/Makefile.in, bin/extract/Makefile, bin/fftr/Makefile,
-	  bin/fftr/Makefile.in, bin/levdur/Makefile,
-	  bin/levdur/Makefile.in, bin/lpc2lsp/Makefile,
-	  bin/lpc2lsp/Makefile.in, bin/sopr/Makefile, bin/sopr/Makefile.in,
-	  bin/Makefile, bin/Makefile.in, bin/amcep/Makefile,
-	  bin/ds/Makefile, bin/ds/Makefile.in, bin/ifft2/Makefile,
-	  bin/ifft2/Makefile.in, bin/mlsadf/Makefile,
+	  bin/amcep/Makefile.in, bin/ccp/Makefile, bin/ccp/Makefile.in,
+	  bin/extract/Makefile, bin/fftr/Makefile, bin/fftr/Makefile.in,
+	  bin/levdur/Makefile, bin/levdur/Makefile.in,
+	  bin/lpc2lsp/Makefile, bin/lpc2lsp/Makefile.in, bin/sopr/Makefile,
+	  bin/sopr/Makefile.in, bin/Makefile, bin/Makefile.in,
+	  bin/amcep/Makefile, bin/ds/Makefile, bin/ds/Makefile.in,
+	  bin/ifft2/Makefile, bin/ifft2/Makefile.in, bin/mgcep2/Makefile,
+	  bin/mgcep2/Makefile.in, bin/mlsadf/Makefile,
 	  bin/mlsadf/Makefile.in, bin/uels/Makefile, bin/uels/Makefile.in,
 	  bin/xgr/Makefile, bin/xgr/Makefile.in, bin/df2/Makefile,
 	  bin/df2/Makefile.in, bin/interpolate/Makefile,
@@ -4959,37 +5398,39 @@
 
 	* bin/sopr/Makefile, bin/bcp/Makefile, bin/fd/Makefile,
 	  bin/fft/Makefile, bin/gcep/Makefile, bin/histogram/Makefile,
-	  bin/impulse/Makefile, bin/merge/Makefile, bin/mglsadf/Makefile,
-	  bin/ulaw/Makefile, bin/window/Makefile, lib/Makefile,
-	  bin/Makefile, bin/clip/Makefile, bin/glsadf/Makefile,
-	  bin/grpdelay/Makefile, bin/linear_intpl/Makefile,
-	  bin/mlsadf/Makefile, bin/nan/Makefile, bin/ramp/Makefile,
-	  bin/rmse/Makefile, bin/smcep/Makefile, bin/uels/Makefile,
-	  bin/acorr/Makefile, bin/c2ir/Makefile, bin/df2/Makefile,
-	  bin/excite/Makefile, bin/extract/Makefile, bin/imsvq/Makefile,
-	  bin/vq/Makefile, bin/dmp/Makefile, bin/lpc/Makefile,
-	  include/Makefile, bin/amcep/Makefile, bin/c2acr/Makefile,
-	  bin/fft2/Makefile, bin/fftr/Makefile, bin/nrand/Makefile,
-	  bin/sin/Makefile, bin/snr/Makefile, bin/cat2/Makefile,
-	  bin/cdist/Makefile, bin/da/Makefile, bin/freqt/Makefile,
-	  bin/ltcdf/Makefile, bin/mcep/Makefile, bin/mgc2sp/Makefile,
-	  bin/train/Makefile, bin/vstat/Makefile, script/Makefile,
-	  bin/gnorm/Makefile, bin/ignorm/Makefile, bin/lspcheck/Makefile,
-	  bin/minmax/Makefile, bin/par2lpc/Makefile, bin/phase/Makefile,
-	  bin/reverse/Makefile, bin/swab/Makefile, bin/vsum/Makefile,
-	  Makefile, bin/echo2/Makefile, bin/ifft/Makefile,
-	  bin/lpc2par/Makefile, bin/mlpg/Makefile, bin/norm0/Makefile,
-	  bin/pitch/Makefile, bin/agcep/Makefile, bin/fftr2/Makefile,
-	  bin/ifft2/Makefile, bin/levdur/Makefile, bin/msvq/Makefile,
-	  bin/zerodf/Makefile, bin/acep/Makefile, bin/bcut/Makefile,
-	  bin/c2sp/Makefile, bin/dfs/Makefile, bin/ds/Makefile,
-	  bin/fftcep/Makefile, bin/lsp2lpc/Makefile, bin/mgc2mgc/Makefile,
-	  bin/mgcep/Makefile, bin/spec/Makefile, bin/decimate/Makefile,
-	  bin/frame/Makefile, bin/lmadf/Makefile, bin/lpc2lsp/Makefile,
-	  bin/lspdf/Makefile, bin/psgr/Makefile, bin/root_pol/Makefile,
-	  bin/step/Makefile, bin/us/Makefile, bin/vopr/Makefile,
-	  bin/xgr/Makefile, bin/zcross/Makefile, bin/average/Makefile,
-	  bin/b2mc/Makefile, bin/delay/Makefile, bin/fig+fdrw/Makefile,
+	  bin/impulse/Makefile, bin/merge/Makefile, bin/mgcep2/Makefile,
+	  bin/mglsadf/Makefile, bin/ulaw/Makefile, bin/window/Makefile,
+	  lib/Makefile, bin/Makefile, bin/clip/Makefile,
+	  bin/glsadf/Makefile, bin/grpdelay/Makefile,
+	  bin/linear_intpl/Makefile, bin/mlsadf/Makefile, bin/nan/Makefile,
+	  bin/ramp/Makefile, bin/rmse/Makefile, bin/smcep/Makefile,
+	  bin/uels/Makefile, bin/acorr/Makefile, bin/c2ir/Makefile,
+	  bin/df2/Makefile, bin/excite/Makefile, bin/extract/Makefile,
+	  bin/imsvq/Makefile, bin/rndpg/Makefile, bin/vq/Makefile,
+	  bin/dmp/Makefile, bin/lpc/Makefile, include/Makefile,
+	  bin/amcep/Makefile, bin/c2acr/Makefile, bin/fft2/Makefile,
+	  bin/fftr/Makefile, bin/iglsadf/Makefile, bin/nrand/Makefile,
+	  bin/sin/Makefile, bin/snr/Makefile, bin/srcnv/Makefile,
+	  bin/cat2/Makefile, bin/cdist/Makefile, bin/da/Makefile,
+	  bin/freqt/Makefile, bin/ltcdf/Makefile, bin/mcep/Makefile,
+	  bin/mgc2sp/Makefile, bin/train/Makefile, bin/vstat/Makefile,
+	  script/Makefile, bin/gnorm/Makefile, bin/ignorm/Makefile,
+	  bin/lspcheck/Makefile, bin/minmax/Makefile, bin/par2lpc/Makefile,
+	  bin/phase/Makefile, bin/reverse/Makefile, bin/swab/Makefile,
+	  bin/vsum/Makefile, Makefile, bin/echo2/Makefile,
+	  bin/ifft/Makefile, bin/lpc2par/Makefile, bin/mlpg/Makefile,
+	  bin/norm0/Makefile, bin/pitch/Makefile, bin/agcep/Makefile,
+	  bin/fftr2/Makefile, bin/ifft2/Makefile, bin/levdur/Makefile,
+	  bin/msvq/Makefile, bin/zerodf/Makefile, bin/acep/Makefile,
+	  bin/bcut/Makefile, bin/c2sp/Makefile, bin/dfs/Makefile,
+	  bin/ds/Makefile, bin/fftcep/Makefile, bin/lsp2lpc/Makefile,
+	  bin/mgc2mgc/Makefile, bin/mgcep/Makefile, bin/spec/Makefile,
+	  bin/decimate/Makefile, bin/frame/Makefile, bin/imglsadf/Makefile,
+	  bin/lmadf/Makefile, bin/lpc2lsp/Makefile, bin/lspdf/Makefile,
+	  bin/psgr/Makefile, bin/root_pol/Makefile, bin/step/Makefile,
+	  bin/us/Makefile, bin/vopr/Makefile, bin/xgr/Makefile,
+	  bin/zcross/Makefile, bin/average/Makefile, bin/b2mc/Makefile,
+	  bin/ccp/Makefile, bin/delay/Makefile, bin/fig+fdrw/Makefile,
 	  bin/gc2gc/Makefile, bin/interpolate/Makefile, bin/ivq/Makefile,
 	  bin/mc2b/Makefile, bin/poledf/Makefile, bin/lbg/Makefile,
 	  bin/lpc2c/Makefile, bin/x2x/Makefile: Cleanup Makefile
@@ -5027,8 +5468,9 @@
 
 2007-01-13 15:06  s_sako
 
-	* bin/: amcep/_amcep.c, mgcep/_mgcep.c, nrand/_nrand.c,
-	  smcep/_smcep.c, uels/_uels.c: add missing prototype declarations
+	* bin/: amcep/_amcep.c, mgcep/_mgcep.c, mgcep2/_mgcep2.c,
+	  nrand/_nrand.c, smcep/_smcep.c, uels/_uels.c: add missing
+	  prototype declarations
 
 2007-01-13 14:47  s_sako
 
@@ -5041,7 +5483,7 @@
 	* bin/: acep/Makefile, acep/acep.c, acorr/acorr.c, agcep/agcep.c,
 	  amcep/amcep.c, average/average.c, b2mc/b2mc.c, bcp/bcp.c,
 	  bcut/bcut.c, c2acr/c2acr.c, c2ir/c2ir.c, c2sp/c2sp.c,
-	  cat2/cat2.c, cdist/cdist.c, clip/clip.c, da/dawrite.c,
+	  cat2/cat2.c, ccp/ccp.c, cdist/cdist.c, clip/clip.c, da/dawrite.c,
 	  decimate/decimate.c, delay/delay.c, df2/df2.c, dfs/dfs.c,
 	  dmp/dmp.c, ds/ds.c, echo2/echo2.c, excite/excite.c,
 	  extract/extract.c, fd/fd.c, fft/fft.c, fft2/fft2.c,
@@ -5049,23 +5491,24 @@
 	  fig+fdrw/fig.c, frame/frame.c, freqt/freqt.c, gc2gc/gc2gc.c,
 	  gcep/gcep.c, glsadf/glsadf.c, gnorm/gnorm.c, grpdelay/grpdelay.c,
 	  histogram/histogram.c, ifft/ifft.c, ifft2/ifft2.c,
-	  ignorm/ignorm.c, impulse/impulse.c, interpolate/interpolate.c,
-	  ivq/ivq.c, lbg/lbg.c, levdur/levdur.c,
+	  ignorm/ignorm.c, imglsadf/imglsadf.c, impulse/impulse.c,
+	  interpolate/interpolate.c, ivq/ivq.c, lbg/lbg.c, levdur/levdur.c,
 	  linear_intpl/linear_intpl.c, lmadf/lmadf.c, lpc/lpc.c,
 	  lpc2c/lpc2c.c, lpc2lsp/lpc2lsp.c, lpc2par/lpc2par.c,
 	  lsp2lpc/lsp2lpc.c, lspcheck/lspcheck.c, lspdf/lspdf.c,
 	  ltcdf/ltcdf.c, mc2b/mc2b.c, mcep/mcep.c, merge/merge.c,
 	  mgc2mgc/mgc2mgc.c, mgc2sp/mgc2sp.c, mgcep/_mgcep.c,
-	  mgcep/mgcep.c, mglsadf/mglsadf.c, minmax/minmax.c, mlpg/mlpg.c,
-	  mlsadf/mlsadf.c, msvq/msvq.c, nan/nan.c, norm0/norm0.c,
-	  nrand/nrand.c, par2lpc/par2lpc.c, phase/phase.c, pitch/pitch.c,
-	  poledf/poledf.c, psgr/psgr.c, ramp/ramp.c, reverse/reverse.c,
-	  rmse/rmse.c, root_pol/root_pol.c, sin/sin.c, smcep/smcep.c,
-	  snr/snr.c, sopr/sopr.c, spec/spec.c, step/step.c, swab/swab.c,
-	  train/train.c, uels/Makefile, uels/_uels.c, uels/uels.c,
-	  ulaw/ulaw.c, us/us.c, vopr/vopr.c, vq/vq.c, vstat/vstat.c,
-	  vsum/vsum.c, window/window.c, x2x/x2x.c, xgr/xgr.c,
-	  zcross/zcross.c, zerodf/zerodf.c:
+	  mgcep/mgcep.c, mgcep2/mgcep2.c, mglsadf/mglsadf.c,
+	  minmax/minmax.c, mlpg/mlpg.c, mlsadf/mlsadf.c, msvq/msvq.c,
+	  nan/nan.c, norm0/norm0.c, nrand/nrand.c, par2lpc/par2lpc.c,
+	  phase/phase.c, pitch/pitch.c, poledf/poledf.c, psgr/psgr.c,
+	  ramp/ramp.c, reverse/reverse.c, rmse/rmse.c, rndpg/rndpg.c,
+	  root_pol/root_pol.c, sin/sin.c, smcep/smcep.c, snr/snr.c,
+	  sopr/sopr.c, spec/spec.c, srcnv/srcnv.c, step/step.c,
+	  swab/swab.c, train/train.c, uels/Makefile, uels/_uels.c,
+	  uels/uels.c, ulaw/ulaw.c, us/us.c, vopr/vopr.c, vq/vq.c,
+	  vstat/vstat.c, vsum/vsum.c, window/window.c, x2x/x2x.c,
+	  xgr/xgr.c, zcross/zcross.c, zerodf/zerodf.c:
 	  バージョン番号を文字列として出力するようにしました
 
 2006-12-19 22:02  mr_alex
@@ -5073,7 +5516,7 @@
 	* bin/: Makefile, acep/Makefile, acep/acep.c, acorr/acorr.c,
 	  agcep/agcep.c, amcep/amcep.c, average/average.c, b2mc/b2mc.c,
 	  bcp/bcp.c, bcut/bcut.c, c2acr/c2acr.c, c2ir/c2ir.c, c2sp/c2sp.c,
-	  cat2/cat2.c, cdist/cdist.c, clip/clip.c, da/dawrite.c,
+	  cat2/cat2.c, ccp/ccp.c, cdist/cdist.c, clip/clip.c, da/dawrite.c,
 	  decimate/decimate.c, delay/delay.c, df2/df2.c, dfs/dfs.c,
 	  dmp/dmp.c, ds/ds.c, echo2/echo2.c, excite/excite.c,
 	  extract/extract.c, fd/fd.c, fft/fft.c, fft2/fft2.c,
@@ -5081,23 +5524,25 @@
 	  fig+fdrw/fig.c, frame/frame.c, freqt/freqt.c, gc2gc/gc2gc.c,
 	  gcep/gcep.c, glsadf/glsadf.c, gnorm/gnorm.c, grpdelay/grpdelay.c,
 	  histogram/histogram.c, ifft/ifft.c, ifft2/ifft2.c,
-	  ignorm/ignorm.c, impulse/impulse.c, imsvq/imsvq.c,
-	  interpolate/interpolate.c, ivq/ivq.c, lbg/lbg.c, levdur/levdur.c,
+	  iglsadf/iglsadf.c, ignorm/ignorm.c, imglsadf/imglsadf.c,
+	  impulse/impulse.c, imsvq/imsvq.c, interpolate/interpolate.c,
+	  ivq/ivq.c, lbg/lbg.c, levdur/levdur.c,
 	  linear_intpl/linear_intpl.c, lmadf/lmadf.c, lpc/lpc.c,
 	  lpc2c/lpc2c.c, lpc2lsp/lpc2lsp.c, lpc2par/lpc2par.c,
 	  lsp2lpc/lsp2lpc.c, lspcheck/lspcheck.c, lspdf/lspdf.c,
 	  ltcdf/ltcdf.c, mc2b/mc2b.c, mcep/_mcep.c, mcep/mcep.c,
 	  merge/merge.c, mgc2mgc/mgc2mgc.c, mgc2sp/mgc2sp.c, mgcep/mgcep.c,
-	  mglsadf/mglsadf.c, minmax/minmax.c, mlpg/mlpg.c, mlsadf/mlsadf.c,
-	  msvq/msvq.c, nan/nan.c, norm0/norm0.c, nrand/nrand.c,
-	  par2lpc/par2lpc.c, phase/phase.c, pitch/pitch.c, poledf/poledf.c,
-	  psgr/psgr.c, ramp/ramp.c, reverse/reverse.c, rmse/rmse.c,
-	  root_pol/root_pol.c, sin/sin.c, smcep/smcep.c, snr/snr.c,
-	  sopr/sopr.c, spec/spec.c, step/step.c, swab/swab.c,
-	  train/train.c, uels/Makefile, uels/_uels.c, uels/uels.c,
-	  ulaw/ulaw.c, us/us.c, vopr/vopr.c, vq/vq.c, vstat/vstat.c,
-	  vsum/vsum.c, window/window.c, x2x/x2x.c, xgr/xgr.c,
-	  zcross/zcross.c, zerodf/zerodf.c:
+	  mgcep2/mgcep2.c, mglsadf/mglsadf.c, minmax/minmax.c, mlpg/mlpg.c,
+	  mlsadf/mlsadf.c, msvq/msvq.c, nan/nan.c, norm0/norm0.c,
+	  nrand/nrand.c, par2lpc/par2lpc.c, phase/phase.c, pitch/pitch.c,
+	  poledf/poledf.c, psgr/psgr.c, ramp/ramp.c, reverse/reverse.c,
+	  rmse/rmse.c, rndpg/rndpg.c, root_pol/root_pol.c, sin/sin.c,
+	  smcep/smcep.c, snr/snr.c, sopr/sopr.c, spec/spec.c,
+	  srcnv/srcnv.c, step/step.c, swab/swab.c, train/train.c,
+	  uels/Makefile, uels/_uels.c, uels/uels.c, ulaw/ulaw.c, us/us.c,
+	  vopr/vopr.c, vq/vq.c, vstat/vstat.c, vsum/vsum.c,
+	  window/window.c, x2x/x2x.c, xgr/xgr.c, zcross/zcross.c,
+	  zerodf/zerodf.c:
 	  ヘルプメッセージにバージョン番号をいれました
 
 2006-12-15 20:06  mr_alex
@@ -5106,7 +5551,7 @@
 	  agcep/agcep.c, amcep/_amcep.c, amcep/amcep.c, average/_average.c,
 	  average/average.c, b2mc/b2mc.c, bcp/bcp.c, bcut/bcut.c,
 	  c2acr/_c2acr.c, c2acr/c2acr.c, c2ir/_c2ir.c, c2ir/c2ir.c,
-	  c2sp/c2sp.c, cat2/cat2.c, cdist/cdist.c, clip/clip.c,
+	  c2sp/c2sp.c, cat2/cat2.c, ccp/ccp.c, cdist/cdist.c, clip/clip.c,
 	  decimate/decimate.c, delay/delay.c, df2/df2.c, dfs/dfs.c,
 	  dmp/dmp.c, echo2/echo2.c, excite/excite.c, extract/extract.c,
 	  fd/Makefile, fd/fd.c, fft/_fft.c, fft/fft.c, fft2/_fft2.c,
@@ -5118,16 +5563,17 @@
 	  gc2gc/gc2gc.c, gcep/gcep.c, glsadf/glsadf.c, gnorm/_gnorm.c,
 	  gnorm/gnorm.c, grpdelay/_grpdelay.c, grpdelay/grpdelay.c,
 	  histogram/_histogram.c, ifft/Makefile, ifft/_ifft.c, ifft/ifft.c,
-	  ignorm/_ignorm.c, ignorm/ignorm.c, impulse/impulse.c,
-	  imsvq/_imsvq.c, imsvq/imsvq.c, interpolate/interpolate.c,
-	  ivq/_ivq.c, lbg/_lbg.c, lbg/lbg.c, levdur/_levdur.c,
-	  levdur/levdur.c, linear_intpl/linear_intpl.c, lmadf/lmadf.c,
-	  lpc/_lpc.c, lpc/lpc.c, lpc2c/lpc2c.c, lpc2lsp/_lpc2lsp.c,
-	  lpc2lsp/lpc2lsp.c, lpc2par/_lpc2par.c, lpc2par/lpc2par.c,
-	  lsp2lpc/_lsp2lpc.c, lsp2lpc/lsp2lpc.c, lspcheck/lspcheck.c,
-	  lspdf/lspdf.c, ltcdf/ltcdf.c, mc2b/mc2b.c, mcep/mcep.c,
-	  merge/merge.c, mgc2mgc/_mgc2mgc.c, mgc2mgc/mgc2mgc.c,
-	  mgc2sp/_mgc2sp.c, mgc2sp/mgc2sp.c, mgcep/mgcep.c,
+	  iglsadf/iglsadf.c, ignorm/_ignorm.c, ignorm/ignorm.c,
+	  imglsadf/imglsadf.c, impulse/impulse.c, imsvq/_imsvq.c,
+	  imsvq/imsvq.c, interpolate/interpolate.c, ivq/_ivq.c, lbg/_lbg.c,
+	  lbg/lbg.c, levdur/_levdur.c, levdur/levdur.c,
+	  linear_intpl/linear_intpl.c, lmadf/lmadf.c, lpc/_lpc.c,
+	  lpc/lpc.c, lpc2c/lpc2c.c, lpc2lsp/_lpc2lsp.c, lpc2lsp/lpc2lsp.c,
+	  lpc2par/_lpc2par.c, lpc2par/lpc2par.c, lsp2lpc/_lsp2lpc.c,
+	  lsp2lpc/lsp2lpc.c, lspcheck/lspcheck.c, lspdf/lspdf.c,
+	  ltcdf/ltcdf.c, mc2b/mc2b.c, mcep/mcep.c, merge/merge.c,
+	  mgc2mgc/_mgc2mgc.c, mgc2mgc/mgc2mgc.c, mgc2sp/_mgc2sp.c,
+	  mgc2sp/mgc2sp.c, mgcep/mgcep.c, mgcep2/mgcep2.c,
 	  mglsadf/_mglsadf.c, mglsadf/mglsadf.c, minmax/minmax.c,
 	  mlpg/mlpg.c, mlsadf/mlsadf.c, msvq/_msvq.c, msvq/msvq.c,
 	  nan/nan.c, norm0/norm0.c, nrand/nrand.c, par2lpc/_par2lpc.c,
@@ -5135,12 +5581,12 @@
 	  poledf/poledf.c, psgr/Makefile, psgr/dict.c, psgr/eps.c,
 	  psgr/plot.c, psgr/psgr.c, psgr/psgr.h, ramp/ramp.c,
 	  reverse/reverse.c, rmse/rmse.c, sin/sin.c, smcep/smcep.c,
-	  snr/snr.c, sopr/sopr.c, spec/spec.c, step/step.c, swab/swab.c,
-	  train/train.c, uels/_uels.c, uels/uels.c, ulaw/ulaw.c, us/us.c,
-	  vopr/vopr.c, vstat/vstat.c, vsum/vsum.c, window/window.c,
-	  x2x/x2x.c, xgr/Makefile, xgr/plot.c, xgr/window.c, xgr/xgr.c,
-	  xgr/xgr.h, zcross/_zcross.c, zcross/zcross.c, zerodf/_zerodf.c,
-	  zerodf/zerodf.c:
+	  snr/snr.c, sopr/sopr.c, spec/spec.c, srcnv/srcnv.c, step/step.c,
+	  swab/swab.c, train/train.c, uels/_uels.c, uels/uels.c,
+	  ulaw/ulaw.c, us/us.c, vopr/vopr.c, vstat/vstat.c, vsum/vsum.c,
+	  window/window.c, x2x/x2x.c, xgr/Makefile, xgr/plot.c,
+	  xgr/window.c, xgr/xgr.c, xgr/xgr.h, zcross/_zcross.c,
+	  zcross/zcross.c, zerodf/_zerodf.c, zerodf/zerodf.c:
 	  ANSI化を再度やり直しました
 
 2006-12-13 21:36  mr_alex
@@ -5166,42 +5612,44 @@
 	  amcep/amcep.c, average/_average.c, average/average.c,
 	  b2mc/_b2mc.c, b2mc/b2mc.c, bcp/bcp.c, bcut/bcut.c,
 	  c2acr/_c2acr.c, c2acr/c2acr.c, c2ir/_c2ir.c, c2ir/c2ir.c,
-	  c2sp/_c2sp.c, c2sp/c2sp.c, cdist/cdist.c, clip/_clip.c,
-	  clip/clip.c, da/dawrite.c, decimate/decimate.c, delay/Makefile,
-	  df2/_df2.c, df2/df2.c, dfs/_dfs.c, dfs/dfs.c, dmp/dmp.c, ds/ds.c,
-	  echo2/echo2.c, excite/excite.c, extract/extract.c, fd/fd.c,
-	  fft/_fft.c, fft/fft.c, fft2/_fft2.c, fft2/fft2.c,
-	  fftcep/_fftcep.c, fftcep/fftcep.c, fftr/_fftr.c, fftr/fftr.c,
-	  fftr2/_fftr2.c, fftr2/fftr2.c, fig+fdrw/fdrw.c, fig+fdrw/fig.c,
-	  fig+fdrw/fig1.c, fig+fdrw/plot.c, fig+fdrw/plsub.c,
-	  frame/frame.c, freqt/_freqt.c, freqt/freqt.c, gc2gc/_gc2gc.c,
-	  gc2gc/gc2gc.c, gcep/_gcep.c, gcep/gcep.c, glsadf/_glsadf.c,
-	  glsadf/glsadf.c, gnorm/_gnorm.c, gnorm/gnorm.c,
+	  c2sp/_c2sp.c, c2sp/c2sp.c, ccp/ccp.c, cdist/cdist.c,
+	  clip/_clip.c, clip/clip.c, da/dawrite.c, decimate/decimate.c,
+	  delay/Makefile, df2/_df2.c, df2/df2.c, dfs/_dfs.c, dfs/dfs.c,
+	  dmp/dmp.c, ds/ds.c, echo2/echo2.c, excite/excite.c,
+	  extract/extract.c, fd/fd.c, fft/_fft.c, fft/fft.c, fft2/_fft2.c,
+	  fft2/fft2.c, fftcep/_fftcep.c, fftcep/fftcep.c, fftr/_fftr.c,
+	  fftr/fftr.c, fftr2/_fftr2.c, fftr2/fftr2.c, fig+fdrw/fdrw.c,
+	  fig+fdrw/fig.c, fig+fdrw/fig1.c, fig+fdrw/plot.c,
+	  fig+fdrw/plsub.c, frame/frame.c, freqt/_freqt.c, freqt/freqt.c,
+	  gc2gc/_gc2gc.c, gc2gc/gc2gc.c, gcep/_gcep.c, gcep/gcep.c,
+	  glsadf/_glsadf.c, glsadf/glsadf.c, gnorm/_gnorm.c, gnorm/gnorm.c,
 	  grpdelay/_grpdelay.c, grpdelay/grpdelay.c,
 	  histogram/_histogram.c, histogram/histogram.c, ifft/_ifft.c,
-	  ifft/ifft.c, ifft2/_ifft2.c, ifft2/ifft2.c, ignorm/_ignorm.c,
-	  ignorm/ignorm.c, impulse/impulse.c, imsvq/_imsvq.c,
-	  imsvq/imsvq.c, interpolate/interpolate.c, ivq/_ivq.c, ivq/ivq.c,
-	  lbg/_lbg.c, lbg/lbg.c, levdur/_levdur.c, levdur/levdur.c,
-	  linear_intpl/linear_intpl.c, lmadf/_lmadf.c, lmadf/lmadf.c,
-	  lpc/_lpc.c, lpc/lpc.c, lpc2c/_lpc2c.c, lpc2c/lpc2c.c,
-	  lpc2lsp/lpc2lsp.c, lpc2par/_lpc2par.c, lpc2par/lpc2par.c,
-	  lsp2lpc/_lsp2lpc.c, lsp2lpc/lsp2lpc.c, lspcheck/_lspcheck.c,
-	  lspcheck/lspcheck.c, lspdf/_lspdf.c, lspdf/lspdf.c,
-	  ltcdf/_ltcdf.c, ltcdf/ltcdf.c, mc2b/_mc2b.c, mc2b/mc2b.c,
-	  mcep/_mcep.c, mcep/mcep.c, merge/merge.c, mgc2mgc/_mgc2mgc.c,
-	  mgc2mgc/mgc2mgc.c, mgc2sp/_mgc2sp.c, mgc2sp/mgc2sp.c,
-	  mgcep/_mgcep.c, mgcep/mgcep.c, mglsadf/_mglsadf.c,
-	  mglsadf/mglsadf.c, minmax/minmax.c, mlpg/mlpg.c,
-	  mlsadf/_mlsadf.c, mlsadf/mlsadf.c, msvq/_msvq.c, msvq/msvq.c,
-	  nan/Makefile, norm0/_norm0.c, norm0/norm0.c, nrand/_nrand.c,
-	  nrand/nrand.c, par2lpc/_par2lpc.c, par2lpc/par2lpc.c,
-	  phase/_phase.c, phase/phase.c, pitch/_pitch.c, pitch/pitch.c,
-	  poledf/_poledf.c, poledf/poledf.c, psgr/eps.c, psgr/plot.c,
-	  psgr/psgr.c, ramp/ramp.c, reverse/_reverse.c, reverse/reverse.c,
-	  rmse/_rmse.c, rmse/rmse.c, root_pol/_root_pol.c,
-	  root_pol/root_pol.c, sin/sin.c, smcep/_smcep.c, smcep/smcep.c,
-	  snr/snr.c, sopr/sopr.c, spec/spec.c, step/step.c, swab/swab.c,
+	  ifft/ifft.c, ifft2/_ifft2.c, ifft2/ifft2.c, iglsadf/_iglsadf.c,
+	  iglsadf/iglsadf.c, ignorm/_ignorm.c, ignorm/ignorm.c,
+	  imglsadf/_imglsadf.c, imglsadf/imglsadf.c, impulse/impulse.c,
+	  imsvq/_imsvq.c, imsvq/imsvq.c, interpolate/interpolate.c,
+	  ivq/_ivq.c, ivq/ivq.c, lbg/_lbg.c, lbg/lbg.c, levdur/_levdur.c,
+	  levdur/levdur.c, linear_intpl/linear_intpl.c, lmadf/_lmadf.c,
+	  lmadf/lmadf.c, lpc/_lpc.c, lpc/lpc.c, lpc2c/_lpc2c.c,
+	  lpc2c/lpc2c.c, lpc2lsp/lpc2lsp.c, lpc2par/_lpc2par.c,
+	  lpc2par/lpc2par.c, lsp2lpc/_lsp2lpc.c, lsp2lpc/lsp2lpc.c,
+	  lspcheck/_lspcheck.c, lspcheck/lspcheck.c, lspdf/_lspdf.c,
+	  lspdf/lspdf.c, ltcdf/_ltcdf.c, ltcdf/ltcdf.c, mc2b/_mc2b.c,
+	  mc2b/mc2b.c, mcep/_mcep.c, mcep/mcep.c, merge/merge.c,
+	  mgc2mgc/_mgc2mgc.c, mgc2mgc/mgc2mgc.c, mgc2sp/_mgc2sp.c,
+	  mgc2sp/mgc2sp.c, mgcep/_mgcep.c, mgcep/mgcep.c, mgcep2/_mgcep2.c,
+	  mgcep2/mgcep2.c, mglsadf/_mglsadf.c, mglsadf/mglsadf.c,
+	  minmax/minmax.c, mlpg/mlpg.c, mlsadf/_mlsadf.c, mlsadf/mlsadf.c,
+	  msvq/_msvq.c, msvq/msvq.c, nan/Makefile, norm0/_norm0.c,
+	  norm0/norm0.c, nrand/_nrand.c, nrand/nrand.c, par2lpc/_par2lpc.c,
+	  par2lpc/par2lpc.c, phase/_phase.c, phase/phase.c, pitch/_pitch.c,
+	  pitch/pitch.c, poledf/_poledf.c, poledf/poledf.c, psgr/eps.c,
+	  psgr/plot.c, psgr/psgr.c, ramp/ramp.c, reverse/_reverse.c,
+	  reverse/reverse.c, rmse/_rmse.c, rmse/rmse.c, rndpg/rndpg.c,
+	  root_pol/_root_pol.c, root_pol/root_pol.c, sin/sin.c,
+	  smcep/_smcep.c, smcep/smcep.c, snr/snr.c, sopr/sopr.c,
+	  spec/spec.c, srcnv/srcnv.c, step/step.c, swab/swab.c,
 	  train/train.c, uels/_uels.c, uels/uels.c, ulaw/_ulaw.c,
 	  ulaw/ulaw.c, us/us.c, vopr/vopr.c, vq/_vq.c, vq/vq.c,
 	  vstat/vstat.c, vsum/vsum.c, window/_window.c, window/window.c,
@@ -5392,6 +5840,10 @@
 
 2002-12-25 19:06  sako
 
+	* bin/srcnv/Makefile: fix 2.0->3.0 ./src/bin/srcnv/Makefile
+
+2002-12-25 19:06  sako
+
 	* bin/spec/Makefile: fix 2.0->3.0 ./src/bin/spec/Makefile
 
 2002-12-25 19:06  sako
@@ -5413,6 +5865,10 @@
 2002-12-25 19:06  sako
 
 	* bin/root_pol/Makefile: fix 2.0->3.0 ./src/bin/root_pol/Makefile
+
+2002-12-25 19:06  sako
+
+	* bin/rndpg/Makefile: fix 2.0->3.0 ./src/bin/rndpg/Makefile
 
 2002-12-25 19:06  sako
 
@@ -5473,6 +5929,10 @@
 2002-12-25 19:05  sako
 
 	* bin/mglsadf/Makefile: fix 2.0->3.0 ./src/bin/mglsadf/Makefile
+
+2002-12-25 19:05  sako
+
+	* bin/mgcep2/Makefile: fix 2.0->3.0 ./src/bin/mgcep2/Makefile
 
 2002-12-25 19:05  sako
 
@@ -5570,7 +6030,15 @@
 
 2002-12-25 19:04  sako
 
+	* bin/imglsadf/Makefile: fix 2.0->3.0 ./src/bin/imglsadf/Makefile
+
+2002-12-25 19:04  sako
+
 	* bin/ignorm/Makefile: fix 2.0->3.0 ./src/bin/ignorm/Makefile
+
+2002-12-25 19:04  sako
+
+	* bin/iglsadf/Makefile: fix 2.0->3.0 ./src/bin/iglsadf/Makefile
 
 2002-12-25 19:04  sako
 
@@ -5687,6 +6155,10 @@
 2002-12-25 19:04  sako
 
 	* bin/cdist/Makefile: fix 2.0->3.0 ./src/bin/cdist/Makefile
+
+2002-12-25 19:04  sako
+
+	* bin/ccp/Makefile: fix 2.0->3.0 ./src/bin/ccp/Makefile
 
 2002-12-25 19:03  sako
 
@@ -6062,6 +6534,10 @@
 
 2002-12-25 14:32  sako
 
+	* bin/srcnv/srcnv.c: src/bin/srcnv/srcnv.c
+
+2002-12-25 14:32  sako
+
 	* bin/spec/spec.c: src/bin/spec/spec.c
 
 2002-12-25 14:32  sako
@@ -6091,6 +6567,10 @@
 2002-12-25 14:32  sako
 
 	* bin/root_pol/_root_pol.c: src/bin/root_pol/_root_pol.c
+
+2002-12-25 14:32  sako
+
+	* bin/rndpg/rndpg.c: src/bin/rndpg/rndpg.c
 
 2002-12-25 14:32  sako
 
@@ -6211,6 +6691,14 @@
 2002-12-25 14:31  sako
 
 	* bin/mglsadf/_mglsadf.c: src/bin/mglsadf/_mglsadf.c
+
+2002-12-25 14:31  sako
+
+	* bin/mgcep2/mgcep2.c: src/bin/mgcep2/mgcep2.c
+
+2002-12-25 14:31  sako
+
+	* bin/mgcep2/_mgcep2.c: src/bin/mgcep2/_mgcep2.c
 
 2002-12-25 14:31  sako
 
@@ -6379,11 +6867,27 @@
 
 2002-12-25 14:30  sako
 
+	* bin/imglsadf/imglsadf.c: src/bin/imglsadf/imglsadf.c
+
+2002-12-25 14:30  sako
+
+	* bin/imglsadf/_imglsadf.c: src/bin/imglsadf/_imglsadf.c
+
+2002-12-25 14:30  sako
+
 	* bin/ignorm/ignorm.c: src/bin/ignorm/ignorm.c
 
 2002-12-25 14:30  sako
 
 	* bin/ignorm/_ignorm.c: src/bin/ignorm/_ignorm.c
+
+2002-12-25 14:30  sako
+
+	* bin/iglsadf/iglsadf.c: src/bin/iglsadf/iglsadf.c
+
+2002-12-25 14:30  sako
+
+	* bin/iglsadf/_iglsadf.c: src/bin/iglsadf/_iglsadf.c
 
 2002-12-25 14:30  sako
 
@@ -6607,6 +7111,10 @@
 
 2002-12-25 14:28  sako
 
+	* bin/ccp/ccp.c: src/bin/ccp/ccp.c
+
+2002-12-25 14:28  sako
+
 	* bin/cat2/cat2.c: src/bin/cat2/cat2.c
 
 2002-12-25 14:28  sako
@@ -6707,11 +7215,20 @@
 
 	* bin/mlsadf/mlsadf.c: add option -v for inverse filter
 
+2001-01-15 12:30  yossie
+
+	* bin/imglsadf/imglsadf.c: no 'break' in case 'k'
+
 2000-12-25 15:09  masuko
 
 	* bin/us/: lpfcoef.2to3f, lpfcoef.2to3s, lpfcoef.3to4,
 	  lpfcoef.4to5, lpfcoef.5to7: The precision of coefficients were
 	  improved.
+
+2000-12-25 14:53  masuko
+
+	* bin/rndpg/: Makefile, rndpg.c: Randomized parameter generation
+	  from p.d.f. sequence.
 
 2000-12-25 14:47  masuko
 
@@ -6875,7 +7392,7 @@
 
 2000-05-24 11:04  masuko
 
-	* bin/ds/Makefile: [no log message]
+	* bin/: ds/Makefile, srcnv/Makefile: [no log message]
 
 2000-05-24 11:02  masuko
 
@@ -6907,6 +7424,10 @@
 
 	* bin/pitch/pitch.c: [no log message]
 
+2000-05-19 17:25  yossie
+
+	* bin/srcnv/srcnv.c: change buffersize in srcnv.c
+
 2000-05-19 16:45  mtamura
 
 	* bin/pitch/pitch.c: [no log message]
@@ -6915,6 +7436,10 @@
 
 	* bin/pitch/: pitch.c, _pitch.c: [no log message]
 
+2000-05-19 13:40  mtamura
+
+	* bin/icep/: icep.c, _icep.c, Makefile: [no log message]
+
 2000-05-19 13:15  mtamura
 
 	* bin/fftcep/fftcep.c: [no log message]
@@ -6922,6 +7447,10 @@
 2000-05-19 13:07  mtamura
 
 	* bin/fftcep/: Makefile, fftcep.c, _fftcep.c: [no log message]
+
+2000-05-19 13:02  mtamura
+
+	* bin/icep/Makefile: [no log message]
 
 2000-05-19 11:33  yossie
 
@@ -6939,7 +7468,9 @@
 
 2000-05-15 16:41  sako
 
-	* bin/da/: da_10.fir, da_12.fir, ss10snd.h: [no log message]
+	* bin/: da/da_10.fir, da/da_12.fir, da/ss10snd.h,
+	  srcnv/coef.063-222-70, srcnv/coef.125-250-120,
+	  srcnv/coef.222-444-60, srcnv/coef.296-333-360: [no log message]
 
 2000-05-15 16:40  sako
 
@@ -6958,6 +7489,10 @@
 2000-05-01 19:52  masuko
 
 	* bin/mlpg/mlpg.c: update mlpg.c
+
+2000-04-29 00:50  sako
+
+	* bin/srcnv/srcnv.c: edit SPTK/doc/ref/srcnv.tex
 
 2000-04-20 19:55  masuko
 
@@ -6978,6 +7513,21 @@
 2000-04-20 04:11  sako
 
 	* script/daplay.sh: commit SPTK/src/script/daplay.sh
+
+2000-04-20 04:09  sako
+
+	* bin/srcnv/: lpfcoef.3to4, lpfcoef.4to5, lpfcoef.5to7,
+	  lpfcoef.5to8, coef.063-222-70, coef.125-250-120, coef.222-444-60,
+	  coef.296-333-360: commit SPTK/src/bin/srcnv
+
+2000-04-20 04:08  sako
+
+	* bin/srcnv/: Makefile, lpfcoef.2to3f, lpfcoef.2to3s: commit
+	  SPTK/src/bin/srcnv/Makefile
+
+2000-04-20 04:05  sako
+
+	* bin/srcnv/srcnv.c: commit SPTK/src/bin/srcnv/srcnv.c
 
 2000-04-20 03:56  sako
 
@@ -7031,7 +7581,8 @@
 	  bin/acep/acep.c, bin/acorr/Makefile, bin/acorr/_acorr.c,
 	  bin/acorr/acorr.c, bin/lmadf/Makefile, bin/lmadf/_lmadf.c,
 	  bin/lmadf/lmadf.c, bin/gnorm/Makefile, bin/gnorm/_gnorm.c,
-	  bin/gnorm/gnorm.c, bin/ignorm/Makefile, bin/ignorm/_ignorm.c,
+	  bin/gnorm/gnorm.c, bin/iglsadf/Makefile, bin/iglsadf/_iglsadf.c,
+	  bin/iglsadf/iglsadf.c, bin/ignorm/Makefile, bin/ignorm/_ignorm.c,
 	  bin/ignorm/ignorm.c, bin/zerodf/Makefile, bin/zerodf/_zerodf.c,
 	  bin/zerodf/_zerodf.c.patch, bin/zerodf/zerodf.c,
 	  bin/zerodf/zerodf.c.patch, bin/agcep/Makefile,
@@ -7047,47 +7598,50 @@
 	  bin/fft/fft.c, bin/fftr/Makefile, bin/fftr/_fftr.c,
 	  bin/fftr/fftr.c, bin/c2acr/c2acr.c, bin/c2ir/Makefile,
 	  bin/c2ir/_c2ir.c, bin/c2ir/c2ir.c, bin/c2sp/Makefile,
-	  bin/c2sp/_c2sp.c, bin/c2sp/c2sp.c, bin/cdist/Makefile,
-	  bin/cdist/cdist.c, bin/clip/Makefile, bin/clip/_clip.c,
-	  bin/clip/clip.c, bin/da/Makefile, bin/da/da.c, bin/da/da_10.fir,
-	  bin/da/da_12.fir, bin/da/ss10snd.h, bin/decimate/Makefile,
-	  bin/decimate/decimate.c, bin/delay/Makefile, bin/delay/delay.c,
-	  bin/df2/Makefile, bin/df2/_df2.c, bin/df2/df2.c,
-	  bin/dfs/Makefile, bin/dfs/_dfs.c, bin/dfs/dfs.c,
-	  bin/dmp/Makefile, bin/dmp/dmp.c, bin/ds/Makefile, bin/ds/ds.c,
-	  bin/ds/lpfcoef.2to1, bin/ds/lpfcoef.4to3, bin/ds/lpfcoef.5to2dn,
-	  bin/ds/lpfcoef.5to2up, bin/excite/Makefile, bin/excite/excite.c,
-	  bin/nrand/Makefile, bin/nrand/_nrand.c, bin/nrand/nrand.c,
-	  bin/extract/Makefile, bin/extract/extract.c, bin/fd/Makefile,
-	  bin/fd/fd.c, bin/fig+fdrw/Makefile, bin/fig+fdrw/fdrw.c,
-	  bin/fig+fdrw/fig.c, bin/fig+fdrw/fig.h, bin/fig+fdrw/fig0.c,
-	  bin/fig+fdrw/fig1.c, bin/fig+fdrw/plot.c, bin/fig+fdrw/plot.h,
-	  bin/fig+fdrw/plsub.c, bin/fft2/Makefile, bin/fft2/_fft2.c,
-	  bin/fft2/fft2.c, bin/fftr2/Makefile, bin/fftr2/_fftr2.c,
-	  bin/fftr2/fftr2.c, bin/frame/Makefile, bin/frame/frame.c,
-	  bin/freqt/Makefile, bin/freqt/_freqt.c, bin/freqt/freqt.c,
-	  bin/gc2gc/Makefile, bin/gc2gc/_gc2gc.c, bin/gc2gc/gc2gc.c,
-	  bin/gcep/Makefile, bin/gcep/_gcep.c, bin/gcep/gcep.c,
-	  bin/glsadf/Makefile, bin/glsadf/_glsadf.c, bin/glsadf/glsadf.c,
-	  bin/grpdelay/Makefile, bin/grpdelay/_grpdelay.c,
-	  bin/grpdelay/grpdelay.c, bin/ifft/Makefile, bin/ifft/_ifft.c,
-	  bin/ifft/ifft.c, bin/poledf/Makefile, bin/poledf/_poledf.c,
-	  bin/poledf/poledf.c, bin/histogram/Makefile,
-	  bin/histogram/_histogram.c, bin/histogram/histogram.c,
-	  bin/ifft2/Makefile, bin/ifft2/_ifft2.c, bin/minmax/Makefile,
-	  bin/minmax/minmax.c, bin/x2x/Makefile, bin/x2x/x2x.c,
-	  bin/ifft2/ifft2.c, bin/impulse/Makefile, bin/impulse/impulse.c,
-	  bin/imsvq/Makefile, bin/imsvq/_imsvq.c, bin/imsvq/imsvq.c,
-	  bin/ivq/Makefile, bin/ivq/_ivq.c, bin/ivq/ivq.c,
-	  bin/interpolate/Makefile, bin/interpolate/interpolate.c,
-	  bin/lbg/Makefile, bin/lbg/_lbg.c, bin/lbg/lbg.c,
-	  bin/levdur/Makefile, bin/levdur/_levdur.c, bin/levdur/levdur.c,
-	  bin/linear_intpl/Makefile, bin/linear_intpl/linear_intpl.c,
-	  bin/vq/Makefile, bin/vq/_vq.c, bin/vq/vq.c, bin/lpc/Makefile,
-	  bin/lpc/_lpc.c, bin/lpc/lpc.c, bin/lpc2c/Makefile,
-	  bin/lpc2c/_lpc2c.c, bin/lpc2c/lpc2c.c, bin/lpc2lsp/Makefile,
-	  bin/lpc2lsp/_lpc2lsp.c, bin/lpc2lsp/lpc2lsp.c, bin/nan/Makefile,
-	  bin/nan/nan.c, bin/lpc2par/Makefile, bin/lpc2par/_lpc2par.c,
+	  bin/c2sp/_c2sp.c, bin/c2sp/c2sp.c, bin/ccp/Makefile,
+	  bin/ccp/ccp.c, bin/cdist/Makefile, bin/cdist/cdist.c,
+	  bin/clip/Makefile, bin/clip/_clip.c, bin/clip/clip.c,
+	  bin/da/Makefile, bin/da/da.c, bin/da/da_10.fir, bin/da/da_12.fir,
+	  bin/da/ss10snd.h, bin/decimate/Makefile, bin/decimate/decimate.c,
+	  bin/delay/Makefile, bin/delay/delay.c, bin/df2/Makefile,
+	  bin/df2/_df2.c, bin/df2/df2.c, bin/dfs/Makefile, bin/dfs/_dfs.c,
+	  bin/dfs/dfs.c, bin/dmp/Makefile, bin/dmp/dmp.c, bin/ds/Makefile,
+	  bin/ds/ds.c, bin/ds/lpfcoef.2to1, bin/ds/lpfcoef.4to3,
+	  bin/ds/lpfcoef.5to2dn, bin/ds/lpfcoef.5to2up,
+	  bin/excite/Makefile, bin/excite/excite.c, bin/nrand/Makefile,
+	  bin/nrand/_nrand.c, bin/nrand/nrand.c, bin/extract/Makefile,
+	  bin/extract/extract.c, bin/fd/Makefile, bin/fd/fd.c,
+	  bin/fig+fdrw/Makefile, bin/fig+fdrw/fdrw.c, bin/fig+fdrw/fig.c,
+	  bin/fig+fdrw/fig.h, bin/fig+fdrw/fig0.c, bin/fig+fdrw/fig1.c,
+	  bin/fig+fdrw/plot.c, bin/fig+fdrw/plot.h, bin/fig+fdrw/plsub.c,
+	  bin/fft2/Makefile, bin/fft2/_fft2.c, bin/fft2/fft2.c,
+	  bin/fftr2/Makefile, bin/fftr2/_fftr2.c, bin/fftr2/fftr2.c,
+	  bin/frame/Makefile, bin/frame/frame.c, bin/freqt/Makefile,
+	  bin/freqt/_freqt.c, bin/freqt/freqt.c, bin/gc2gc/Makefile,
+	  bin/gc2gc/_gc2gc.c, bin/gc2gc/gc2gc.c, bin/gcep/Makefile,
+	  bin/gcep/_gcep.c, bin/gcep/gcep.c, bin/glsadf/Makefile,
+	  bin/glsadf/_glsadf.c, bin/glsadf/glsadf.c, bin/grpdelay/Makefile,
+	  bin/grpdelay/_grpdelay.c, bin/grpdelay/grpdelay.c,
+	  bin/ifft/Makefile, bin/ifft/_ifft.c, bin/ifft/ifft.c,
+	  bin/poledf/Makefile, bin/poledf/_poledf.c, bin/poledf/poledf.c,
+	  bin/histogram/Makefile, bin/histogram/_histogram.c,
+	  bin/histogram/histogram.c, bin/icep/Makefile, bin/icep/_icep.c,
+	  bin/icep/icep.c, bin/ifft2/Makefile, bin/ifft2/_ifft2.c,
+	  bin/minmax/Makefile, bin/minmax/minmax.c, bin/x2x/Makefile,
+	  bin/x2x/x2x.c, bin/ifft2/ifft2.c, bin/imglsadf/Makefile,
+	  bin/imglsadf/_imglsadf.c, bin/imglsadf/imglsadf.c,
+	  bin/impulse/Makefile, bin/impulse/impulse.c, bin/imsvq/Makefile,
+	  bin/imsvq/_imsvq.c, bin/imsvq/imsvq.c, bin/ivq/Makefile,
+	  bin/ivq/_ivq.c, bin/ivq/ivq.c, bin/interpolate/Makefile,
+	  bin/interpolate/interpolate.c, bin/lbg/Makefile, bin/lbg/_lbg.c,
+	  bin/lbg/lbg.c, bin/levdur/Makefile, bin/levdur/_levdur.c,
+	  bin/levdur/levdur.c, bin/linear_intpl/Makefile,
+	  bin/linear_intpl/linear_intpl.c, bin/vq/Makefile, bin/vq/_vq.c,
+	  bin/vq/vq.c, bin/lpc/Makefile, bin/lpc/_lpc.c, bin/lpc/lpc.c,
+	  bin/lpc2c/Makefile, bin/lpc2c/_lpc2c.c, bin/lpc2c/lpc2c.c,
+	  bin/lpc2lsp/Makefile, bin/lpc2lsp/_lpc2lsp.c,
+	  bin/lpc2lsp/lpc2lsp.c, bin/nan/Makefile, bin/nan/nan.c,
+	  bin/lpc2par/Makefile, bin/lpc2par/_lpc2par.c,
 	  bin/lpc2par/lpc2par.c, bin/lsp2lpc/Makefile,
 	  bin/lsp2lpc/_lsp2lpc.c, bin/lsp2lpc/lsp2lpc.c,
 	  bin/lspcheck/Makefile, bin/lspcheck/_lspcheck.c,
@@ -7098,11 +7652,12 @@
 	  bin/mgc2mgc/Makefile, bin/mgc2mgc/_mgc2mgc.c,
 	  bin/mgc2mgc/mgc2mgc.c, bin/mgc2sp/Makefile, bin/mgc2sp/_mgc2sp.c,
 	  bin/mgc2sp/mgc2sp.c, bin/mgcep/Makefile, bin/mgcep/_mgcep.c,
-	  bin/mgcep/mgcep.c, bin/mglsadf/Makefile, bin/mglsadf/_mglsadf.c,
-	  bin/mglsadf/mglsadf.c, bin/mlpg/Makefile, bin/mlpg/mlpg.c,
-	  bin/msvq/Makefile, bin/msvq/_msvq.c, bin/msvq/msvq.c,
-	  bin/norm0/Makefile, bin/norm0/_norm0.c, bin/norm0/norm0.c,
-	  bin/par2lpc/Makefile, bin/par2lpc/_par2lpc.c,
+	  bin/mgcep/mgcep.c, bin/mgcep2/Makefile, bin/mgcep2/_mgcep2.c,
+	  bin/mgcep2/mgcep2.c, bin/mglsadf/Makefile,
+	  bin/mglsadf/_mglsadf.c, bin/mglsadf/mglsadf.c, bin/mlpg/Makefile,
+	  bin/mlpg/mlpg.c, bin/msvq/Makefile, bin/msvq/_msvq.c,
+	  bin/msvq/msvq.c, bin/norm0/Makefile, bin/norm0/_norm0.c,
+	  bin/norm0/norm0.c, bin/par2lpc/Makefile, bin/par2lpc/_par2lpc.c,
 	  bin/par2lpc/par2lpc.c, bin/phase/Makefile, bin/phase/_phase.c,
 	  bin/phase/phase.c, bin/pitch/Makefile, bin/pitch/_pitch.c,
 	  bin/pitch/pitch.c, bin/psgr/Makefile, bin/psgr/dict.c,
@@ -7156,7 +7711,8 @@
 	  bin/acep/acep.c, bin/acorr/Makefile, bin/acorr/_acorr.c,
 	  bin/acorr/acorr.c, bin/lmadf/Makefile, bin/lmadf/_lmadf.c,
 	  bin/lmadf/lmadf.c, bin/gnorm/Makefile, bin/gnorm/_gnorm.c,
-	  bin/gnorm/gnorm.c, bin/ignorm/Makefile, bin/ignorm/_ignorm.c,
+	  bin/gnorm/gnorm.c, bin/iglsadf/Makefile, bin/iglsadf/_iglsadf.c,
+	  bin/iglsadf/iglsadf.c, bin/ignorm/Makefile, bin/ignorm/_ignorm.c,
 	  bin/ignorm/ignorm.c, bin/zerodf/Makefile, bin/zerodf/_zerodf.c,
 	  bin/zerodf/_zerodf.c.patch, bin/zerodf/zerodf.c,
 	  bin/zerodf/zerodf.c.patch, bin/agcep/Makefile,
@@ -7172,47 +7728,50 @@
 	  bin/fft/fft.c, bin/fftr/Makefile, bin/fftr/_fftr.c,
 	  bin/fftr/fftr.c, bin/c2acr/c2acr.c, bin/c2ir/Makefile,
 	  bin/c2ir/_c2ir.c, bin/c2ir/c2ir.c, bin/c2sp/Makefile,
-	  bin/c2sp/_c2sp.c, bin/c2sp/c2sp.c, bin/cdist/Makefile,
-	  bin/cdist/cdist.c, bin/clip/Makefile, bin/clip/_clip.c,
-	  bin/clip/clip.c, bin/da/Makefile, bin/da/da.c, bin/da/da_10.fir,
-	  bin/da/da_12.fir, bin/da/ss10snd.h, bin/decimate/Makefile,
-	  bin/decimate/decimate.c, bin/delay/Makefile, bin/delay/delay.c,
-	  bin/df2/Makefile, bin/df2/_df2.c, bin/df2/df2.c,
-	  bin/dfs/Makefile, bin/dfs/_dfs.c, bin/dfs/dfs.c,
-	  bin/dmp/Makefile, bin/dmp/dmp.c, bin/ds/Makefile, bin/ds/ds.c,
-	  bin/ds/lpfcoef.2to1, bin/ds/lpfcoef.4to3, bin/ds/lpfcoef.5to2dn,
-	  bin/ds/lpfcoef.5to2up, bin/excite/Makefile, bin/excite/excite.c,
-	  bin/nrand/Makefile, bin/nrand/_nrand.c, bin/nrand/nrand.c,
-	  bin/extract/Makefile, bin/extract/extract.c, bin/fd/Makefile,
-	  bin/fd/fd.c, bin/fig+fdrw/Makefile, bin/fig+fdrw/fdrw.c,
-	  bin/fig+fdrw/fig.c, bin/fig+fdrw/fig.h, bin/fig+fdrw/fig0.c,
-	  bin/fig+fdrw/fig1.c, bin/fig+fdrw/plot.c, bin/fig+fdrw/plot.h,
-	  bin/fig+fdrw/plsub.c, bin/fft2/Makefile, bin/fft2/_fft2.c,
-	  bin/fft2/fft2.c, bin/fftr2/Makefile, bin/fftr2/_fftr2.c,
-	  bin/fftr2/fftr2.c, bin/frame/Makefile, bin/frame/frame.c,
-	  bin/freqt/Makefile, bin/freqt/_freqt.c, bin/freqt/freqt.c,
-	  bin/gc2gc/Makefile, bin/gc2gc/_gc2gc.c, bin/gc2gc/gc2gc.c,
-	  bin/gcep/Makefile, bin/gcep/_gcep.c, bin/gcep/gcep.c,
-	  bin/glsadf/Makefile, bin/glsadf/_glsadf.c, bin/glsadf/glsadf.c,
-	  bin/grpdelay/Makefile, bin/grpdelay/_grpdelay.c,
-	  bin/grpdelay/grpdelay.c, bin/ifft/Makefile, bin/ifft/_ifft.c,
-	  bin/ifft/ifft.c, bin/poledf/Makefile, bin/poledf/_poledf.c,
-	  bin/poledf/poledf.c, bin/histogram/Makefile,
-	  bin/histogram/_histogram.c, bin/histogram/histogram.c,
-	  bin/ifft2/Makefile, bin/ifft2/_ifft2.c, bin/minmax/Makefile,
-	  bin/minmax/minmax.c, bin/x2x/Makefile, bin/x2x/x2x.c,
-	  bin/ifft2/ifft2.c, bin/impulse/Makefile, bin/impulse/impulse.c,
-	  bin/imsvq/Makefile, bin/imsvq/_imsvq.c, bin/imsvq/imsvq.c,
-	  bin/ivq/Makefile, bin/ivq/_ivq.c, bin/ivq/ivq.c,
-	  bin/interpolate/Makefile, bin/interpolate/interpolate.c,
-	  bin/lbg/Makefile, bin/lbg/_lbg.c, bin/lbg/lbg.c,
-	  bin/levdur/Makefile, bin/levdur/_levdur.c, bin/levdur/levdur.c,
-	  bin/linear_intpl/Makefile, bin/linear_intpl/linear_intpl.c,
-	  bin/vq/Makefile, bin/vq/_vq.c, bin/vq/vq.c, bin/lpc/Makefile,
-	  bin/lpc/_lpc.c, bin/lpc/lpc.c, bin/lpc2c/Makefile,
-	  bin/lpc2c/_lpc2c.c, bin/lpc2c/lpc2c.c, bin/lpc2lsp/Makefile,
-	  bin/lpc2lsp/_lpc2lsp.c, bin/lpc2lsp/lpc2lsp.c, bin/nan/Makefile,
-	  bin/nan/nan.c, bin/lpc2par/Makefile, bin/lpc2par/_lpc2par.c,
+	  bin/c2sp/_c2sp.c, bin/c2sp/c2sp.c, bin/ccp/Makefile,
+	  bin/ccp/ccp.c, bin/cdist/Makefile, bin/cdist/cdist.c,
+	  bin/clip/Makefile, bin/clip/_clip.c, bin/clip/clip.c,
+	  bin/da/Makefile, bin/da/da.c, bin/da/da_10.fir, bin/da/da_12.fir,
+	  bin/da/ss10snd.h, bin/decimate/Makefile, bin/decimate/decimate.c,
+	  bin/delay/Makefile, bin/delay/delay.c, bin/df2/Makefile,
+	  bin/df2/_df2.c, bin/df2/df2.c, bin/dfs/Makefile, bin/dfs/_dfs.c,
+	  bin/dfs/dfs.c, bin/dmp/Makefile, bin/dmp/dmp.c, bin/ds/Makefile,
+	  bin/ds/ds.c, bin/ds/lpfcoef.2to1, bin/ds/lpfcoef.4to3,
+	  bin/ds/lpfcoef.5to2dn, bin/ds/lpfcoef.5to2up,
+	  bin/excite/Makefile, bin/excite/excite.c, bin/nrand/Makefile,
+	  bin/nrand/_nrand.c, bin/nrand/nrand.c, bin/extract/Makefile,
+	  bin/extract/extract.c, bin/fd/Makefile, bin/fd/fd.c,
+	  bin/fig+fdrw/Makefile, bin/fig+fdrw/fdrw.c, bin/fig+fdrw/fig.c,
+	  bin/fig+fdrw/fig.h, bin/fig+fdrw/fig0.c, bin/fig+fdrw/fig1.c,
+	  bin/fig+fdrw/plot.c, bin/fig+fdrw/plot.h, bin/fig+fdrw/plsub.c,
+	  bin/fft2/Makefile, bin/fft2/_fft2.c, bin/fft2/fft2.c,
+	  bin/fftr2/Makefile, bin/fftr2/_fftr2.c, bin/fftr2/fftr2.c,
+	  bin/frame/Makefile, bin/frame/frame.c, bin/freqt/Makefile,
+	  bin/freqt/_freqt.c, bin/freqt/freqt.c, bin/gc2gc/Makefile,
+	  bin/gc2gc/_gc2gc.c, bin/gc2gc/gc2gc.c, bin/gcep/Makefile,
+	  bin/gcep/_gcep.c, bin/gcep/gcep.c, bin/glsadf/Makefile,
+	  bin/glsadf/_glsadf.c, bin/glsadf/glsadf.c, bin/grpdelay/Makefile,
+	  bin/grpdelay/_grpdelay.c, bin/grpdelay/grpdelay.c,
+	  bin/ifft/Makefile, bin/ifft/_ifft.c, bin/ifft/ifft.c,
+	  bin/poledf/Makefile, bin/poledf/_poledf.c, bin/poledf/poledf.c,
+	  bin/histogram/Makefile, bin/histogram/_histogram.c,
+	  bin/histogram/histogram.c, bin/icep/Makefile, bin/icep/_icep.c,
+	  bin/icep/icep.c, bin/ifft2/Makefile, bin/ifft2/_ifft2.c,
+	  bin/minmax/Makefile, bin/minmax/minmax.c, bin/x2x/Makefile,
+	  bin/x2x/x2x.c, bin/ifft2/ifft2.c, bin/imglsadf/Makefile,
+	  bin/imglsadf/_imglsadf.c, bin/imglsadf/imglsadf.c,
+	  bin/impulse/Makefile, bin/impulse/impulse.c, bin/imsvq/Makefile,
+	  bin/imsvq/_imsvq.c, bin/imsvq/imsvq.c, bin/ivq/Makefile,
+	  bin/ivq/_ivq.c, bin/ivq/ivq.c, bin/interpolate/Makefile,
+	  bin/interpolate/interpolate.c, bin/lbg/Makefile, bin/lbg/_lbg.c,
+	  bin/lbg/lbg.c, bin/levdur/Makefile, bin/levdur/_levdur.c,
+	  bin/levdur/levdur.c, bin/linear_intpl/Makefile,
+	  bin/linear_intpl/linear_intpl.c, bin/vq/Makefile, bin/vq/_vq.c,
+	  bin/vq/vq.c, bin/lpc/Makefile, bin/lpc/_lpc.c, bin/lpc/lpc.c,
+	  bin/lpc2c/Makefile, bin/lpc2c/_lpc2c.c, bin/lpc2c/lpc2c.c,
+	  bin/lpc2lsp/Makefile, bin/lpc2lsp/_lpc2lsp.c,
+	  bin/lpc2lsp/lpc2lsp.c, bin/nan/Makefile, bin/nan/nan.c,
+	  bin/lpc2par/Makefile, bin/lpc2par/_lpc2par.c,
 	  bin/lpc2par/lpc2par.c, bin/lsp2lpc/Makefile,
 	  bin/lsp2lpc/_lsp2lpc.c, bin/lsp2lpc/lsp2lpc.c,
 	  bin/lspcheck/Makefile, bin/lspcheck/_lspcheck.c,
@@ -7223,11 +7782,12 @@
 	  bin/mgc2mgc/Makefile, bin/mgc2mgc/_mgc2mgc.c,
 	  bin/mgc2mgc/mgc2mgc.c, bin/mgc2sp/Makefile, bin/mgc2sp/_mgc2sp.c,
 	  bin/mgc2sp/mgc2sp.c, bin/mgcep/Makefile, bin/mgcep/_mgcep.c,
-	  bin/mgcep/mgcep.c, bin/mglsadf/Makefile, bin/mglsadf/_mglsadf.c,
-	  bin/mglsadf/mglsadf.c, bin/mlpg/Makefile, bin/mlpg/mlpg.c,
-	  bin/msvq/Makefile, bin/msvq/_msvq.c, bin/msvq/msvq.c,
-	  bin/norm0/Makefile, bin/norm0/_norm0.c, bin/norm0/norm0.c,
-	  bin/par2lpc/Makefile, bin/par2lpc/_par2lpc.c,
+	  bin/mgcep/mgcep.c, bin/mgcep2/Makefile, bin/mgcep2/_mgcep2.c,
+	  bin/mgcep2/mgcep2.c, bin/mglsadf/Makefile,
+	  bin/mglsadf/_mglsadf.c, bin/mglsadf/mglsadf.c, bin/mlpg/Makefile,
+	  bin/mlpg/mlpg.c, bin/msvq/Makefile, bin/msvq/_msvq.c,
+	  bin/msvq/msvq.c, bin/norm0/Makefile, bin/norm0/_norm0.c,
+	  bin/norm0/norm0.c, bin/par2lpc/Makefile, bin/par2lpc/_par2lpc.c,
 	  bin/par2lpc/par2lpc.c, bin/phase/Makefile, bin/phase/_phase.c,
 	  bin/phase/phase.c, bin/pitch/Makefile, bin/pitch/_pitch.c,
 	  bin/pitch/pitch.c, bin/psgr/Makefile, bin/psgr/dict.c,

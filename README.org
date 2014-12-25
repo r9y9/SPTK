@@ -1,6 +1,6 @@
 ===============================================================================
-              Speech Signal Processing Toolkit (SPTK) version 3.7
-                           release December 25, 2013
+              Speech Signal Processing Toolkit (SPTK) version 3.8
+                           release December 25, 2014
 
 
 The Speech Signal Processing Toolkit (SPTK) is a suite of speech signal
@@ -29,7 +29,7 @@ the conditions in the following license:
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2014  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
