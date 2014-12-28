@@ -298,7 +298,7 @@ int theq(double *t, double *h, double *a, double *b, const int n, double eps)
       size = n;
    }
    if (n > size) {
-      for (i = 0; i < n; i++) {
+      for (i = 0; i < size; i++) {
          free((char *) r[i]);
          free((char *) x[i]);
          free((char *) xx[i]);
