@@ -65,10 +65,10 @@
                               2 -> e is floor periodogram in db
        double   e     : value for log-periodogram
                         or floor periodogram in db
-       double   f     : mimimum value of the determinant 
+       double   f     : mimimum value of the determinant
                         of the normal matrix
        int      itype : input data type
-                         
+
        return value   : 0 -> completed by end condition
                         -1-> completed by maximum iteration
 
@@ -99,7 +99,7 @@ static double gain(double *er, double *c, int m, double g)
 }
 
 /*  b'(m) to c(m)  */
-static void b2c(double *b, int m1, double *c, int m2, double a)
+void b2c(double *b, int m1, double *c, int m2, double a)
 {
    int i, j;
    static double *d = NULL, *g;

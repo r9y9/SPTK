@@ -380,3 +380,5 @@ void wavjoin(Wavfile * wavout, const Wavfile * wavin);
 int search_wav_list(Filelist * filelist, char *key);
 
 void swipe(double *input, double *output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype);
+
+void b2c(double *b, int m1, double *c, int m2, double a);
