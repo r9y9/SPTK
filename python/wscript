@@ -1,17 +1,19 @@
+import numpy as np
+
+
 def configure(conf):
     pass
 
+
 def build(bld):
-    numpy_path = bld.env['PYTHONDIR'] + "/numpy/core/include"
-    
     bld(
-        features = 'c cshlib pyext',
-        source = ['csptk.i'],
-        target = '_csptk',
-        swig_flags = '-python -Wall',
-        vnum = bld.env['VERSION'],
-        use = 'SPTK',
-        includes = ['.', '../include', numpy_path])
+        features='c cshlib pyext',
+        source=['csptk.i'],
+        target='_csptk',
+        swig_flags='-python -Wall',
+        vnum=bld.env['VERSION'],
+        use='SPTK',
+        includes=['.', '../include', np.get_include()])
 
     bld.install_files(bld.env['PYTHONDIR'], 'csptk.py')
     bld.install_files(bld.env['PYTHONDIR'], 'sptk.py')
