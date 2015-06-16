@@ -61,7 +61,6 @@ def configure(conf):
     conf.check_cc(header_name = "stdlib.h")
     conf.check_cc(header_name = "string.h")
     conf.check_cc(header_name = "strings.h")
-    conf.check_cc(header_name = "sys/ioctl.h")
 
     conf.recurse(subdirs)
     if conf.options.enable_python:
