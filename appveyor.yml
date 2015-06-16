@@ -28,4 +28,4 @@ build_script:
 
 artifacts:
   - path: '**\*.dll'
-    name: WORLD
+    name: SPTK
