@@ -1,5 +1,6 @@
 # SPTK
------------------
+
+[![Build Status](https://travis-ci.org/r9y9/SPTK.svg?branch=master)](https://travis-ci.org/r9y9/SPTK)
 
 This repository hosts a modified version of [Speech Signal Processing Toolkit (SPTK)](http://sp-tk.sourceforge.net/) to use the SPTK as **API** (not command line program) from external programs. For command line use, please check [the original one](http://sp-tk.sourceforge.net/).
 

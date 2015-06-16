@@ -1,0 +1,17 @@
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+# Just check if build success or not for now
+script:
+  - ./waf configure
+  - ./waf build
+
+notifications:
+  email: false
+
+os:
+  - linux
+  - osx
