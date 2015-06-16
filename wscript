@@ -23,18 +23,23 @@ def options(opt):
                    help="whether compile python bindings")
 
 def configure(conf):
-    conf.load('compiler_c python')
+    enable_python = conf.options.enable_python
+    if enable_python:
+        conf.load('compiler_c python')
+    else:
+        conf.load('compiler_c')
 
     conf.env['PYTHON_BINDINGS'] = conf.options.enable_python
 
-    if conf.options.enable_python:
+    if enable_python:
         conf.load('swig')
         if conf.check_swig_version() < (1, 2, 27):
             conf.fatal('this swig version is too old')
 
-    conf.load('python')
-    conf.check_python_version((2,4,2))
-    conf.check_python_headers()
+    if enable_python:
+        conf.load('python')
+        conf.check_python_version((2,4,2))
+        conf.check_python_headers()
 
     conf.define('SPTK_VERSION', VERSION)
     conf.env['VERSION'] = VERSION
