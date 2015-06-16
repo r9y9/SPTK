@@ -18,9 +18,11 @@ The important changes from the original SPTK are summerized as follows:
 
 Type the following commands from terminal:
 
-    ./waf configure
-    ./waf
-    sudo ./waf install
+```bash
+./waf configure
+./waf
+sudo ./waf install
+```
 
 To enable python wrapper, use `./waf configure --python` instread of `./waf configure`.
 
