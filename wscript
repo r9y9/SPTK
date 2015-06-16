@@ -42,11 +42,11 @@ def configure(conf):
     if re.search('clang', conf.env.CC[0]):
         conf.env.append_unique(
             'CFLAGS',
-            ['-O3', '-Wall', '-g'])
+            ['-O3', '-Wall'])
     elif re.search('gcc', conf.env.CC[0]):
         conf.env.append_unique(
             'CFLAGS',
-            ['-O2', '-Wall', '-g'])
+            ['-O2', '-Wall'])
 
     conf.env.HPREFIX = conf.env.PREFIX + '/include/SPTK'
 
