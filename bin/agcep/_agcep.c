@@ -86,14 +86,14 @@ double agcep(double x, double *c, const int m, const int stage,
       eg = dgetmem(2 * (m + 1) + m * stage);
       ep = eg + m + 1;
       d = ep + m + 1;
-      size = m;
+      size = m * stage;
    }
-   if (m > size) {
+   if (m * stage > size) {
       free(eg);
       eg = dgetmem(2 * (m + 1) + m * stage);
       ep = eg + m + 1;
       d = ep + m + 1;
-      size = m;
+      size = m * stage;
    }
 
    ll = 1.0 - lambda;
