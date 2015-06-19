@@ -81,7 +81,7 @@ double agcep(double x, double *c, const int m, const int stage,
    static double *eg = NULL, *ep, *d, gg = 1.0, ee = 1.0, tx;
    static int size;
    double mu, ll;
-b
+
    int expected_size = 2 * (m + 1) + m * stage;
    if (eg == NULL) {
       eg = dgetmem(expected_size);
