@@ -83,20 +83,21 @@ double amcep(double x, double *b, const int m, const double a,
    static int size;
    double mu, tx;
 
+   int expected_size = 3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2);
    if (bb == NULL) {
-      bb = dgetmem(3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2));
+      bb = dgetmem(expected_size);
       e = bb + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
       size = m * pd;
    }
-   if (m * pd > size) {
+   if (expected_size > size) {
       free(bb);
-      bb = dgetmem(3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2));
+      bb = dgetmem(expected_size);
       e = bb + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = m * pd;
+      size = expected_size;
    }
 
    for (i = 1; i <= m; i++)

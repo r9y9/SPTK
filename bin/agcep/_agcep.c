@@ -81,19 +81,20 @@ double agcep(double x, double *c, const int m, const int stage,
    static double *eg = NULL, *ep, *d, gg = 1.0, ee = 1.0, tx;
    static int size;
    double mu, ll;
-
+b
+   int expected_size = 2 * (m + 1) + m * stage;
    if (eg == NULL) {
-      eg = dgetmem(2 * (m + 1) + m * stage);
+      eg = dgetmem(expected_size);
       ep = eg + m + 1;
       d = ep + m + 1;
-      size = m * stage;
+      size = expected_size;
    }
-   if (m * stage > size) {
+   if (expected_size > size) {
       free(eg);
-      eg = dgetmem(2 * (m + 1) + m * stage);
+      eg = dgetmem(expected_size);
       ep = eg + m + 1;
       d = ep + m + 1;
-      size = m * stage;
+      size = expected_size;
    }
 
    ll = 1.0 - lambda;
