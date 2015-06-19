@@ -89,7 +89,7 @@ double amcep(double x, double *b, const int m, const double a,
       e = bb + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = m * pd;
+      size = expected_size;
    }
    if (expected_size > size) {
       free(bb);
