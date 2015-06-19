@@ -88,15 +88,15 @@ double amcep(double x, double *b, const int m, const double a,
       e = bb + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = m;
+      size = m * pd;
    }
-   if (m > size) {
+   if (m * pd > size) {
       free(bb);
       bb = dgetmem(3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2));
       e = bb + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = m;
+      size = m * pd;
    }
 
    for (i = 1; i <= m; i++)
