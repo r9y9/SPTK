@@ -48,7 +48,7 @@
 
     Mel-Cepstral Analysis (2nd order all-pass filter)
 
-        int smcep(xw, flng, mc, m, fftsz, a, t, itr1, itr2, dd, 
+        int smcep(xw, flng, mc, m, fftsz, a, t, itr1, itr2, dd,
                   etype, e, f, itype);
 
         double   *xw   : input sequence
@@ -64,11 +64,11 @@
                             1 -> e is initial value for log-periodogram
                             2 -> e is floor periodogram in db
         double   e     : initial value for log-periodogram
-                         or floor periodogram in db 
-        double   f     : mimimum value of the determinant 
+                         or floor periodogram in db
+        double   f     : mimimum value of the determinant
                          of the normal matrix
         int      itype : input data type
-        
+
         return   value :  0 -> completed by end condition
                           -1-> completed by maximum iteration
 
@@ -240,7 +240,7 @@ static void freqt2(double *c1, const int m1, double *c2, const int m2,
 {
    int i, j;
    double w, b, *ww, *dw, *f, *re, *im, *pf, *pg, *next;
-   int size_g, size_f, fftsz2, fftszh;
+   int size_g, size_f, fftsz2;
    static double *g = NULL;
    static int size2, flag_g = 1;
 
@@ -264,8 +264,6 @@ static void freqt2(double *c1, const int m1, double *c2, const int m2,
    if (flag_g == 0) {
       ww = dgetmem(fftsz);
       dw = dgetmem(fftsz);
-
-      fftszh = (int) (fftsz / 2.);
 
       for (j = 0, w = 0.0; j < fftsz; j++, w += b)
          ww[j] = warp(w, a, t);

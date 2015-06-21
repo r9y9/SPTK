@@ -207,7 +207,7 @@ void mfcc(double *in, double *mc, const double sampleFreq, const double alpha,
 {
    static double *x = NULL, *px, *wx, *sp, *fb, *dc;
    double energy = 0.0, c0 = 0.0;
-   int k, size = wlng;
+   int k;
 
    if (x == NULL) {
       x = dgetmem(wlng + wlng + flng + flng + n + 1 + m + 1);
@@ -224,7 +224,6 @@ void mfcc(double *in, double *mc, const double sampleFreq, const double alpha,
       sp = wx + flng;
       fb = sp + flng;
       dc = fb + n + 1;
-      size = wlng;
    }
 
    movem(in, x, sizeof(*in), wlng);

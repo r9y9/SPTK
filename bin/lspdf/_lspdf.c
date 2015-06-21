@@ -103,11 +103,10 @@ double lspdf_even(double x, double *f, const int m, double *d)
 double lspdf_odd(double x, double *f, const int m, double *d)
 {
    int i;
-   int mh1, mh2;
+   int mh1;
    double *d1, *d2, *lsp, x1, x2;
 
    mh1 = (m + 1) / 2;
-   mh2 = (m - 1) / 2;
 
    d1 = d + 1;
    d2 = d1 + (mh1 + mh1 - 1);

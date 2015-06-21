@@ -128,10 +128,9 @@ static double mlsadf1(double x, double *b, const double a,
 static double mlsadf2(double x, double *b, const int m, const double a,
                       const int pd, double *d)
 {
-   double v, out = 0.0, *pt, aa;
+   double v, out = 0.0, *pt;
    int i;
 
-   aa = 1 - a * a;
    pt = &d[pd * (m + 2)];
 
    for (i = pd; i >= 1; i--) {
@@ -182,10 +181,9 @@ static double mlsafirt(double x, double *b, const int m, const double a,
 static double mlsadf2t(double x, double *b, const int m, const double a,
                        const int pd, double *d)
 {
-   double v, out = 0.0, *pt, aa;
+   double v, out = 0.0, *pt;
    int i;
 
-   aa = 1 - a * a;
    pt = &d[pd * (m + 2)];
 
    for (i = pd; i >= 1; i--) {
