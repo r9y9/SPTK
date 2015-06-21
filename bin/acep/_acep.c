@@ -80,21 +80,22 @@ double acep(double x, double *c, const int m, const double lambda,
    static int size;
    double mu, tx;
 
+   int expected_size = m + m + m + 3 + (m + 1) * pd * 2;
    if (cc == NULL) {
-      cc = dgetmem(m + m + m + 3 + (m + 1) * pd * 2);
+      cc = dgetmem(expected_size);
       e = cc + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = m;
+      size = expected_size;
    }
 
-   if (m > size) {
+   if (expected_size > size) {
       free(cc);
-      cc = dgetmem(m + m + m + 3 + (m + 1) * pd * 2);
+      cc = dgetmem(expected_size);
       e = cc + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = m;
+      size = expected_size;
    }
 
    for (i = 1; i <= m; i++)
