@@ -71,6 +71,9 @@
 
        return value   : 0 -> completed by end condition
                         -1-> completed by maximum iteration
+                        1 -> invalid etype
+                        2 -> invalid itype
+                        3 -> failed to compute mel-generalized cepstrum
 
 *****************************************************************/
 
@@ -184,12 +187,12 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
 
    if (etype == 1 && e < 0.0) {
       fprintf(stderr, "mgcep : value of e must be e>=0!\n");
-      exit(1);
+      return 1;
    }
 
    if (etype == 2 && e >= 0.0) {
       fprintf(stderr, "mgcep : value of E must be E<0!\n");
-      exit(1);
+      return 1;
    }
 
    if (etype == 1) {
@@ -248,7 +251,7 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
       break;
    default:
       fprintf(stderr, "mgcep : Input type %d is not supported!\n", itype);
-      exit(1);
+      return 2;
    }
    if (itype > 0) {
       for (i = 1; i < flng / 2; i++)
@@ -273,6 +276,9 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
    /* initial value */
    fillz(b, sizeof(*b), m + 1);
    ep = newton(x, flng, b, m, a, -1.0, n, 0, f);
+   if (ep == -1) {
+     return 3;
+   }
 
    if (g != -1.0) {
       if (a != 0.0) {
@@ -296,6 +302,9 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
       for (j = 1; j <= itr2; j++) {
          epo = ep;
          ep = newton(x, flng, b, m, a, g, n, j, f);
+	 if (ep == -1) {
+	   return 3;
+	 }
 
          if (j >= itr1)
             if (fabs((epo - ep) / ep) < dd) {
@@ -414,7 +423,7 @@ double newton(double *x, const int flng, double *c, const int m, const double a,
 
    if (theq(pr, &qr[2], &b[1], &rr[1], m, f)) {
       fprintf(stderr, "mgcep : Error in theq() at %dth iteration!\n", j);
-      exit(1);
+      return -1;
    }
 
    for (i = 1; i <= m; i++)
