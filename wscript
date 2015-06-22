@@ -1,5 +1,5 @@
 APPNAME = 'SPTK'
-VERSION = '3.8.5'
+VERSION = '3.8.6'
 
 from waflib import Options
 import sys
