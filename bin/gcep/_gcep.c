@@ -63,12 +63,15 @@
                              2 -> e is floor periodogram in db
         double    e     : initial value for log-periodogram
                           or floor periodogram in db
-        double    f     : mimimum value of the determinant 
+        double    f     : mimimum value of the determinant
                          of the normal matrix
         int      itype : input data type
 
         return value :    0 -> completed by end condition
                           -1-> completed by maximum iteration
+                          1 -> invalid etype
+                          2 -> invalid itype
+                          3 -> failed to compute generalized cepstrum
 
 *****************************************************************/
 
@@ -93,12 +96,12 @@ int gcep(double *xw, const int flng, double *gc, const int m, const double g,
 
    if (etype == 1 && e < 0.0) {
       fprintf(stderr, "gcep : value of e must be e>=0!\n");
-      exit(1);
+      return 1;
    }
 
    if (etype == 2 && e >= 0.0) {
       fprintf(stderr, "gcep : value of E must be E<0!\n");
-      exit(1);
+      return 1;
    }
 
    if (etype == 1) {
@@ -167,7 +170,7 @@ int gcep(double *xw, const int flng, double *gc, const int m, const double g,
       break;
    default:
       fprintf(stderr, "gcep : Input type %d is not supported!\n", itype);
-      exit(1);
+      return 2;
    }
    if (itype > 0) {
       for (i = 1; i < flng / 2; i++)
@@ -239,7 +242,7 @@ int gcep(double *xw, const int flng, double *gc, const int m, const double g,
 
       if (theq(rr, &hr[2], &y[1], &er[1], m, f)) {
          fprintf(stderr, "gcep : Error in theq() at %dth iteration!\n", j);
-         exit(1);
+         return 3;
       }
 
       gc[0] = t;

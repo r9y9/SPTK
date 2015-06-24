@@ -63,9 +63,12 @@
         double   e     : initial value for log-periodogram
                          or floor periodogram in db
         int      itype : input data type
-        
+
         return   value :  0 -> completed by end condition
                           -1-> completed by maximum iteration
+                          1 -> invalid etype
+                          2 -> invalid itype
+                          3 -> zero(s) are found in periodogram
 
 *****************************************************************/
 
@@ -151,12 +154,12 @@ int uels(double *xw, const int flng, double *c, const int m, const int itr1,
 
    if (etype == 1 && e < 0.0) {
       fprintf(stderr, "uels : value of e must be e>=0!\n");
-      exit(1);
+      return 1;
    }
 
    if (etype == 2 && e >= 0.0) {
       fprintf(stderr, "uels : value of E must be E<0!\n");
-      exit(1);
+      return 1;
    }
 
    if (etype == 1) {
@@ -219,7 +222,7 @@ int uels(double *xw, const int flng, double *c, const int m, const int itr1,
       break;
    default:
       fprintf(stderr, "uels : Input type %d is not supported!\n", itype);
-      exit(1);
+      return 2;
    }
    if (itype > 0) {
       for (i = 1; i < flng / 2; i++)
@@ -245,7 +248,7 @@ int uels(double *xw, const int flng, double *c, const int m, const int itr1,
       if (x[i] <= 0) {
          fprintf(stderr,
                  "uels : The log periodogram has '0', use '-e' option!\n");
-         exit(1);
+	 return 3;
       }
       x[i] = cr[i] = log(x[i]);
    }

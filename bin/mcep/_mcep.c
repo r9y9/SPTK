@@ -63,12 +63,16 @@
                             2 -> e is floor periodogram in db
         double   e     : initial value for log-periodogram
                          or floor periodogram in db
-        double   f     : mimimum value of the determinant 
+        double   f     : mimimum value of the determinant
                          of the normal matrix
         int      itype : input data type
-                                
+
         return   value :    0 -> completed by end condition
                             -1-> completed by maximum iteration
+                            1 -> invalid etype
+                            2 -> invalid itype
+                            3 -> failed to compute mel-cepstrum
+                            4 -> zero(s) are found in periodogram
 
 *****************************************************************/
 
@@ -94,12 +98,12 @@ int mcep(double *xw, const int flng, double *mc, const int m, const double a,
 
    if (etype == 1 && e < 0.0) {
       fprintf(stderr, "mcep : value of e must be e>=0!\n");
-      exit(1);
+      return 1;
    }
 
    if (etype == 2 && e >= 0.0) {
       fprintf(stderr, "mcep : value of E must be E<0!\n");
-      exit(1);
+      return 1;
    }
 
    if (etype == 1) {
@@ -168,7 +172,7 @@ int mcep(double *xw, const int flng, double *mc, const int m, const double a,
       break;
    default:
       fprintf(stderr, "mcep : input type %d is not supported!\n", itype);
-      exit(1);
+      return 2;
    }
    if (itype > 0) {
       for (i = 1; i < flng / 2; i++)
@@ -194,7 +198,7 @@ int mcep(double *xw, const int flng, double *mc, const int m, const double a,
       if (x[i] <= 0.0) {
          fprintf(stderr,
                  "mcep : periodogram has '0', use '-e' option to floor it!\n");
-         exit(1);
+	 return 4;
       }
       c[i] = log(x[i]);
    }
@@ -243,7 +247,7 @@ int mcep(double *xw, const int flng, double *mc, const int m, const double a,
 
       if (theq(c, y, d, b, m + 1, f)) {
          fprintf(stderr, "mcep : Error in theq() at %dth iteration !\n", j);
-         exit(1);
+         return 3;
       }
 
       for (i = 0; i <= m; i++)
