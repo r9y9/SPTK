@@ -14,6 +14,12 @@ The important changes from the original SPTK are summerized as follows:
 - Add python wrapper using SWIG
  - To install the python wrapper, compile the SPTK with `./waf configure --python`. And then `import sptk` will work. [sptk.py](https://github.com/r9y9/SPTK/blob/master/python/sptk.py)
 
+## Supported Platforms
+
+- Linux
+- Mac OS X
+- Windows
+
 ## Installation
 
 Type the following commands from terminal:
