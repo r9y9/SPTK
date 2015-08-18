@@ -15,6 +15,8 @@ The important changes from the original SPTK are summerized as follows:
  - To install the python wrapper, compile the SPTK with `./waf configure --python`. And then `import sptk` will work. [sptk.py](https://github.com/r9y9/SPTK/blob/master/python/sptk.py)
 - Windows 32/64 bit support
  - DLLs are avilable on the release page (https://github.com/r9y9/SPTK/releases)
+- Avoid `exit` inside a function, as possible.
+ - ref: [aab3ee5](https://github.com/r9y9/SPTK/commit/aab3ee551776a8fa7b8dfe4020a95b8d7b53ee27), [7bddd39](https://github.com/r9y9/SPTK/commit/7bddd3970eac242427ad840f346fa9b661d2b3bb)
 
 ## Supported Platforms
 
