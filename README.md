@@ -10,13 +10,13 @@ The important changes from the original SPTK are summerized as follows:
 - Integrate [waf](https://code.google.com/p/waf/) build tool
  - `./waf configure && ./waf` compiles all sources in `bin` and `lib` directories and create a *single* shared library `libSPTK.so` or `libSPTK.dylib` (depends on your environment). You can install or uninstall the library with `./waf install` and `./waf uninstall` (library is installed to `usr/local/lib/` by default). To compile your code with the library, you will have to add `` `pkg-config SPTK --cflags --libs` `` as a compiling option.
 - Add `swipe` inteface to `SPTK.h` [SPTK.h#L382](https://github.com/r9y9/SPTK/blob/master/include/SPTK.h#L382) (API breaking)
- - refs [e322212](https://github.com/r9y9/SPTK/commit/e322212fccc7342dbae044d64786813c1ad724db) [d50ae4b](https://github.com/r9y9/SPTK/commit/d50ae4b7f54f0e2f2509a0fda36c2d66a9d16a03) [4283d47](https://github.com/r9y9/SPTK/commit/4283d47498988bd7b974b974dd3aa6920c10013a)
+ - refs: [e322212](https://github.com/r9y9/SPTK/commit/e322212fccc7342dbae044d64786813c1ad724db) [d50ae4b](https://github.com/r9y9/SPTK/commit/d50ae4b7f54f0e2f2509a0fda36c2d66a9d16a03) [4283d47](https://github.com/r9y9/SPTK/commit/4283d47498988bd7b974b974dd3aa6920c10013a)
 - Add python wrapper using SWIG
  - To install the python wrapper, compile the SPTK with `./waf configure --python`. And then `import sptk` will work. [sptk.py](https://github.com/r9y9/SPTK/blob/master/python/sptk.py)
 - Windows 32/64 bit support
  - DLLs are avilable on the release page (https://github.com/r9y9/SPTK/releases)
 - Avoid `exit` inside a function, as possible.
- - ref: [aab3ee5](https://github.com/r9y9/SPTK/commit/aab3ee551776a8fa7b8dfe4020a95b8d7b53ee27), [7bddd39](https://github.com/r9y9/SPTK/commit/7bddd3970eac242427ad840f346fa9b661d2b3bb)
+ - refs: [aab3ee5](https://github.com/r9y9/SPTK/commit/aab3ee551776a8fa7b8dfe4020a95b8d7b53ee27), [7bddd39](https://github.com/r9y9/SPTK/commit/7bddd3970eac242427ad840f346fa9b661d2b3bb)
 
 ## Supported Platforms
 
