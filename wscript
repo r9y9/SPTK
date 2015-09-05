@@ -11,35 +11,16 @@ subdirs = [
     'bin',
 ]
 
-python_bindings = 'python'
-
 top = '.'
 out = 'build'
 
+
 def options(opt):
-    opt.load('compiler_c python')
-    opt.add_option("--python",
-                   action="store_true", dest="enable_python", default=False,
-                   help="whether compile python bindings")
+    opt.load('compiler_c')
+
 
 def configure(conf):
-    enable_python = conf.options.enable_python
-    if enable_python:
-        conf.load('compiler_c python')
-    else:
-        conf.load('compiler_c')
-
-    conf.env['PYTHON_BINDINGS'] = conf.options.enable_python
-
-    if enable_python:
-        conf.load('swig')
-        if conf.check_swig_version() < (1, 2, 27):
-            conf.fatal('this swig version is too old')
-
-    if enable_python:
-        conf.load('python')
-        conf.check_python_version((2,4,2))
-        conf.check_python_headers()
+    conf.load('compiler_c')
 
     conf.define('SPTK_VERSION', VERSION)
     conf.env['VERSION'] = VERSION
@@ -56,15 +37,13 @@ def configure(conf):
     conf.env.HPREFIX = conf.env.PREFIX + '/include/SPTK'
 
     # check headers
-    conf.check_cc(header_name = "fcntl.h")
-    conf.check_cc(header_name = "limits.h")
-    conf.check_cc(header_name = "stdlib.h")
-    conf.check_cc(header_name = "string.h")
-    conf.check_cc(header_name = "strings.h")
+    conf.check_cc(header_name="fcntl.h")
+    conf.check_cc(header_name="limits.h")
+    conf.check_cc(header_name="stdlib.h")
+    conf.check_cc(header_name="string.h")
+    conf.check_cc(header_name="strings.h")
 
     conf.recurse(subdirs)
-    if conf.options.enable_python:
-        conf.recurse(python_bindings)
 
     print """
 SPTK has been configured as follows:
@@ -76,18 +55,17 @@ host endian:             %s
 Compiler:                %s
 Compiler version:        %s
 CFLAGS:                  %s
-Generate python bindings %s
 """ % (
         APPNAME + '-' + VERSION,
         conf.env.DEST_CPU + '-' + conf.env.DEST_OS,
         sys.byteorder,
         conf.env.COMPILER_CC,
         '.'.join(conf.env.CC_VERSION),
-        ' '.join(conf.env.CFLAGS),
-        conf.options.enable_python
-        )
+        ' '.join(conf.env.CFLAGS)
+    )
 
     conf.write_config_header('src/SPTK-config.h')
+
 
 def build(bld):
     bld.recurse(subdirs)
@@ -104,14 +82,11 @@ def build(bld):
         ls = ls + ' -l' + l
     ls += ' -lm'
 
-    if bld.env["PYTHON_BINDINGS"]:
-        bld.recurse(python_bindings)
-
-    bld(source = 'SPTK.pc.in',
-        prefix = bld.env['PREFIX'],
-        exec_prefix = '${prefix}',
-        libdir = bld.env['LIBDIR'],
-        libs = ls,
-        includedir = '${prefix}/include',
-        PACKAGE = APPNAME,
-        VERSION = VERSION)
+    bld(source='SPTK.pc.in',
+        prefix=bld.env['PREFIX'],
+        exec_prefix='${prefix}',
+        libdir=bld.env['LIBDIR'],
+        libs=ls,
+        includedir='${prefix}/include',
+        PACKAGE=APPNAME,
+        VERSION=VERSION)
