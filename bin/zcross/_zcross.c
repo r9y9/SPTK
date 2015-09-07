@@ -78,7 +78,7 @@ double zcross(double *x, const int fl, const int n)
    double z = 0;
 
    for (i = 0; i < fl; i++)
-      z += abs(sgn(x[i + 1]) - sgn(x[i]));
+      z += fabs(sgn(x[i + 1]) - sgn(x[i]));
    if (n)
       z /= fl;
 
