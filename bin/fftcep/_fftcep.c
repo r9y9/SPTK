@@ -73,17 +73,20 @@ void fftcep(double *sp, const int flng, double *c, const int m, int itr,
 {
    double temp;
    static double *x = NULL, *y;
-   int k, size = flng;
+   static int size;
+   int k;
 
+   int expected_size = flng + flng;
    if (x == NULL) {
-      x = dgetmem(flng + flng);
+      x = dgetmem(expected_size);
       y = x + flng;
+      size = expected_size;
    }
-   if (flng > size) {
+   if (expected_size > size) {
       free(x);
-      x = dgetmem(flng + flng);
+      x = dgetmem(expected_size);
       y = x + flng;
-      size = flng;
+      size = expected_size;
    }
 
    movem(sp, x, sizeof(*sp), flng);
