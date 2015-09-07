@@ -76,7 +76,7 @@ static double pade[] = { 1.0,
    1.0, 0.4999391, 0.1107098, 0.01369984, 0.0009564853, 0.00003041721
 };
 
-double *ppade;
+double *ppade_lmadf;
 
 /****************************************************************
 
@@ -107,7 +107,7 @@ static double lmafir(double x, double *c, const int m, double *d, const int m1,
 
 double lmadf(double x, double *c, const int m, const int pd, double *d)
 {
-   ppade = &pade[pd * (pd + 1) / 2];
+   ppade_lmadf = &pade[pd * (pd + 1) / 2];
 
    x = lmadf1(x, c, m, d, 1, 1, pd);    /* D1(z) */
    x = lmadf1(x, c, m, &d[(m + 1) * pd], 2, m, pd);     /* D2(z) */
@@ -137,11 +137,11 @@ double lmadf1(double x, double *c, const int m, double *d, const int m1,
 
    pt = &d[pd * m];
    t = lmafir(pt[pd - 1], c, m, &d[(pd - 1) * m], m1, m2);
-   y = (t *= ppade[pd]);
+   y = (t *= ppade_lmadf[pd]);
    x += (1 & pd) ? t : -t;
    for (i = pd - 1; i >= 1; i--) {
       pt[i] = t = lmafir(pt[i - 1], c, m, &d[(i - 1) * m], m1, m2);
-      y += (t *= ppade[i]);
+      y += (t *= ppade_lmadf[i]);
       x += (1 & i) ? t : -t;
    }
    y += (pt[0] = x);
@@ -161,7 +161,7 @@ double lmadf1t(double x, double *b, const int pd, double *d)
    for (i = pd; i >= 1; i--) {
       d[i] = pt[i - 1];
       pt[i] = d[i] * b[1];
-      v = pt[i] * ppade[i];
+      v = pt[i] * ppade_lmadf[i];
 
       x += (1 & i) ? v : -v;
       out += v;
@@ -200,7 +200,7 @@ static double lmadf2t(double x, double *b, const int m, const int pd, double *d)
 
    for (i = pd; i >= 1; i--) {
       pt[i] = lmafirt(pt[i - 1], b, m, &d[(i - 1) * (m + 2)]);
-      v = pt[i] * ppade[i];
+      v = pt[i] * ppade_lmadf[i];
 
       x += (1 & i) ? v : -v;
       out += v;
@@ -214,7 +214,7 @@ static double lmadf2t(double x, double *b, const int m, const int pd, double *d)
 
 double lmadft(double x, double *c, const int m, const int pd, double *d)
 {
-   ppade = &pade[pd * (pd + 1) / 2];
+   ppade_lmadf = &pade[pd * (pd + 1) / 2];
 
    x = lmadf1t(x, c, pd, d);
    x = lmadf2t(x, c, m, pd, &d[2 * (pd + 1)]);
