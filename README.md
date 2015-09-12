@@ -40,5 +40,4 @@ sudo ./waf install
 
 ## License
 
-- The SPTK is licensed under [BSD](./COPYING)
-- The python wrapper is licensed under [MIT](./LICENSE)
+[Modified BSD](./COPYING)
