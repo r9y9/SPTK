@@ -305,22 +305,22 @@ int bilookiv(intvector yr_vector, int key, int lo) {
 /* matrix versions of the above */
 
 matrix makem(int xSz, int ySz) {
+    int i;
     matrix nw_matrix;
     nw_matrix.x = xSz;
     nw_matrix.y = ySz;
     nw_matrix.m = malloc(sizeof(double*) * xSz);
-    int i;
     for (i = 0; i < nw_matrix.x; i++)
         nw_matrix.m[i] = malloc(sizeof(double) * ySz);
     return(nw_matrix);
 }
 
 matrix zerom(int xSz, int ySz) {
+    int i;
     matrix nw_matrix;
     nw_matrix.x = xSz;
     nw_matrix.y = ySz;
     nw_matrix.m = malloc(sizeof(double*) * xSz);
-    int i;
     for (i = 0; i < nw_matrix.x; i++)
         nw_matrix.m[i] = calloc(sizeof(double), ySz);
     return(nw_matrix);
@@ -372,6 +372,7 @@ void printm(matrix yr_matrix) {
 /* intmatrix versions of the above */
 
 intmatrix makeim(int xSz, int ySz) {
+    int i;
     intmatrix nw_matrix;
     nw_matrix.x = xSz;
     nw_matrix.y = ySz;
@@ -380,18 +381,17 @@ intmatrix makeim(int xSz, int ySz) {
 #else
     nw_matrix.m = malloc(sizeof(int*) * xSz);
 #endif
-    int i;
     for (i = 0; i < nw_matrix.x; i++)
         nw_matrix.m[i] = malloc(sizeof(int) * ySz);
     return(nw_matrix);
 }
 
 intmatrix zeroim(int xSz, int ySz) {
+    int i;
     intmatrix nw_matrix;
     nw_matrix.x = xSz;
     nw_matrix.y = ySz;
     nw_matrix.m = malloc(sizeof(int) * xSz);
-    int i;
     for (i = 0; i < nw_matrix.x; i++)
         nw_matrix.m[i] = calloc(sizeof(int), ySz);
     return(nw_matrix);
@@ -585,6 +585,8 @@ vector polyfit(vector A, vector B, int degree) {
 #if 0
     int info;
 #endif
+    int i;
+    vector Bp;
     degree++; /* I find it intuitive this way... */
 #if 0
     double* Ap = malloc(sizeof(double) * degree * A.x);
@@ -593,9 +595,9 @@ vector polyfit(vector A, vector B, int degree) {
         for (j = 0; j < A.x; j++)
 	  Ap[i * A.x + j] = pow(A.v[j], degree - i - 1); /* mimics MATLAB */
 #else
-    int i;
+    /* nothing */
 #endif
-    vector Bp = makev(degree >= B.x ? degree : B.x);
+    Bp = makev(degree >= B.x ? degree : B.x);
     for (i = 0; i < B.x; i++)
         Bp.v[i] = B.v[i];
 #if 0
