@@ -73,9 +73,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <limits.h>
-#include <stdbool.h>
 
 #if 0
 #include <fftw3.h>   // http://www.fftw.org/
