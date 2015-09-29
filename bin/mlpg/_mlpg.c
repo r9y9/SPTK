@@ -51,16 +51,7 @@
 *****************************************************************/
 
 #include <stdio.h>
-
-#ifdef HAVE_STRING_H
-#  include <string.h>
-#else
-#  include <strings.h>
-#  ifndef HAVE_STRRCHR
-#     define strrchr rindex
-#  endif
-#endif
-
+#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 

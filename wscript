@@ -41,7 +41,6 @@ def configure(conf):
     conf.check_cc(header_name="limits.h")
     conf.check_cc(header_name="stdlib.h")
     conf.check_cc(header_name="string.h")
-    conf.check_cc(header_name="strings.h")
 
     conf.recurse(subdirs)
 
