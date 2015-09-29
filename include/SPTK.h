@@ -49,6 +49,14 @@
    SPTK.h
 ***********************************************************/
 
+#ifndef DLLEXPORT
+#  ifdef _WIN32
+#      define DLLEXPORT __declspec(dllexport)
+#    else
+#      define DLLEXPORT
+#  endif
+#endif
+
 #ifndef PI
 #define PI  3.14159265358979323846
 #endif                          /* PI */
@@ -184,7 +192,7 @@ int toeplitz(double *t, double *a, double *b, const int n, double eps);
 
 
 /* tool routines */
-double acep(double x, double *c, const int m, const double lambda,
+DLLEXPORT double acep(double x, double *c, const int m, const double lambda,
             const double step, const double tau, const int pd,
             const double eps);
 void acorr(double *x, int l, double *r, const int np);

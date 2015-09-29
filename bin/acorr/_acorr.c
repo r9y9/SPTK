@@ -47,7 +47,7 @@
     $Id: _acorr.c,v 1.16 2014/12/11 08:30:28 uratec Exp $
 
     obtain autocorrelation sequence
-    
+
     void acorr(x,l,r,np)
 
     double *x : input sequence
