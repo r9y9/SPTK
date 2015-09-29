@@ -84,7 +84,7 @@
     #define NAN     sqrt(-1.)
 #endif
 
-// create a vector of size xSz
+/* create a vector of size xSz */
 vector makev(int xSz) {
     vector nw_vector;
     nw_vector.x = xSz;
@@ -92,7 +92,7 @@ vector makev(int xSz) {
     return(nw_vector);
 }
 
-// make a vector of zeros of size xSz
+/* make a vector of zeros of size xSz */
 vector zerov(int xSz) {
     vector nw_vector;
     nw_vector.x = xSz;
@@ -100,7 +100,7 @@ vector zerov(int xSz) {
     return(nw_vector);
 }
 
-// make a vector of ones of size xSz
+/* make a vector of ones of size xSz */
 vector onesv(int xSz) {
     vector nw_vector = makev(xSz);
     int i;
@@ -109,7 +109,7 @@ vector onesv(int xSz) {
     return(nw_vector);
 }
 
-// make a vector of NaNs of size xSz
+/* make a vector of NaNs of size xSz */
 vector nansv(int xSz) {
     vector nw_vector = makev(xSz);
     int i;
@@ -118,26 +118,26 @@ vector nansv(int xSz) {
     return(nw_vector);
 }
 
-// make a deep copy of a vector
+/* make a deep copy of a vector */
 vector copyv(vector yr_vector) {
     vector nw_vector = makev(yr_vector.x);
     memcpy(nw_vector.v, yr_vector.v, sizeof(double) * yr_vector.x);
     return(nw_vector);
 }
 
-// free the memory associated with the vector
+/* free the memory associated with the vector */
 void freev(vector yr_vector) {
     free(yr_vector.v);
 }
 
-// print the vector
+/* print the vector */
 void printv(vector yr_vector) {
     int i;
     for (i = 0; i < yr_vector.x; i++)
         printf("%f\n", yr_vector.v[i]);
 }
 
-// return the index of the maximum value of the vector
+/* return the index of the maximum value of the vector */
 int maxv(vector yr_vector) {
     int index = -1;
     double val = SHRT_MIN;
@@ -151,7 +151,7 @@ int maxv(vector yr_vector) {
     return(index);
 }
 
-// return the index of the minimum value of the vector
+/* return the index of the minimum value of the vector */
 int minv(vector yr_vector) {
     int index = -1;
     double val = SHRT_MAX;
@@ -165,7 +165,7 @@ int minv(vector yr_vector) {
     return(index);
 }
 
-// find the bisection index of the vector for key
+/* find the bisection index of the vector for key */
 int bisectv(vector yr_vector, double key) {
     int md;
     int lo = 1;
@@ -199,7 +199,7 @@ int bilookv(vector yr_vector, double key, int lo) {
     return(hi);
 }
 
-// intvector versions of the above
+/* intvector versions of the above */
 
 intvector makeiv(int xSz) {
     intvector nw_vector;
@@ -229,7 +229,7 @@ intvector copyiv(intvector yr_vector) {
     return(nw_vector);
 }
 
-// convert an intvector into a vector using implicit casts to double
+/* convert an intvector into a vector using implicit casts to double */
 vector iv2v(intvector yr_vector) {
     vector nw_vector = makev(yr_vector.x);
     int i;
@@ -302,7 +302,7 @@ int bilookiv(intvector yr_vector, int key, int lo) {
     return(hi);
 }
 
-// matrix versions of the above
+/* matrix versions of the above */
 
 matrix makem(int xSz, int ySz) {
     matrix nw_matrix;
@@ -347,7 +347,7 @@ matrix nansm(int xSz, int ySz) {
 matrix copym(matrix yr_matrix) {
     matrix nw_matrix = makem(yr_matrix.x, yr_matrix.y);
     int i;
-    for (i = 0; i < yr_matrix.x; i++) // does not assume contiguity
+    for (i = 0; i < yr_matrix.x; i++) /* does not assume contiguity */
         memcpy(nw_matrix.m[i], yr_matrix.m[i],
                sizeof(double) * yr_matrix.y);
     return(nw_matrix);
@@ -369,7 +369,7 @@ void printm(matrix yr_matrix) {
     }
 }
 
-// intmatrix versions of the above
+/* intmatrix versions of the above */
 
 intmatrix makeim(int xSz, int ySz) {
     intmatrix nw_matrix;
@@ -409,7 +409,7 @@ intmatrix onesim(int xSz, int ySz) {
 intmatrix copyim(intmatrix yr_matrix) {
     intmatrix nw_matrix = makeim(yr_matrix.x, yr_matrix.y);
     int i;
-    for (i = 0; i < yr_matrix.x; i++) // does not assume contiguity
+    for (i = 0; i < yr_matrix.x; i++) /* does not assume contiguity */
         memcpy(nw_matrix.m[i], yr_matrix.m[i], sizeof(int) * yr_matrix.y);
     return(nw_matrix);
 }
@@ -439,12 +439,12 @@ void printim(intmatrix yr_matrix) {
     }
 }
 
-// a naive Sieve of Erasthones for prime numbers
+/* a naive Sieve of Erasthones for prime numbers */
 int sieve(intvector ones) {
     int k = 0;
     int sp = floor(sqrt(ones.x));
     int i, j;
-    ones.v[0] = NP; // 1 is not prime, though sometimes I wish it was
+    ones.v[0] = NP; /* 1 is not prime, though sometimes I wish it was */
     for (i = 1; i < sp; i++) {
         if PRIME(ones.v[i]) {
             for (j = i + i + 1; j < ones.x; j += i + 1)
@@ -452,7 +452,7 @@ int sieve(intvector ones) {
             k++;
         }
     }
-    for (i = sp; i < ones.x; i++) { // now we're only counting
+    for (i = sp; i < ones.x; i++) { /* now we're only counting */
         if PRIME(ones.v[i])
             k++;
     }
@@ -462,8 +462,8 @@ int sieve(intvector ones) {
 intvector primes(int n) {
     int i, j = 0;
     intvector myOnes = onesiv(n);
-    intvector myPrimes = makeiv(sieve(myOnes)); // size of the # of primes
-    for (i = 0; i < myOnes.x; i++) // could start at 1
+    intvector myPrimes = makeiv(sieve(myOnes)); /* size of the # of primes */
+    for (i = 0; i < myOnes.x; i++) /* could start at 1 */
         if PRIME(myOnes.v[i])
             myPrimes.v[j++] = i + 1;
     freeiv(myOnes);
@@ -471,16 +471,16 @@ intvector primes(int n) {
 }
 
 
-// cubic spline function, based on Numerical Recipes in C, 2nd ed.
+/* cubic spline function, based on Numerical Recipes in C, 2nd ed. */
 vector spline(vector x, vector y) {
     int i, j;
     double p, qn, sig;
     vector y2 = makev(x.x);
     double* u = malloc((unsigned) (x.x - 1) * sizeof(double));
-    y2.v[0] = -.5; // left boundary
+    y2.v[0] = -.5; /* left boundary */
     u[0] = (3. / (x.v[1] - x.v[0])) * ((y.v[1] - y.v[0]) /
                                        (x.v[1] - x.v[0]) - YP1);
-    for (i = 1; i < x.x - 1; i++) { // decomp loop
+    for (i = 1; i < x.x - 1; i++) { /* decomp loop */
         sig = (x.v[i] - x.v[i - 1]) / (x.v[i + 1] - x.v[i - 1]);
         p = sig * y2.v[i - 1] + 2.;
         y2.v[i] = (sig - 1.) / p;
@@ -488,20 +488,20 @@ vector spline(vector x, vector y) {
                (y.v[i] - y.v[i - 1]) / (x.v[i] - x.v[i - 1]);
         u[i] = (6 * u[i] / (x.v[i + 1] - x.v[i - 1]) - sig * u[i - 1]) / p;
     }
-    qn = .5; // right boundary
+    qn = .5; /* right boundary */
     y2.v[y2.x - 1] = ((3. / (x.v[x.x - 1] - x.v[x.x - 2])) * (YPN -
                       (y.v[y.x - 1] - y.v[y.x -  2]) / (x.v[x.x - 1] -
                        x.v[x.x - 2])) - qn * u[x.x - 2]) /
                        (qn * y2.v[y2.x - 2] + 1.);
-    for (j = x.x - 2; j >= 0; j--) // backsubstitution loop
+    for (j = x.x - 2; j >= 0; j--) /* backsubstitution loop */
         y2.v[j] = y2.v[j] * y2.v[j + 1] + u[j];
     free(u);
     return(y2);
 }
 
-// query the cubic spline
+/* query the cubic spline */
 double splinv(vector x, vector y, vector y2, double val, int hi) {
-    int lo = hi - 1; // find hi linearly, or using bisectv()
+  int lo = hi - 1; /* find hi linearly, or using bisectv() */
     double h = x.v[hi] - x.v[lo];
     double a = (x.v[hi] - val) / h;
     double b = (val - x.v[lo]) / h;
@@ -515,7 +515,7 @@ static void LU(int n, double **A)
 {
   int i, j, k;
   double q;
-  
+
   for (k = 0; k < n - 1; k++) {
     for (i = k + 1; i < n; i++) {
       q = A[i][k] / A[k][k];
@@ -580,18 +580,18 @@ static void dgels(int n, vector Ap, vector bp)
 }
 #endif
 
-// polynomial fitting with CLAPACK: solves poly(A, m) * X = B
+/* polynomial fitting with CLAPACK: solves poly(A, m) * X = B */
 vector polyfit(vector A, vector B, int degree) {
 #if 0
     int info;
 #endif
-    degree++; // I find it intuitive this way...
+    degree++; /* I find it intuitive this way... */
 #if 0
     double* Ap = malloc(sizeof(double) * degree * A.x);
     int i, j;
     for (i = 0; i < degree; i++)
         for (j = 0; j < A.x; j++)
-            Ap[i * A.x + j] = pow(A.v[j], degree - i - 1); // mimics MATLAB
+	  Ap[i * A.x + j] = pow(A.v[j], degree - i - 1); /* mimics MATLAB */
 #else
     int i;
 #endif
@@ -599,8 +599,8 @@ vector polyfit(vector A, vector B, int degree) {
     for (i = 0; i < B.x; i++)
         Bp.v[i] = B.v[i];
 #if 0
-    i = 1; // nrhs, j is info
-    j = A.x + degree; // lwork
+    i = 1; /* nrhs, j is info */
+    j = A.x + degree; /* lwork */
     double* work = malloc(sizeof(double) * j);
     dgels_("N", &A.x, &degree, &i, Ap, &B.x, Bp.v, &degree, work, &j,
                                                               &info);
@@ -617,7 +617,7 @@ vector polyfit(vector A, vector B, int degree) {
     return(Bp);
 }
 
-// given a vector of coefficients and a value for x, evaluate the polynomial
+/* given a vector of coefficients and a value for x, evaluate the polynomial */
 double polyval(vector coefs, double val) {
     double sum = 0.;
     int i;
@@ -626,7 +626,7 @@ double polyval(vector coefs, double val) {
     return(sum);
 }
 
-// some test code
+/* some test code */
 #ifdef DEBUG
 int main(void) {
 
