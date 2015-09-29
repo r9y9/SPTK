@@ -27,6 +27,7 @@ The important changes from the original SPTK are summerized as follows:
 - Add `swipe` inteface to `SPTK.h` [SPTK.h#L382](https://github.com/r9y9/SPTK/blob/master/include/SPTK.h#L382)
 - Windows 32/64 bit support. DLLs are avilable on the release page (https://github.com/r9y9/SPTK/releases)
 - Avoid `exit` inside a function, as possible.
+- Remove `wavsplit` and `wavjoin` from target sources to compile for cross-platform compilation ability, since original `wavsplit` and `wavjoin` use `direct.h` that only exists in POSIX enviroments.
 
 ## Installation
 
