@@ -72,7 +72,9 @@
 #  include <SPTK.h>
 #endif
 
-double acep(double x, double *c, const int m, const double lambda,
+#include "../dllexport.h"
+
+DLLEXPORT double acep(double x, double *c, const int m, const double lambda,
             const double step, const double tau, const int pd, const double eps)
 {
    int i;

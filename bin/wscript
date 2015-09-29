@@ -1,21 +1,42 @@
+from os.path import join
+
+
 def configure(conf):
     pass
+
 
 def build(bld):
     bld.install_files('${HPREFIX}', '../include/SPTK.h')
 
     lib_src = bld.path.parent.ant_glob('**/lib/*.c')
 
-    swipe_src = [        
+    swipe_src = [
         'pitch/swipe/swipe.c',
         'pitch/swipe/vector.c',
     ]
 
     hts_engine_src = bld.path.ant_glob('**/vc/hts_engine_API/*.c')
 
+    # Collect sources
+    src = list(bld.path.ant_glob('**/_*.c') +
+               swipe_src + hts_engine_src + lib_src)
+
+    # NOTE: Since wavjoin and wavsplit use direct.h, which only exists in POSIX
+    # environments, I ignore these files to compile for cross-platform compilation
+    # ability.
+    ignore_bin_list = ["wavjoin", "wavsplit"]
+
+    # collect ignore sources
+    ignore_src = []
+    for name in ignore_bin_list:
+        ignore_src.append(*bld.path.ant_glob(join(name, '_*.c')))
+
+    for ignore in ignore_src:
+        src = list(filter(lambda s: not str(s).startswith(str(ignore)), src))
+
     bld.shlib(
-        source = bld.path.ant_glob('**/_*.c') + swipe_src + hts_engine_src + lib_src,
-        target = 'SPTK',
-        vnum = bld.env['VERSION'],
-        use = 'SPTKlib',
-        includes = ['../include'])
+        source=src,
+        target='SPTK',
+        vnum=bld.env['VERSION'],
+        use='SPTKlib',
+        includes=['../include'])

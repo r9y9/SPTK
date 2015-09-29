@@ -1,3 +1,6 @@
+# coding: utf-8
+from __future__ import division, print_function, absolute_import
+
 APPNAME = 'SPTK'
 VERSION = '3.8.7'
 
@@ -33,6 +36,10 @@ def configure(conf):
         conf.env.append_unique(
             'CFLAGS',
             ['-O2', '-Wall', '-fno-common', '-ansi'])
+    elif re.search('cl.exe', conf.env.CC[0].lower()):
+        conf.env.append_unique('CFLAGS', [''])
+    else:
+        raise RuntimeError("Not supported compiler: %s" % conf.env.CC[0])
 
     conf.env.HPREFIX = conf.env.PREFIX + '/include/SPTK'
 
@@ -44,24 +51,24 @@ def configure(conf):
 
     conf.recurse(subdirs)
 
-    print """
+    print("""
 SPTK has been configured as follows:
 
 [Build information]
-Package:                 %s
-build (compile on):      %s
-host endian:             %s
-Compiler:                %s
-Compiler version:        %s
-CFLAGS:                  %s
-""" % (
+Package:                 {0}
+build (compile on):      {1}
+host endian:             {2}
+Compiler:                {3}
+Compiler version:        {4}
+CFLAGS:                  {5}
+""".format(
         APPNAME + '-' + VERSION,
         conf.env.DEST_CPU + '-' + conf.env.DEST_OS,
         sys.byteorder,
         conf.env.COMPILER_CC,
         '.'.join(conf.env.CC_VERSION),
         ' '.join(conf.env.CFLAGS)
-    )
+    ))
 
     conf.write_config_header('src/SPTK-config.h')
 
