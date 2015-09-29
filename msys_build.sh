@@ -9,15 +9,17 @@ else
 fi
 
 # Use this mingw instead of the pre-installed mingw on Appveyor
-f=mingw-w$bits-bin-$ARCH-20140102.7z
-if ! [ -e $f ]; then
-    echo "Downloading $f"
-    curl -LsSO https://sourceforge.net/projects/mingw-w64-dgn/files/mingw-w64/$f
+if [ "$COMPILER" = gcc ]; then
+    f=mingw-w$bits-bin-$ARCH-20140102.7z
+    if ! [ -e $f ]; then
+	echo "Downloading $f"
+	curl -LsSO https://sourceforge.net/projects/mingw-w64-dgn/files/mingw-w64/$f
+    fi
+    7z x $f > /dev/null
+    export PATH=$PWD/mingw$bits/bin:$PATH
 fi
-7z x $f > /dev/null
-export PATH=$PWD/mingw$bits/bin:$PATH
 
 # Build SPTK
 cd /c/projects/sptk
-./waf configure --check-c-compiler=gcc
+./waf configure --check-c-compiler="$COMPILER"
 ./waf

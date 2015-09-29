@@ -1,8 +1,17 @@
 environment:
   PYTHON: "C:/Python27"
   matrix:
-  - ARCH: "i686"
-  - ARCH: "x86_64"
+    - COMPILER: gcc
+      ARCH: "i686"
+
+    - COMPILER: gcc
+      ARCH: "x86_64"
+
+    - COMPILER: msvc
+      ARCH: "i686"
+
+    - COMPILER: msvc
+      ARCH: "x86_64"
 
 init:
   - "ECHO %PYTHON%"
