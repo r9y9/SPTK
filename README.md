@@ -29,6 +29,7 @@ The important changes from the original SPTK are summerized as follows:
 - Avoid `exit` inside a function, as possible.
 - Remove `wavsplit` and `wavjoin` from target sources to compile for cross-platform compilation ability, since original `wavsplit` and `wavjoin` use `direct.h` that only exists in POSIX enviroments. ([#8])
 - Add `DLLEXPORT` macro to expose API functions explicitly in MSVC environments (NOTE: this is not fully used for now)  ([#8])
+- Ensure c89 compatibility
 
 ## Installation
 
