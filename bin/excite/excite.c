@@ -133,7 +133,7 @@ void excite(double* pitch, int n, double* out, int fprd, int iprd, Boolean gauss
             } else
                x = 0.0;
          }
-         // k is the current sample index
+         /* k is the current sample index */
          out[k++] = x;
 
          if (!--i) {

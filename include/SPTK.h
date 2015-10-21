@@ -387,7 +387,7 @@ void free_wav_data(Wavfile * wavfile);
 void wavjoin(Wavfile * wavout, const Wavfile * wavin);
 int search_wav_list(Filelist * filelist, char *key);
 
-// excitation
+/* excitation */
 void excite(double *pitch, int n, double *out, int fprd, int iprd, Boolean gauss, int seed_i);
 
 void swipe(double *input, double *output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype);
