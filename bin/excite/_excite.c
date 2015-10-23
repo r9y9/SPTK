@@ -100,6 +100,7 @@ char *BOOL[] = { "FALSE", "TRUE" };
 void excite(double* pitch, int n, double* out, int fprd, int iprd, Boolean gauss, int seed)
 {
    int i, j, k = 0;
+   int fn;
    unsigned long next = seed;
    double x, p1, p2, inc, pc;
 
@@ -109,7 +110,7 @@ void excite(double* pitch, int n, double* out, int fprd, int iprd, Boolean gauss
    p1 = pitch[0];
    pc = p1;
 
-   for (int fn = 1; fn < n; fn++) {
+   for (fn = 1; fn < n; fn++) {
       p2 = pitch[fn];
 
       if ((p1 != 0.0) && (p2 != 0.0))
