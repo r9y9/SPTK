@@ -72,15 +72,6 @@ static char *rcs_id = "$Id: excite.c,v 1.25 2014/12/11 08:30:34 uratec Exp $";
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef HAVE_STRING_H
-#  include <string.h>
-#else
-#  include <strings.h>
-#  ifndef HAVE_STRRCHR
-#     define strrchr rindex
-#  endif
-#endif
-
 #include <math.h>
 
 #if defined(WIN32)
