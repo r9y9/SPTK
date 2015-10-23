@@ -72,15 +72,6 @@ static char *rcs_id = "$Id: excite.c,v 1.25 2014/12/11 08:30:34 uratec Exp $";
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef HAVE_STRING_H
-#  include <string.h>
-#else
-#  include <strings.h>
-#  ifndef HAVE_STRRCHR
-#     define strrchr rindex
-#  endif
-#endif
-
 #include <math.h>
 
 #if defined(WIN32)
@@ -97,91 +88,21 @@ static char *rcs_id = "$Id: excite.c,v 1.25 2014/12/11 08:30:34 uratec Exp $";
 
 char *BOOL[] = { "FALSE", "TRUE" };
 
-/*  Command Name  */
-char *cmnd;
-
-
-void usage(int status)
+void excite(double* pitch, int n, double* out, int fprd, int iprd, Boolean gauss, int seed)
 {
-   fprintf(stderr, "\n");
-   fprintf(stderr, " %s - generate excitation\n", cmnd);
-   fprintf(stderr, "\n");
-   fprintf(stderr, "  usage:\n");
-   fprintf(stderr, "       %s [ options ] [ infile ] > stdout\n", cmnd);
-   fprintf(stderr, "  options:\n");
-   fprintf(stderr, "       -p p  : frame period                  [%d]\n",
-           FPERIOD);
-   fprintf(stderr, "       -i i  : interpolation period          [%d]\n",
-           IPERIOD);
-   fprintf(stderr, "       -n    : gauss/M-sequence for unvoiced [%s]\n",
-           BOOL[GAUSS]);
-   fprintf(stderr, "                   default is M-sequence\n");
-   fprintf(stderr, "       -s s  : seed for nrand                [%d]\n", SEED);
-   fprintf(stderr, "       -h    : print this message\n");
-   fprintf(stderr, "  infile:\n");
-   fprintf(stderr, "       pitch period (%s)         [stdin]\n", FORMAT);
-   fprintf(stderr, "  stdout:\n");
-   fprintf(stderr, "       excitation (%s)\n", FORMAT);
-#ifdef PACKAGE_VERSION
-   fprintf(stderr, "\n");
-   fprintf(stderr, " SPTK: version %s\n", PACKAGE_VERSION);
-   fprintf(stderr, " CVS Info: %s", rcs_id);
-#endif
-   fprintf(stderr, "\n");
-   exit(status);
-}
-
-
-int main(int argc, char **argv)
-{
-   int fprd = FPERIOD, iprd = IPERIOD, i, j, seed = SEED;
-   unsigned long next = SEED;
-   FILE *fp = stdin;
+   int i, j, k = 0;
+   int fn;
+   unsigned long next = seed;
    double x, p1, p2, inc, pc;
-   Boolean gauss = GAUSS;
-
-   if ((cmnd = strrchr(argv[0], '/')) == NULL)
-      cmnd = argv[0];
-   else
-      cmnd++;
-   while (--argc)
-      if (**++argv == '-') {
-         switch (*(*argv + 1)) {
-         case 'p':
-            fprd = atoi(*++argv);
-            --argc;
-            break;
-         case 'i':
-            iprd = atoi(*++argv);
-            --argc;
-            break;
-         case 'n':
-            gauss = TR;
-            break;
-         case 's':
-            seed = atoi(*++argv);
-            --argc;
-            break;
-         case 'h':
-            usage(0);
-         default:
-            fprintf(stderr, "%s : Invalid option '%c'!\n", cmnd, *(*argv + 1));
-            usage(1);
-         }
-      } else
-         fp = getfp(*argv, "rb");
 
    if (gauss & (seed != 1))
       next = srnd((unsigned int) seed);
 
-   if (freadf(&p1, sizeof(p1), 1, fp) != 1)
-      return (1);
-
+   p1 = pitch[0];
    pc = p1;
 
-   for (;;) {
-      if (freadf(&p2, sizeof(p2), 1, fp) != 1)
-         return (0);
+   for (fn = 1; fn < n; fn++) {
+      p2 = pitch[fn];
 
       if ((p1 != 0.0) && (p2 != 0.0))
          inc = (p2 - p1) * (double) iprd / (double) fprd;
@@ -204,8 +125,8 @@ int main(int argc, char **argv)
             } else
                x = 0.0;
          }
-
-         fwritef(&x, sizeof(x), 1, stdout);
+         /* k is the current sample index */
+         out[k++] = x;
 
          if (!--i) {
             p1 += inc;
@@ -215,5 +136,5 @@ int main(int argc, char **argv)
       p1 = p2;
    }
 
-   return 0;
+   return;
 }
