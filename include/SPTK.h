@@ -49,6 +49,9 @@
    SPTK.h
 ***********************************************************/
 
+#ifndef SPTK_H_
+#define SPTK_H_
+
 #ifndef DLLEXPORT
 #  ifdef _WIN32
 #      define DLLEXPORT __declspec(dllexport)
@@ -393,3 +396,6 @@ void excite(double *pitch, int n, double *out, int fprd, int iprd, Boolean gauss
 void swipe(double *input, double *output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype);
 
 void b2c(double *b, int m1, double *c, int m2, double a);
+
+
+#endif  /* SPTK_H_ */

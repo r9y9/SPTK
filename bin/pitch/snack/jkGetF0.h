@@ -59,6 +59,8 @@
 
 /* $Id: jkGetF0.h,v 1.6 2014/12/11 08:30:43 uratec Exp $ */
 
+#ifndef JK_GET_F0_H_
+#define JK_GET_F0_H_
 
 /* f0.h */
 /* Some definitions used by the "Pitch Tracker Software". */
@@ -160,3 +162,5 @@ typedef struct _float_list {
 /* The RAPT interface */
 void rapt(float_list *input, int length, double sample_freq, int frame_shift,
      double minF0, double maxF0, double voice_bias, int otype);
+
+#endif  /* JK_GET_F0_H_ */
