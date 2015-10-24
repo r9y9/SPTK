@@ -1537,16 +1537,7 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
 
     if (actsize > total_samps)
       actsize = total_samps;
-
-    /*    if (1) {
-      int res = Snack_ProgressCallback(sound->cmdPtr, interp, "Computing pitch", (double) ndone / sound->length);
-      if (res != TCL_OK) {
-	return TCL_ERROR;
-      }
-      }*/
   }
-
-  /*Snack_ProgressCallback(sound->cmdPtr, interp, "Computing pitch", 1.0);*/
 
   for (i = 0; i < fnum; i++) {
       switch (otype) {
