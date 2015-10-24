@@ -1399,10 +1399,11 @@ static void free_dp_f0()
     mem = NULL;
 }
 
-void rapt(float_list *input, int length, double sample_freq, int frame_shift, double minF0, double maxF0, double voice_bias, int otype)
+int rapt(float *input, float *output, int length, double sample_freq, int frame_shift, double minF0, double maxF0, double voice_bias, int otype)
 {
   int fnum = 0;
   float *fdata;
+  int padded_length = 0;
   int done;
   long buff_size, actsize;
   double sf, start_time;
@@ -1413,22 +1414,15 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
   static int framestep = -1;
   long sdstep = 0, total_samps;
   int ndone = 0;
-  float *tmp, *unvoiced, *buf;
+  float *tmp, *unvoiced, *padded_input;
   int count = 0;
   int startpos = 0, endpos = -1;
   long max;
-  float_list *tmpf, *cur = NULL, *prev = NULL;
-  void usage(int status);
   double p, fsp, alpha, beta;
   unsigned long next = 1;
   double nrandom(unsigned long *next);
 
-  for (i = 0, tmpf = input; tmpf != NULL; i++, tmpf = tmpf->next) {
-      p = (double) nrandom(&next);
-      tmpf->f += (float) (p * 50.0);
-      prev = tmpf;
-  }
-
+  /* Compute padded length */
   fnum = (int) (ceil((double) length / (double) frame_shift));
   fsp = sample_freq * (10.0 / (double) frame_shift);
   alpha = (int) (0.00275 * fsp + 0.5);
@@ -1436,26 +1430,29 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
   if (beta < 0) {
      beta = 0;
   }
-  for (i = 0; i < (alpha + beta + 3) * frame_shift; i++) {
+  padded_length = length + (alpha + beta + 3) * frame_shift;
+
+  /* Allocate memory for padded input */
+  padded_input = (float *) malloc(sizeof(float)*padded_length);
+
+  for (i = 0; i < length; i++) {
       p = (double) nrandom(&next);
-      cur = (float_list *) malloc(sizeof(float_list));
-      cur->f = (float) (p * 50.0);
-      length++;
-      prev->next = cur;
-      cur->next = NULL;
-      prev = cur;
+      padded_input[i] = input[i] + (float) (p * 50.0);
+  }
+  for (i = length; i < padded_length; i++) {
+      p = (double) nrandom(&next);
+      padded_input[i] = (float) (p * 50.0);
   }
 
   par = (F0_params *) malloc(sizeof(F0_params));
-  buf = (float *) malloc(sizeof(float) * length);
-  tmp = (float *) malloc(sizeof(float)
-                         * (5 + length / frame_shift));
-  unvoiced = (float *) malloc(sizeof(float)
-                              * (5 + length / frame_shift));
+  tmp = (float *) malloc(sizeof(float) * padded_length);
+  unvoiced = (float *) malloc(sizeof(float) * padded_length);
 
-  for (i = 0, tmpf = input; tmpf != NULL; i++, tmpf = tmpf->next) {
-      buf[i] = tmpf->f;
+  for (i = 0; i < padded_length; i++) {
+      tmp[i] = 0.0;
+      unvoiced[i] = 0.0;
   }
+
   par->cand_thresh = 0.3f;
   par->lag_weight = 0.3f;
   par->freq_weight = 0.02f;
@@ -1486,20 +1483,20 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
 
     if (check_f0_params(par, sf)) {
        fprintf(stderr, "invalid/inconsistent parameters -- exiting.\n");
-       usage(1);
+       return 1;
     }
 
     total_samps = endpos - startpos + 1;
 
     if (total_samps < ((par->frame_step * 2.0) + par->wind_dur) * sf) {
        fprintf(stderr, "input range too small for analysis by get_f0.\n");
-       usage(1);
+       return 2;
     }
 
     if (init_dp_f0(sf, par, &buff_size, &sdstep)
         || buff_size > INT_MAX || sdstep > INT_MAX) {
        fprintf(stderr, "problem in init_dp_f0().\n");
-       usage(1);
+       return 3;
     }
 
   if (buff_size > total_samps)
@@ -1508,13 +1505,12 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
   max = buff_size > sdstep ? buff_size : sdstep;
   actsize = buff_size < length ? buff_size : length;
   fdata = (float *) malloc(sizeof(float) * max);
-  /*  Snack_ProgressCallback(sound->cmdPtr, interp, "Computing pitch", 0.0);*/
   ndone = startpos;
 
     while (1) {
         done = (actsize < buff_size) || (total_samps == buff_size);
         for (i = 0; i < actsize; i++) {
-            fdata[i] = buf[i + ndone];
+            fdata[i] = padded_input[i + ndone];
         }
         if (dp_f0(fdata, (int) actsize, (int) sdstep, sf, par,
                   &f0p, &vuvp, &rms_speech, &acpkp, &vecsize, done)) {
@@ -1542,28 +1538,33 @@ void rapt(float_list *input, int length, double sample_freq, int frame_shift, do
   for (i = 0; i < fnum; i++) {
       switch (otype) {
       case 1:                   /* f0 */
-          fwrite(tmp + i, sizeof(float), 1, stdout);
+          output[i] = tmp[i];
           break;
       case 2:                   /* log(f0) */
           if (tmp[i] != 0.0) {
-              tmp[i] = log(tmp[i]);
+              output[i] = log(tmp[i]);
           } else {
-              tmp[i] = -1.0E10;
+              output[i] = -1.0E10;
           }
-          fwrite(tmp + i, sizeof(float), 1, stdout);
           break;
       default:                  /* pitch */
           if (tmp[i] != 0.0) {
-              tmp[i] = sample_freq / tmp[i];
-          }
-          fwrite(tmp + i, sizeof(float), 1, stdout);
+              output[i] = sample_freq / tmp[i];
+          } else {
+              output[i] = 0.0;
+	  }
           break;
       }
   }
 
   free((void *) fdata);
-
+  free((void *) padded_input);
   free((void *) par);
+  free((void *) tmp);
+  free((void *) unvoiced);
+
 
   free_dp_f0();
+
+  return 0;
 }

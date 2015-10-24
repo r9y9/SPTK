@@ -154,13 +154,16 @@ typedef struct frame_rec{
 
 extern   Frame *alloc_frame();
 
-typedef struct _float_list {
-    float f;
-    struct _float_list *next;
-} float_list;
+/****************************************************************
+    The RAPT pitch tracker
 
-/* The RAPT interface */
-void rapt(float_list *input, int length, double sample_freq, int frame_shift,
-     double minF0, double maxF0, double voice_bias, int otype);
+        return   value :    0 -> completed normally
+                            1 -> invalid/inconsistent parameters
+                            2 -> input range too small
+                            3 -> problem in init_dp_f0
+
+*****************************************************************/
+int rapt(float *input, float* output, int length, double sample_freq,
+     int frame_shift, double minF0, double maxF0, double voice_bias, int otype);
 
 #endif  /* JK_GET_F0_H_ */
