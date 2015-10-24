@@ -101,7 +101,7 @@ int xget_window(dout, n, type)
     for(i=0, p=din; i++ < n; ) *p++ = 1;
     n0 = n;
   }
-  return(window(din, dout, n, preemp, type));
+  return(sigproc_window(din, dout, n, preemp, type));
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -236,7 +236,7 @@ void xhnwindow(din, dout, n, preemp)
  * in din.  Return the floating-point result sequence in dout.  If preemp
  * is non-zero, apply preemphasis to tha data as it is windowed.
  */
-int window(din, dout, n, preemp, type)
+int sigproc_window(din, dout, n, preemp, type)
      register float *din;
      register float *dout, preemp;
      register int n;
@@ -451,7 +451,7 @@ int xlpc(lpc_ord,lpc_stabl,wsize,data,lpca,ar,lpck,normerr,rms,preemp,type)
     nwind = wsize;
   }
 
-  window(data, dwind, wsize, preemp, type);
+  sigproc_window(data, dwind, wsize, preemp, type);
   if(!(r = ar)) r = rho;	/* Permit optional return of the various */
   if(!(kp = lpck)) kp = k;	/* coefficients and intermediate results. */
   if(!(ap = lpca)) ap = a;

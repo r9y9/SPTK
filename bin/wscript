@@ -14,12 +14,16 @@ def build(bld):
         'pitch/swipe/swipe.c',
         'pitch/swipe/vector.c',
     ]
+    rapt_src = [
+        'pitch/snack/jkGetF0.c',
+        'pitch/snack/sigproc.c',
+    ]
 
     hts_engine_src = bld.path.ant_glob('**/vc/hts_engine_API/*.c')
 
     # Collect sources
     src = list(bld.path.ant_glob('**/_*.c') +
-               swipe_src + hts_engine_src + lib_src)
+               swipe_src + rapt_src + hts_engine_src + lib_src)
 
     # NOTE: Since wavjoin and wavsplit use direct.h, which only exists in POSIX
     # environments, I ignore these files to compile for cross-platform compilation
