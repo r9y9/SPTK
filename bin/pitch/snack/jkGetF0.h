@@ -3,7 +3,7 @@
  * by Microsoft Corp. with the terms in the accompanying file BSD.txt,
  * which is a BSD style license.
  *
- *    "Copyright (c) 1990-1996 Entropic Research Laboratory, Inc. 
+ *    "Copyright (c) 1990-1996 Entropic Research Laboratory, Inc.
  *                   All rights reserved"
  *
  * Written by:  David Talkin
@@ -62,7 +62,7 @@
 
 /* f0.h */
 /* Some definitions used by the "Pitch Tracker Software". */
-       
+
 typedef struct f0_params {
 float cand_thresh,	/* only correlation peaks above this are considered */
       lag_weight,	/* degree to which shorter lags are weighted */
@@ -151,3 +151,12 @@ typedef struct frame_rec{
 } Frame;
 
 extern   Frame *alloc_frame();
+
+typedef struct _float_list {
+    float f;
+    struct _float_list *next;
+} float_list;
+
+/* The RAPT interface */
+void rapt(float_list *input, int length, double sample_freq, int frame_shift,
+     double minF0, double maxF0, double voice_bias, int otype);

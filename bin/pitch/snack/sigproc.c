@@ -3,7 +3,7 @@
  * by Microsoft Corp. with the terms in the accompanying file BSD.txt,
  * which is a BSD style license.
  *
- *    "Copyright (c) 1990-1996 Entropic Research Laboratory, Inc. 
+ *    "Copyright (c) 1990-1996 Entropic Research Laboratory, Inc.
  *                   All rights reserved"
  *
  * Written by:  David Talkin
@@ -73,9 +73,6 @@
 # define FALSE 0
 #endif
 #include "jkGetF0.h"
-#if 0
-#include "snack.h"
-#endif /* 0 */
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* Return a time-weighting window of type type and length n in dout.
@@ -93,15 +90,7 @@ int xget_window(dout, n, type)
   if(n > n0) {
     register float *p;
     register int i;
-    
-#if 0
-    if(din) ckfree((void *)din);
-    din = NULL;
-    if(!(din = (float*)ckalloc(sizeof(float)*n))) {
-      Fprintf(stderr,"Allocation problems in xget_window()\n");
-      return(FALSE);
-    }
-#else
+
     if (din) free((void *) din);
     din = NULL;
     if (!(din = (float *) malloc(sizeof(float) * n))) {
@@ -109,13 +98,12 @@ int xget_window(dout, n, type)
         return (FALSE);
     }
 
-#endif /* 0 */
     for(i=0, p=din; i++ < n; ) *p++ = 1;
     n0 = n;
   }
   return(window(din, dout, n, preemp, type));
 }
-  
+
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* Apply a rectangular window (i.e. none).  Optionally, preemphasize. */
 void xrwindow(din, dout, n, preemp)
@@ -124,7 +112,7 @@ void xrwindow(din, dout, n, preemp)
      register int n;
 {
   register float *p;
- 
+
 /* If preemphasis is to be performed,  this assumes that there are n+1 valid
    samples in the input buffer (din). */
   if(preemp != 0.0) {
@@ -148,19 +136,14 @@ void xcwindow(din, dout, n, preemp)
   static int wsize = 0;
   static float *wind=NULL;
   register float *q, co;
- 
+
   if(wsize != n) {		/* Need to create a new cos**4 window? */
     register double arg, half=0.5;
-    
-#if 0
-    if(wind) wind = (float*)ckrealloc((void *)wind,n*sizeof(float));
-    else wind = (float*)ckalloc(n*sizeof(float));
-#else
+
     if (wind)
         wind = (float *) realloc((void *) wind, n * sizeof(float));
     else
         wind = (float *) malloc(n * sizeof(float));
-#endif /* 0 */
     wsize = n;
     for(i=0, arg=3.1415927*2.0/(wsize), q=wind; i < n; ) {
       co = (float) (half*(1.0 - cos((half + (double)i++) * arg)));
@@ -193,16 +176,11 @@ void xhwindow(din, dout, n, preemp)
 
   if(wsize != n) {		/* Need to create a new Hamming window? */
     register double arg, half=0.5;
-    
-#if 0
-    if(wind) wind = (float*)ckrealloc((void *)wind,n*sizeof(float));
-    else wind = (float*)ckalloc(n*sizeof(float));
-#else
+
     if (wind)
         wind = (float *) realloc((void *) wind, n * sizeof(float));
     else
         wind = (float *) malloc(n * sizeof(float));
-#endif /* 0 */
     wsize = n;
     for(i=0, arg=3.1415927*2.0/(wsize), q=wind; i < n; )
       *q++ = (float) (.54 - .46 * cos((half + (double)i++) * arg));
@@ -233,16 +211,11 @@ void xhnwindow(din, dout, n, preemp)
 
   if(wsize != n) {		/* Need to create a new Hanning window? */
     register double arg, half=0.5;
-    
-#if 0
-    if(wind) wind = (float*)ckrealloc((void *)wind,n*sizeof(float));
-    else wind = (float*)ckalloc(n*sizeof(float));
-#else
+
     if (wind)
         wind = (float *) realloc((void *) wind, n * sizeof(float));
     else
         wind = (float *) malloc(n * sizeof(float));
-#endif /* 0 */
     wsize = n;
     for(i=0, arg=3.1415927*2.0/(wsize), q=wind; i < n; )
       *q++ = (float) (half - half * cos((half + (double)i++) * arg));
@@ -362,7 +335,7 @@ void xdurbin ( r, k, a, p, ex)
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/*  Compute the autocorrelations of the p LP coefficients in a. 
+/*  Compute the autocorrelations of the p LP coefficients in a.
  *  (a[0] is assumed to be = 1 and not explicitely accessed.)
  *  The magnitude of a is returned in c.
  *  2* the other autocorrelation coefficients are returned in b.
@@ -423,15 +396,10 @@ float wind_energy(data,size,w_type)
   register int i;
 
   if(nwind < size) {
-#if 0
-    if(dwind) dwind = (float*)ckrealloc((void *)dwind,size*sizeof(float));
-    else dwind = (float*)ckalloc(size*sizeof(float));
-#else
     if (dwind)
         dwind = (float *) realloc((void *) dwind, size * sizeof(float));
     else
         dwind = (float *) malloc(size * sizeof(float));
-#endif /* 0 */
     if(!dwind) {
       Fprintf(stderr,"Can't allocate scratch memory in wind_energy()\n");
       return(0.0);
@@ -470,24 +438,19 @@ int xlpc(lpc_ord,lpc_stabl,wsize,data,lpca,ar,lpck,normerr,rms,preemp,type)
   float rho[BIGSORD+1], k[BIGSORD], a[BIGSORD+1],*r,*kp,*ap,en,er,wfact=1.0;
 
   if((wsize <= 0) || (!data) || (lpc_ord > BIGSORD)) return(FALSE);
-  
+
   if(nwind != wsize) {
-#if 0
-    if(dwind) dwind = (float*)ckrealloc((void *)dwind,wsize*sizeof(float));
-    else dwind = (float*)ckalloc(wsize*sizeof(float));
-#else
     if (dwind)
         dwind = (float *) realloc((void *) dwind, wsize * sizeof(float));
     else
         dwind = (float *) malloc(wsize * sizeof(float));
-#endif /* 0 */
     if(!dwind) {
       Fprintf(stderr,"Can't allocate scratch memory in lpc()\n");
       return(FALSE);
     }
     nwind = wsize;
   }
-  
+
   window(data, dwind, wsize, preemp, type);
   if(!(r = ar)) r = rho;	/* Permit optional return of the various */
   if(!(kp = lpck)) kp = k;	/* coefficients and intermediate results. */
@@ -558,26 +521,14 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
      sequenced for the purposes of F0 estimation and removes the need for
      more principled (and costly) low-cut filtering. */
   if((total = size+start+nlags) > dbsize) {
-#if 0
-    if(dbdata)
-      ckfree((void *)dbdata);
-#else
     if(dbdata)
       free((void *)dbdata);
-#endif /* 0 */
     dbdata = NULL;
     dbsize = 0;
-#if 0
-    if(!(dbdata = (float*)ckalloc(sizeof(float)*total))) {
-      Fprintf(stderr,"Allocation failure in crossf()\n");
-      return;/*exit(-1);*/
-    }
-#else
     if(!(dbdata = (float*)malloc(sizeof(float)*total))) {
       Fprintf(stderr,"Allocation failure in crossf()\n");
       return;/*exit(-1);*/
     }
-#endif /* 0 */
     dbsize = total;
   }
   for(engr=0.0, j=size, p=data; j--; ) engr += *p++;
@@ -587,7 +538,7 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
   maxsize = start + nlags;
   sizei = size + start + nlags + 1;
   sizeo = nlags + 1;
- 
+
   /* Compute energy in reference window. */
   for(j=size, dp=dbdata, sum=0.0; j--; ) {
     st = *dp++;
@@ -596,7 +547,7 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
 
   *engref = engr = sum;
   if(engr > 0.0) {    /* If there is any signal energy to work with... */
-    /* Compute energy at the first requested lag. */  
+    /* Compute energy at the first requested lag. */
     for(j=size, dp=dbdata+start, sum=0.0; j--; ) {
       st = *dp++;
       sum += st * st;
@@ -632,7 +583,7 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
    compute only small patches of the correlation sequence.  The length of
    each patch is determined by nlags; the number of patches by nlocs, and
    the locations of the patches is specified by the array locs.  Regions
-   of the CCF that are not computed are set to 0. 
+   of the CCF that are not computed are set to 0.
  *
   data is the input speech array
   size is the number of samples in each correlation
@@ -664,26 +615,14 @@ void crossfi(data, size, start0, nlags0, nlags, engref, maxloc, maxval, correl, 
   /* Compute mean in reference window and subtract this from the
      entire sequence. */
   if((total = size+start0+nlags0) > dbsize) {
-#if 0
-    if(dbdata)
-      ckfree((void *)dbdata);
-#else
     if (dbdata)
         free((void *) dbdata);
-#endif /* 0 */
     dbdata = NULL;
     dbsize = 0;
-#if 0
-    if(!(dbdata = (float*)ckalloc(sizeof(float)*total))) {
-      Fprintf(stderr,"Allocation failure in crossfi()\n");
-      return;/*exit(-1);*/
-    }
-#else
     if (!(dbdata = (float *) malloc(sizeof(float) * total))) {
         Fprintf(stderr, "Allocation failure in crossf()\n");
         return;             /*exit(-1); */
     }
-#endif /* 0 */
     dbsize = total;
   }
   for(engr=0.0, j=size, p=data; j--; ) engr += *p++;
@@ -717,7 +656,7 @@ void crossfi(data, size, start0, nlags0, nlags, engref, maxloc, maxval, correl, 
       if(start < start0)
 	start = start0;
       dq = correl + start - start0;
-      /* compute energy at first requested lag */  
+      /* compute energy at first requested lag */
       for(j=size, dp=dbdata+start, sum=0.0; j--; ) {
 	st = *dp++;
 	sum += st * st;
