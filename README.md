@@ -30,8 +30,8 @@ The important changes from the original SPTK are summerized as follows:
 - Remove `wavsplit` and `wavjoin` from target sources to compile for cross-platform compilation ability, since original `wavsplit` and `wavjoin` use `direct.h` that only exists in POSIX enviroments. ([#8])
 - Add `DLLEXPORT` macro to expose API functions explicitly in MSVC environments (NOTE: this is not fully used for now)  ([#8])
 - Ensure c89 compatibility
-- Export excite function (#[11])
-- Cleanup and export RAPT function (#[12])
+- Export excite function ([#11])
+- Cleanup and export RAPT function ([#12])
 
 ## Installation
 
