@@ -522,7 +522,6 @@ void swipe(double *input, double* output, int length, int samplerate, int frame_
 #if 0
     S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt));
 #else
-    S;
     if(dt >= nyquist2){
       S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt));
     }else{

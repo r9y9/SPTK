@@ -72,7 +72,9 @@
 # define TRUE 1
 # define FALSE 0
 #endif
-#include "jkGetF0.h"
+
+#include "sigproc.h"
+
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* Return a time-weighting window of type type and length n in dout.
@@ -514,7 +516,6 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
   register  float *dq, t, *p, engr, *dds, amax;
   register  double engc;
   int i, iloc, total;
-  int sizei, sizeo, maxsize;
 
   /* Compute mean in reference window and subtract this from the
      entire sequence.  This doesn't do too much damage to the data
@@ -534,10 +535,6 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
   for(engr=0.0, j=size, p=data; j--; ) engr += *p++;
   engr /= size;
   for(j=size+nlags+start, dq = dbdata, p=data; j--; )  *dq++ = *p++ - engr;
-
-  maxsize = start + nlags;
-  sizei = size + start + nlags + 1;
-  sizeo = nlags + 1;
 
   /* Compute energy in reference window. */
   for(j=size, dp=dbdata, sum=0.0; j--; ) {

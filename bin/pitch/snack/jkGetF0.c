@@ -79,12 +79,33 @@
 #ifndef M_PI
 # define M_PI (3.1415926536f)
 #endif
+
 #include "jkGetF0.h"
 
 int	    debug_level = 0;
 
-static void free_dp_f0();
-static int check_f0_params();
+/* Function prototypes for static functions */
+static int check_f0_params(F0_params *par, double sample_freq);
+static void get_cand(Cross* cross, float *peak,int *loc,int nlags,int *ncand,
+       float cand_thresh);
+static int downsamp(float *in, float *out, int samples, int *outsamps,
+       int state_idx, int decimate, int ncoef, float *fc, int init);
+static void do_ffir(register float *buf, register int in_samps,
+       register float *bufo, register int *out_samps, int idx,
+       register int ncoef, float *fc, register int invert, register int skip,
+       register int init);
+static int lc_lin_fir(register float fc, int *nf, float *coef);
+static void peak(float *y, float *xp, float *yp);
+
+static Stat* get_stationarity(float *fdata, double freq, int buff_size,
+       int  nframes, int frame_step, int first_time);
+static int save_windstat(float *rho, int order, float err, float rms);
+static int retrieve_windstat(float *rho, int order, float *err, float *rms);
+static float get_similarity(int order, int size, float *pdata, float *cdata,
+       float *rmsa, float *rms_ratio, float pre, float stab, int w_type,
+       int init);
+static void free_dp_f0(void);
+
 
 /*
  * Some consistency checks on parameter values.
@@ -114,8 +135,6 @@ check_f0_params(F0_params *par, double sample_freq)
   return(error);
 }
 
-static void get_cand(), peak(), do_ffir();
-static int lc_lin_fir(), downsamp();
 
 /* ----------------------------------------------------------------------- */
 void get_fast_cands(fdata, fdsdata, ind, step, size, dec, start, nlags, engref, maxloc, maxval, cp, peaks, locs, ncand, par)
@@ -258,10 +277,9 @@ static void get_cand(cross,peak,loc,nlags,ncand,cand_thresh)
 {
   register int i, lastl, *t;
   register float o, p, q, *r, *s, clip;
-  int start, ncan, maxl;
+  int start, ncan;
 
   clip = (float) (cand_thresh * cross->maxval);
-  maxl = cross->maxloc;
   lastl = nlags - 2;
   start = cross->firstlag;
 
@@ -372,27 +390,6 @@ int idx;
   k = (ncoef << 1) -1;	/* inner-product loop limit */
 
   if(skip <= 1) {       /* never used */
-/*    *out_samps = i;
-    for( ; i-- > 0; ) {
-      for(j=k, dp1=mem, dp2=co, dp3=mem+1, sum = 0.0; j-- > 0;
-	  *dp1++ = *dp3++ )
-	sum += *dp2++ * *dp1;
-
-      *--dp1 = *buf++;
-      *bufo++ = (sum < 0.0)? sum -0.5 : sum +0.5;
-    }
-    if(init & 2) {
-      for(i=ncoef; i-- > 0; ) {
-	for(j=k, dp1=mem, dp2=co, dp3=mem+1, sum = 0.0; j-- > 0;
-	    *dp1++ = *dp3++ )
-	  sum += *dp2++ * *dp1;
-	*--dp1 = 0.0;
-	*bufo++ = (sum < 0)? sum -0.5 : sum +0.5;
-      }
-      *out_samps += ncoef;
-    }
-    return;
-*/
   }
   else {			/* skip points (e.g. for downsampling) */
     /* the buffer end is padded with (ncoef-1) data points */
@@ -723,7 +720,6 @@ init_dp_f0(freq, par, buffsize, sdstep)
   return(0);
 }
 
-static Stat *get_stationarity();
 
 /*--------------------------------------------------------------------*/
 int
@@ -736,7 +732,7 @@ dp_f0(fdata, buff_size, sdstep, freq,
     float	**f0p_pt, **vuvp_pt, **rms_speech_pt, **acpkp_pt;
     int		*vecsize, last_time;
 {
-  float  maxval, engref, *sta, *rms_ratio, *dsdata, *downsample();
+  float  maxval, engref, *sta, *rms_ratio, *dsdata;
   register float ttemp, ftemp, ft1, ferr, err, errmin;
   register int  i, j, k, loc1, loc2;
   int   nframes, maxloc, ncand, ncandp, minloc,
@@ -1161,9 +1157,6 @@ get_similarity(order, size, pdata, cdata,
 {
   float rho3[BIGSORD+1], err3, rms3, rmsd3, b0, t, a2[BIGSORD+1],
       rho1[BIGSORD+1], a1[BIGSORD+1], b[BIGSORD+1], err1, rms1, rmsd1;
-  float xitakura(), wind_energy();
-  void xa_to_aca ();
-  int xlpc();
 
 /* (In the lpc() calls below, size-1 is used, since the windowing and
    preemphasis function assumes an extra point is available in the
@@ -1406,11 +1399,10 @@ int rapt(float *input, float *output, int length, double sample_freq, int frame_
   int padded_length = 0;
   int done;
   long buff_size, actsize;
-  double sf, start_time;
-  F0_params *par, *read_f0_params();
+  double sf;
+  F0_params *par;
   float *f0p, *vuvp, *rms_speech, *acpkp;
   int i, vecsize;
-  int init_dp_f0(), dp_f0();
   static int framestep = -1;
   long sdstep = 0, total_samps;
   int ndone = 0;
@@ -1479,7 +1471,6 @@ int rapt(float *input, float *output, int length, double sample_freq, int frame_
 
     if (framestep > 0)          /* If a value was specified with -S, use it. */
         par->frame_step = (float) (framestep / sf);
-    start_time = 0.0f;
 
     if (check_f0_params(par, sf)) {
        fprintf(stderr, "invalid/inconsistent parameters -- exiting.\n");
