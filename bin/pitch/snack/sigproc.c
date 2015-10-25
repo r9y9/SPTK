@@ -3,7 +3,7 @@
  * by Microsoft Corp. with the terms in the accompanying file BSD.txt,
  * which is a BSD style license.
  *
- *    "Copyright (c) 1990-1996 Entropic Research Laboratory, Inc. 
+ *    "Copyright (c) 1990-1996 Entropic Research Laboratory, Inc.
  *                   All rights reserved"
  *
  * Written by:  David Talkin
@@ -72,19 +72,16 @@
 # define TRUE 1
 # define FALSE 0
 #endif
-#include "jkGetF0.h"
-#if 0
-#include "snack.h"
-#endif /* 0 */
+
+#include "sigproc.h"
+
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* Return a time-weighting window of type type and length n in dout.
  * Dout is assumed to be at least n elements long.  Type is decoded in
  * the switch statement below.
  */
-int xget_window(dout, n, type)
-     register float *dout;
-     register int n, type;
+int xget_window(register float *dout, register int n, register int type)
 {
   static float *din = NULL;
   static int n0 = 0;
@@ -93,15 +90,7 @@ int xget_window(dout, n, type)
   if(n > n0) {
     register float *p;
     register int i;
-    
-#if 0
-    if(din) ckfree((void *)din);
-    din = NULL;
-    if(!(din = (float*)ckalloc(sizeof(float)*n))) {
-      Fprintf(stderr,"Allocation problems in xget_window()\n");
-      return(FALSE);
-    }
-#else
+
     if (din) free((void *) din);
     din = NULL;
     if (!(din = (float *) malloc(sizeof(float) * n))) {
@@ -109,22 +98,19 @@ int xget_window(dout, n, type)
         return (FALSE);
     }
 
-#endif /* 0 */
     for(i=0, p=din; i++ < n; ) *p++ = 1;
     n0 = n;
   }
-  return(window(din, dout, n, preemp, type));
+  return(sigproc_window(din, dout, n, preemp, type));
 }
-  
+
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* Apply a rectangular window (i.e. none).  Optionally, preemphasize. */
-void xrwindow(din, dout, n, preemp)
-     register float *din;
-     register float *dout, preemp;
-     register int n;
+void xrwindow(register float *din, register float *dout, register int n,
+              register float preemp)
 {
   register float *p;
- 
+
 /* If preemphasis is to be performed,  this assumes that there are n+1 valid
    samples in the input buffer (din). */
   if(preemp != 0.0) {
@@ -138,29 +124,22 @@ void xrwindow(din, dout, n, preemp)
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* Generate a cos^4 window, if one does not already exist. */
-void xcwindow(din, dout, n, preemp)
-     register float *din;
-     register float *dout, preemp;
-     register int n;
+void xcwindow(register float *din, register float *dout, register int n,
+              register float preemp)
 {
   register int i;
   register float *p;
   static int wsize = 0;
   static float *wind=NULL;
   register float *q, co;
- 
+
   if(wsize != n) {		/* Need to create a new cos**4 window? */
     register double arg, half=0.5;
-    
-#if 0
-    if(wind) wind = (float*)ckrealloc((void *)wind,n*sizeof(float));
-    else wind = (float*)ckalloc(n*sizeof(float));
-#else
+
     if (wind)
         wind = (float *) realloc((void *) wind, n * sizeof(float));
     else
         wind = (float *) malloc(n * sizeof(float));
-#endif /* 0 */
     wsize = n;
     for(i=0, arg=3.1415927*2.0/(wsize), q=wind; i < n; ) {
       co = (float) (half*(1.0 - cos((half + (double)i++) * arg)));
@@ -180,10 +159,8 @@ void xcwindow(din, dout, n, preemp)
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* Generate a Hamming window, if one does not already exist. */
-void xhwindow(din, dout, n, preemp)
-     register float *din;
-     register float *dout, preemp;
-     register int n;
+void xhwindow(register float *din, register float *dout, register int n,
+              register float preemp)
 {
   register int i;
   register float *p;
@@ -193,16 +170,11 @@ void xhwindow(din, dout, n, preemp)
 
   if(wsize != n) {		/* Need to create a new Hamming window? */
     register double arg, half=0.5;
-    
-#if 0
-    if(wind) wind = (float*)ckrealloc((void *)wind,n*sizeof(float));
-    else wind = (float*)ckalloc(n*sizeof(float));
-#else
+
     if (wind)
         wind = (float *) realloc((void *) wind, n * sizeof(float));
     else
         wind = (float *) malloc(n * sizeof(float));
-#endif /* 0 */
     wsize = n;
     for(i=0, arg=3.1415927*2.0/(wsize), q=wind; i < n; )
       *q++ = (float) (.54 - .46 * cos((half + (double)i++) * arg));
@@ -220,10 +192,8 @@ void xhwindow(din, dout, n, preemp)
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* Generate a Hanning window, if one does not already exist. */
-void xhnwindow(din, dout, n, preemp)
-     register float *din;
-     register float *dout, preemp;
-     register int n;
+void xhnwindow(register float *din, register float *dout, register int n,
+               register float preemp)
 {
   register int i;
   register float *p;
@@ -233,16 +203,11 @@ void xhnwindow(din, dout, n, preemp)
 
   if(wsize != n) {		/* Need to create a new Hanning window? */
     register double arg, half=0.5;
-    
-#if 0
-    if(wind) wind = (float*)ckrealloc((void *)wind,n*sizeof(float));
-    else wind = (float*)ckalloc(n*sizeof(float));
-#else
+
     if (wind)
         wind = (float *) realloc((void *) wind, n * sizeof(float));
     else
         wind = (float *) malloc(n * sizeof(float));
-#endif /* 0 */
     wsize = n;
     for(i=0, arg=3.1415927*2.0/(wsize), q=wind; i < n; )
       *q++ = (float) (half - half * cos((half + (double)i++) * arg));
@@ -263,11 +228,8 @@ void xhnwindow(din, dout, n, preemp)
  * in din.  Return the floating-point result sequence in dout.  If preemp
  * is non-zero, apply preemphasis to tha data as it is windowed.
  */
-int window(din, dout, n, preemp, type)
-     register float *din;
-     register float *dout, preemp;
-     register int n;
-     int type;
+int sigproc_window(register float *din, register float *dout, register int n,
+                   register float preemp, int type)
 {
   switch(type) {
   case 0:			/* rectangular */
@@ -294,10 +256,8 @@ int window(din, dout, n, preemp, type)
  * Return the normalized autocorrelation coefficients in r.
  * The rms is returned in e.
  */
-void xautoc( windowsize, s, p, r, e )
-     register int p, windowsize;
-     register float *s, *e;
-     register float *r;
+void xautoc(register int windowsize, register float *s, register int p,
+            register float *r, register float *e)
 {
   register int i, j;
   register float *q, *t, sum, sum0;
@@ -331,9 +291,8 @@ void xautoc( windowsize, s, p, r, e )
  * Note: durbin returns the coefficients in normal sign format.
  *	(i.e. a[0] is assumed to be = +1.)
  */
-void xdurbin ( r, k, a, p, ex)
-     register int p;			/* analysis order */
-     register float *r, *k, *a, *ex;
+void xdurbin(register float *r, register float *k, register float *a,
+             register int p, register float *ex)
 {
   float  bb[BIGSORD];
   register int i, j;
@@ -362,14 +321,12 @@ void xdurbin ( r, k, a, p, ex)
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/*  Compute the autocorrelations of the p LP coefficients in a. 
+/*  Compute the autocorrelations of the p LP coefficients in a.
  *  (a[0] is assumed to be = 1 and not explicitely accessed.)
  *  The magnitude of a is returned in c.
  *  2* the other autocorrelation coefficients are returned in b.
  */
-void xa_to_aca ( a, b, c, p )
-float *a, *b, *c;
-register int p;
+void xa_to_aca(float *a, float *b, float *c, register int p)
 {
   register float  s, *ap, *a0;
   register int  i, j;
@@ -395,9 +352,8 @@ register int p;
  * r is assumed normalized and r[0]=1 is not explicitely accessed.
  * Values returned by the function are >= 1.
  */
-float xitakura ( p, b, c, r, gain )
-     register float *b, *c, *r, *gain;
-     register int p;
+float xitakura(register int p, register float *b, register float *c,
+               register float *r, register float *gain)
 {
   register float s;
 
@@ -412,10 +368,7 @@ float xitakura ( p, b, c, r, gain )
  * is weighted by a window of type w_type before RMS computation.  w_type
  * is decoded above in window().
  */
-float wind_energy(data,size,w_type)
-     register float *data;	/* input PCM data */
-     register int size,		/* size of window */
-       w_type;			/* window type */
+float wind_energy(register float *data, register int size, register int w_type)
 {
   static int nwind = 0;
   static float *dwind = NULL;
@@ -423,15 +376,10 @@ float wind_energy(data,size,w_type)
   register int i;
 
   if(nwind < size) {
-#if 0
-    if(dwind) dwind = (float*)ckrealloc((void *)dwind,size*sizeof(float));
-    else dwind = (float*)ckalloc(size*sizeof(float));
-#else
     if (dwind)
         dwind = (float *) realloc((void *) dwind, size * sizeof(float));
     else
         dwind = (float *) malloc(size * sizeof(float));
-#endif /* 0 */
     if(!dwind) {
       Fprintf(stderr,"Can't allocate scratch memory in wind_energy()\n");
       return(0.0);
@@ -452,43 +400,29 @@ float wind_energy(data,size,w_type)
 /* Generic autocorrelation LPC analysis of the short-integer data
  * sequence in data.
  */
-int xlpc(lpc_ord,lpc_stabl,wsize,data,lpca,ar,lpck,normerr,rms,preemp,type)
-     int lpc_ord,		/* Analysis order */
-       wsize,			/* window size in points */
-       type;		/* window type (decoded in window() above) */
-     float lpc_stabl,	/* Stability factor to prevent numerical problems. */
-       *lpca,		/* if non-NULL, return vvector for predictors */
-       *ar,		/* if non-NULL, return vector for normalized autoc. */
-       *lpck,		/* if non-NULL, return vector for PARCOR's */
-       *normerr,		/* return scaler for normalized error */
-       *rms,		/* return scaler for energy in preemphasized window */
-       preemp;
-     float *data;	/* input data sequence; assumed to be wsize+1 long */
+int xlpc(int lpc_ord, float lpc_stabl, int wsize, float *data, float *lpca,
+         float *ar, float *lpck, float *normerr, float *rms, float preemp,
+         int type)
 {
   static float *dwind=NULL;
   static int nwind=0;
   float rho[BIGSORD+1], k[BIGSORD], a[BIGSORD+1],*r,*kp,*ap,en,er,wfact=1.0;
 
   if((wsize <= 0) || (!data) || (lpc_ord > BIGSORD)) return(FALSE);
-  
+
   if(nwind != wsize) {
-#if 0
-    if(dwind) dwind = (float*)ckrealloc((void *)dwind,wsize*sizeof(float));
-    else dwind = (float*)ckalloc(wsize*sizeof(float));
-#else
     if (dwind)
         dwind = (float *) realloc((void *) dwind, wsize * sizeof(float));
     else
         dwind = (float *) malloc(wsize * sizeof(float));
-#endif /* 0 */
     if(!dwind) {
       Fprintf(stderr,"Can't allocate scratch memory in lpc()\n");
       return(FALSE);
     }
     nwind = wsize;
   }
-  
-  window(data, dwind, wsize, preemp, type);
+
+  sigproc_window(data, dwind, wsize, preemp, type);
   if(!(r = ar)) r = rho;	/* Permit optional return of the various */
   if(!(kp = lpck)) kp = k;	/* coefficients and intermediate results. */
   if(!(ap = lpca)) ap = a;
@@ -539,10 +473,8 @@ int xlpc(lpc_ord,lpc_stabl,wsize,data,lpca,ar,lpck,normerr,rms,preemp,type)
   correl is the array of nlags cross-correlation coefficients (-1.0 to 1.0)
  *
  */
-void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
-     int *maxloc;
-     float *engref, *maxval, *data, *correl;
-     int size, start, nlags;
+void crossf(float *data, int size, int start, int nlags, float *engref,
+            int *maxloc, float *maxval, float *correl)
 {
   static float *dbdata=NULL;
   static int dbsize = 0;
@@ -551,43 +483,26 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
   register  float *dq, t, *p, engr, *dds, amax;
   register  double engc;
   int i, iloc, total;
-  int sizei, sizeo, maxsize;
 
   /* Compute mean in reference window and subtract this from the
      entire sequence.  This doesn't do too much damage to the data
      sequenced for the purposes of F0 estimation and removes the need for
      more principled (and costly) low-cut filtering. */
   if((total = size+start+nlags) > dbsize) {
-#if 0
-    if(dbdata)
-      ckfree((void *)dbdata);
-#else
     if(dbdata)
       free((void *)dbdata);
-#endif /* 0 */
     dbdata = NULL;
     dbsize = 0;
-#if 0
-    if(!(dbdata = (float*)ckalloc(sizeof(float)*total))) {
-      Fprintf(stderr,"Allocation failure in crossf()\n");
-      return;/*exit(-1);*/
-    }
-#else
     if(!(dbdata = (float*)malloc(sizeof(float)*total))) {
       Fprintf(stderr,"Allocation failure in crossf()\n");
       return;/*exit(-1);*/
     }
-#endif /* 0 */
     dbsize = total;
   }
   for(engr=0.0, j=size, p=data; j--; ) engr += *p++;
   engr /= size;
   for(j=size+nlags+start, dq = dbdata, p=data; j--; )  *dq++ = *p++ - engr;
 
-  maxsize = start + nlags;
-  sizei = size + start + nlags + 1;
-  sizeo = nlags + 1;
- 
   /* Compute energy in reference window. */
   for(j=size, dp=dbdata, sum=0.0; j--; ) {
     st = *dp++;
@@ -596,7 +511,7 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
 
   *engref = engr = sum;
   if(engr > 0.0) {    /* If there is any signal energy to work with... */
-    /* Compute energy at the first requested lag. */  
+    /* Compute energy at the first requested lag. */
     for(j=size, dp=dbdata+start, sum=0.0; j--; ) {
       st = *dp++;
       sum += st * st;
@@ -632,7 +547,7 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
    compute only small patches of the correlation sequence.  The length of
    each patch is determined by nlags; the number of patches by nlocs, and
    the locations of the patches is specified by the array locs.  Regions
-   of the CCF that are not computed are set to 0. 
+   of the CCF that are not computed are set to 0.
  *
   data is the input speech array
   size is the number of samples in each correlation
@@ -648,10 +563,9 @@ void crossf(data, size, start, nlags, engref, maxloc, maxval, correl)
   nlocs is the number of correlation patches to compute.
  *
  */
-void crossfi(data, size, start0, nlags0, nlags, engref, maxloc, maxval, correl, locs, nlocs)
-     int *maxloc;
-     float *engref, *maxval, *data, *correl;
-     int size, start0, nlags0, nlags, *locs, nlocs;
+void crossfi(float *data, int size, int start0, int nlags0, int nlags,
+             float *engref, int *maxloc, float *maxval, float *correl,
+             int *locs, int nlocs)
 {
   static float *dbdata=NULL;
   static int dbsize = 0;
@@ -664,26 +578,14 @@ void crossfi(data, size, start0, nlags0, nlags, engref, maxloc, maxval, correl, 
   /* Compute mean in reference window and subtract this from the
      entire sequence. */
   if((total = size+start0+nlags0) > dbsize) {
-#if 0
-    if(dbdata)
-      ckfree((void *)dbdata);
-#else
     if (dbdata)
         free((void *) dbdata);
-#endif /* 0 */
     dbdata = NULL;
     dbsize = 0;
-#if 0
-    if(!(dbdata = (float*)ckalloc(sizeof(float)*total))) {
-      Fprintf(stderr,"Allocation failure in crossfi()\n");
-      return;/*exit(-1);*/
-    }
-#else
     if (!(dbdata = (float *) malloc(sizeof(float) * total))) {
         Fprintf(stderr, "Allocation failure in crossf()\n");
         return;             /*exit(-1); */
     }
-#endif /* 0 */
     dbsize = total;
   }
   for(engr=0.0, j=size, p=data; j--; ) engr += *p++;
@@ -717,7 +619,7 @@ void crossfi(data, size, start0, nlags0, nlags, engref, maxloc, maxval, correl, 
       if(start < start0)
 	start = start0;
       dq = correl + start - start0;
-      /* compute energy at first requested lag */  
+      /* compute energy at first requested lag */
       for(j=size, dp=dbdata+start, sum=0.0; j--; ) {
 	st = *dp++;
 	sum += st * st;

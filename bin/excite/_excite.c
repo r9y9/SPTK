@@ -54,8 +54,8 @@
 *               -p p     :  frame period                        [100]   *
 *               -i i     :  interpolation period                [1]     *
 *               -n       :  gauss/M-sequence flag for unoiced   [FALSE] *
-*                           default is M-sequence                       *   
-*               -s s     :  seed for nrand                      [1]     * 
+*                           default is M-sequence                       *
+*               -s s     :  seed for nrand                      [1]     *
 *      infile:                                                          *
 *               pitch data                                              *
 *      stdout:                                                          *
@@ -64,9 +64,6 @@
 *               mseq()                                                  *
 *                                                                       *
 ************************************************************************/
-
-static char *rcs_id = "$Id: excite.c,v 1.25 2014/12/11 08:30:34 uratec Exp $";
-
 
 /*  Standard C Libraries  */
 #include <stdio.h>

@@ -522,7 +522,6 @@ void swipe(double *input, double* output, int length, int samplerate, int frame_
 #if 0
     S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt));
 #else
-    S;
     if(dt >= nyquist2){
       S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt));
     }else{
@@ -548,21 +547,22 @@ void swipe(double *input, double* output, int length, int samplerate, int frame_
     for (i = 0; i < p.x; i++) {
       switch(otype) {
       case 1:      /* f0 */
-	/* fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout); */
 	output[i] = p.v[i];
 	break;
       case 2:      /* log(f0) */
-	if (p.v[i] != 0.0)
+	if (p.v[i] != 0.0) {
 	  p.v[i] = log(p.v[i]);
-	else
+	} else {
 	  p.v[i] = -1.0E10;
-	/* fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout); */
+	}
 	output[i] = p.v[i];
 	break;
       default:     /* pitch */
-	if (p.v[i] != 0.0)
+	if (p.v[i] != 0.0) {
 	  p.v[i] = samplerate / p.v[i];
-	/* fwritef(&p.v[i], sizeof(p.v[i]), 1, stdout); */
+	} else {
+	  p.v[i] = 0.0;
+	}
 	output[i] = p.v[i];
 	break;
       }
