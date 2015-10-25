@@ -5,6 +5,7 @@
 
 #define Fprintf (void) fprintf
 
+int xget_window(register float *dout, register int n, register int type);
 void xrwindow(register float *din, register float *dout, register int n,
               register float preemp);
 void xcwindow(register float *din, register float *dout, register int n,
@@ -15,7 +16,6 @@ void xhnwindow(register float *din, register float *dout, register int n,
                register float preemp);
 int sigproc_window(register float *din, register float *dout, register int n,
                    register float preemp, int type);
-int xget_window(register float *dout, register int n, register int type);
 void xautoc(register int windowsize, register float *s, register int p,
             register float *r, register float *e);
 void xdurbin(register float *r, register float *k, register float *a,
