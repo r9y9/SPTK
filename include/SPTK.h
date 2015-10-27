@@ -53,7 +53,7 @@
 #define SPTK_H_
 
 #ifndef DLLEXPORT
-#  ifdef _WIN32
+#  ifdef _MSC_VER
 #      define DLLEXPORT __declspec(dllexport)
 #    else
 #      define DLLEXPORT
