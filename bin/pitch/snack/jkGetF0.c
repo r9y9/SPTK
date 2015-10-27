@@ -127,7 +127,8 @@ check_f0_params(F0_params *par, double sample_freq)
   if(dstep != par->frame_step) {
     par->frame_step = (float) dstep;
   }
-  if((par->frame_step > 0.1) || (par->frame_step < (1.0/sample_freq))){
+
+  if((par->frame_step > 0.1f) || (par->frame_step < (float)(1.0/sample_freq))){
     fprintf(stderr, "ERROR: frame_step parameter must be between [1/sampling rate, 0.1].\n");
     error++;
   }
