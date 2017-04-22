@@ -2,7 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 APPNAME = 'SPTK'
-VERSION = '3.8.9'
+VERSION = '3.10.0'
 
 from waflib import Options
 import sys
