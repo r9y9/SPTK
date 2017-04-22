@@ -10,7 +10,7 @@ fi
 
 # Use this mingw instead of the pre-installed mingw on Appveyor
 if [ "$COMPILER" = gcc ]; then
-    f=mingw-w$bits-bin-$ARCH-20140102.7z
+    f=mingw-w$bits-bin-$ARCH-20161221.7z
     if ! [ -e $f ]; then
 	echo "Downloading $f"
 	curl -LsSO https://sourceforge.net/projects/mingw-w64-dgn/files/mingw-w64/$f
