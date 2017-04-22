@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /************************************************************************
 
-  $Id: _transpose.c,v 1.6 2014/12/11 08:30:50 uratec Exp $
+  $Id: _transpose.c,v 1.8 2016/12/22 10:53:12 fjst15124 Exp $
 
   Transpose a matrix
       transpose(float* buf, int m, int n)
@@ -58,9 +58,9 @@
 #include <stdio.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 void transpose(double *buf, const int m, const int n)

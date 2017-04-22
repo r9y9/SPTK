@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /************************************************************************
 *                                                                       *
-*      $Id: _root_pol.c,v 1.17 2014/12/11 08:30:49 uratec Exp $        *
+*      $Id: _root_pol.c,v 1.20 2016/12/22 10:53:11 fjst15124 Exp $        *
 *                                                                       *
 *      Durand-Kerner-Aberth for Higher Order Equation                   *
 *                                                                       *
@@ -75,9 +75,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 typedef enum { plus, minus, multiply, divide } opt;
@@ -197,7 +197,7 @@ void root_pol(double *a, const int odr, Complex * x, const int a_zero,
    double th, th1, th2, cm, cmax;
    Complex cden, cnum, c1, *deltx;
 
-   deltx = cplx_getmem(odr);
+   deltx = cplx_getmem(odr + 1);
 
    if (!a_zero)
       for (i = 1; i <= odr; i++)

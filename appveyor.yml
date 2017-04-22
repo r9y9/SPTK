@@ -19,8 +19,8 @@ init:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
 cache:
-  - mingw-w32-bin-i686-20140102.7z
-  - mingw-w64-bin-x86_64-20140102.7z
+  - mingw-w32-bin-i686-20161221.7z
+  - mingw-w64-bin-x86_64-20161221.7z
 
 skip_commits:
 # Add [av skip] to commit messages for docfixes, etc to reduce load on queue

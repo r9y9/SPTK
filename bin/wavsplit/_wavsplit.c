@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /***************************************************************
-    $Id: _wavsplit.c,v 1.2 2014/12/11 08:30:52 uratec Exp $
+    $Id: _wavsplit.c,v 1.4 2016/12/22 10:53:14 fjst15124 Exp $
 
     Split stereo WAV file into two monaural WAV files
 
@@ -61,9 +61,9 @@
 #include <ctype.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 #define STRLEN 512

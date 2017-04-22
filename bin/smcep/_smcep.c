@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,11 +44,11 @@
 
 /****************************************************************
 
-    $Id: _smcep.c,v 1.27 2014/12/11 08:30:49 uratec Exp $
+    $Id: _smcep.c,v 1.30 2016/12/22 10:53:11 fjst15124 Exp $
 
     Mel-Cepstral Analysis (2nd order all-pass filter)
 
-        int smcep(xw, flng, mc, m, fftsz, a, t, itr1, itr2, dd,
+        int smcep(xw, flng, mc, m, fftsz, a, t, itr1, itr2, dd, 
                   etype, e, f, itype);
 
         double   *xw   : input sequence
@@ -64,11 +64,11 @@
                             1 -> e is initial value for log-periodogram
                             2 -> e is floor periodogram in db
         double   e     : initial value for log-periodogram
-                         or floor periodogram in db
-        double   f     : mimimum value of the determinant
+                         or floor periodogram in db 
+        double   f     : mimimum value of the determinant 
                          of the normal matrix
         int      itype : input data type
-
+        
         return   value :  0 -> completed by end condition
                           -1-> completed by maximum iteration
 
@@ -79,9 +79,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 /***************************************************************

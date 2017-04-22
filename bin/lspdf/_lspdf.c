@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _lspdf.c,v 1.17 2014/12/11 08:30:40 uratec Exp $
+    $Id: _lspdf.c,v 1.20 2016/12/22 10:53:07 fjst15124 Exp $
 
     LSP Speech Synthesis Digital Filter
 
@@ -63,9 +63,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 double lspdf_even(double x, double *f, const int m, double *d)

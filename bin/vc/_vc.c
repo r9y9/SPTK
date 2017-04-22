@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /*********************************************************************
 *                                                                    *
-*    $Id: _vc.c,v 1.6 2014/12/11 08:30:51 uratec Exp $               *
+*    $Id: _vc.c,v 1.10 2016/12/22 10:53:14 fjst15124 Exp $               *
 *                                                                    *
 *    module for vc command                                           *
 *                                                                    *
@@ -55,9 +55,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 #include "hts_engine_API/HTS_engine.h"
@@ -133,30 +133,29 @@ int vc(const GMM * gmm, const DELTAWINDOW * window, const size_t total_frame,
    logwgd = dgetmem(gmm->nmix);
    input = dgetmem(src_vlen_dyn);
    alloc_GMM(&gmm_xx, gmm->nmix, src_vlen_dyn, gmm->full);
+   for (i = 0; i < (size_t) gmm_xx.nmix; i++) {
+      gmm_xx.weight[i] = gmm->weight[i];
+      for (j = 0; j < (size_t) gmm_xx.dim; j++) {
+         gmm_xx.gauss[i].mean[j] = gmm->gauss[i].mean[j];
+         if (gmm_xx.full) {
+            for (k = 0; k < (size_t) gmm_xx.dim; k++) {
+               gmm_xx.gauss[i].cov[j][k] = gmm->gauss[i].cov[j][k];
+            }
+         } else {
+            gmm_xx.gauss[i].var[j] = gmm->gauss[i].var[j];
+         }
+      }
+   }
+   for (i = 0; i < (size_t) gmm_xx.nmix; i++) {
+      invert(gmm_xx.gauss[i].cov, gmm_xx.gauss[i].inv, src_vlen_dyn);
+      gmm_xx.gauss[i].gconst = cal_gconstf(gmm_xx.gauss[i].cov, src_vlen_dyn);
+   }
    for (t = 0; t < total_frame; t++) {
       for (i = 0; i < src_vlen_dyn; i++) {
          input[i] = src_with_dyn[t * src_vlen_dyn + i];
       }
-      for (i = 0; i < (size_t) gmm_xx.nmix; i++) {
-         gmm_xx.weight[i] = gmm->weight[i];
-         for (j = 0; j < (size_t) gmm_xx.dim; j++) {
-            gmm_xx.gauss[i].mean[j] = gmm->gauss[i].mean[j];
-            if (gmm_xx.full) {
-               for (k = 0; k < (size_t) gmm_xx.dim; k++) {
-                  gmm_xx.gauss[i].cov[j][k] = gmm->gauss[i].cov[j][k];
-               }
-            } else {
-               gmm_xx.gauss[i].var[j] = gmm->gauss[i].var[j];
-            }
-         }
-      }
-      for (i = 0; i < (size_t) gmm_xx.nmix; i++) {
-         invert(gmm_xx.gauss[i].cov, gmm_xx.gauss[i].inv, src_vlen_dyn);
-         gmm_xx.gauss[i].gconst =
-             cal_gconstf(gmm_xx.gauss[i].cov, src_vlen_dyn);
-      }
       for (m = 0, logoutp = LZERO; m < gmm->nmix; m++) {
-         logwgd[m] = log_wgd(&gmm_xx, m, src_vlen_dyn, input);
+         logwgd[m] = log_wgd(&gmm_xx, m, 0, src_vlen_dyn, input);
          logoutp = log_add(logoutp, logwgd[m]);
       }
       for (m = 0; m < gmm->nmix; m++) {
@@ -171,6 +170,7 @@ int vc(const GMM * gmm, const DELTAWINDOW * window, const size_t total_frame,
          }
       }
    }
+
    for (m = 0; m < gmm->nmix; m++) {
       for (i = 0; i < tgt_vlen_dyn; i++) {
          for (j = 0; j < tgt_vlen_dyn; j++) {

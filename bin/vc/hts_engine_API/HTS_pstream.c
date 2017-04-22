@@ -4,7 +4,7 @@
 /*           http://hts-engine.sourceforge.net/                      */
 /* ----------------------------------------------------------------- */
 /*                                                                   */
-/*  Copyright (c) 2001-2014  Nagoya Institute of Technology          */
+/*  Copyright (c) 2001-2015  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /*                2001-2008  Tokyo Institute of Technology           */
@@ -236,8 +236,10 @@ static void HTS_PStream_gv_parmgen(HTS_PStream * pst, size_t m)
             if (obj < prev)
                step *= STEPINC;
          }
-         for (t = 0; t < pst->length; t++)
-            pst->par[t][m] += step * pst->sm.g[t];
+         for (t = 0; t < pst->length; t++) {
+            if (pst->gv_switch[t])
+               pst->par[t][m] += step * pst->sm.g[t];
+         }
          prev = obj;
       }
    }
@@ -292,22 +294,25 @@ HTS_Boolean HTS_PStreamSet_create(HTS_PStreamSet * pss, HTS_SStreamSet * sss, do
    /* create */
    for (i = 0; i < pss->nstream; i++) {
       pst = &pss->pstream[i];
-      if (HTS_SStreamSet_is_msd(sss, i)) {      /* for MSD */
+      if (HTS_SStreamSet_is_msd(sss, i) == TRUE) {      /* for MSD */
          pst->length = 0;
          for (state = 0; state < HTS_SStreamSet_get_total_state(sss); state++)
             if (HTS_SStreamSet_get_msd(sss, i, state) > msd_threshold[i])
                pst->length += HTS_SStreamSet_get_duration(sss, state);
          pst->msd_flag = (HTS_Boolean *) HTS_calloc(pss->total_frame, sizeof(HTS_Boolean));
-         for (state = 0, frame = 0; state < HTS_SStreamSet_get_total_state(sss); state++)
-            if (HTS_SStreamSet_get_msd(sss, i, state) > msd_threshold[i])
+         for (state = 0, frame = 0; state < HTS_SStreamSet_get_total_state(sss); state++) {
+            if (HTS_SStreamSet_get_msd(sss, i, state) > msd_threshold[i]) {
                for (j = 0; j < HTS_SStreamSet_get_duration(sss, state); j++) {
                   pst->msd_flag[frame] = TRUE;
                   frame++;
-            } else
+               }
+            } else {
                for (j = 0; j < HTS_SStreamSet_get_duration(sss, state); j++) {
                   pst->msd_flag[frame] = FALSE;
                   frame++;
                }
+            }
+         }
       } else {                  /* for non MSD */
          pst->length = pss->total_frame;
          pst->msd_flag = NULL;
@@ -349,10 +354,10 @@ HTS_Boolean HTS_PStreamSet_create(HTS_PStreamSet * pss, HTS_SStreamSet * sss, do
             pst->gv_vari[j] = HTS_SStreamSet_get_gv_vari(sss, i, j);
          }
          pst->gv_switch = (HTS_Boolean *) HTS_calloc(pst->length, sizeof(HTS_Boolean));
-         if (HTS_SStreamSet_is_msd(sss, i)) {   /* for MSD */
+         if (HTS_SStreamSet_is_msd(sss, i) == TRUE) {   /* for MSD */
             for (state = 0, frame = 0, msd_frame = 0; state < HTS_SStreamSet_get_total_state(sss); state++)
                for (j = 0; j < HTS_SStreamSet_get_duration(sss, state); j++, frame++)
-                  if (pst->msd_flag[frame])
+                  if (pst->msd_flag[frame] == TRUE)
                      pst->gv_switch[msd_frame++] = HTS_SStreamSet_get_gv_switch(sss, i, state);
          } else {               /* for non MSD */
             for (state = 0, frame = 0; state < HTS_SStreamSet_get_total_state(sss); state++)
@@ -369,15 +374,15 @@ HTS_Boolean HTS_PStreamSet_create(HTS_PStreamSet * pss, HTS_SStreamSet * sss, do
          pst->gv_vari = NULL;
       }
       /* copy pdfs */
-      if (HTS_SStreamSet_is_msd(sss, i)) {      /* for MSD */
+      if (HTS_SStreamSet_is_msd(sss, i) == TRUE) {      /* for MSD */
          for (state = 0, frame = 0, msd_frame = 0; state < HTS_SStreamSet_get_total_state(sss); state++) {
             for (j = 0; j < HTS_SStreamSet_get_duration(sss, state); j++) {
-               if (pst->msd_flag[frame]) {
+               if (pst->msd_flag[frame] == TRUE) {
                   /* check current frame is MSD boundary or not */
                   for (k = 0; k < pst->win_size; k++) {
                      not_bound = TRUE;
                      for (shift = pst->win_l_width[k]; shift <= pst->win_r_width[k]; shift++)
-                        if ((int) frame + shift < 0 || (int) pss->total_frame <= (int) frame + shift || !pst->msd_flag[frame + shift]) {
+                        if ((int) frame + shift < 0 || (int) pss->total_frame <= (int) frame + shift || pst->msd_flag[frame + shift] != TRUE) {
                            not_bound = FALSE;
                            break;
                         }

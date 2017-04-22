@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _mfcc.c,v 1.13 2014/12/11 08:30:41 uratec Exp $
+    $Id: _mfcc.c,v 1.16 2016/12/22 10:53:07 fjst15124 Exp $
 
     Mel-Frequency Cepstral Analysis
 
@@ -72,9 +72,9 @@
 #include <memory.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 #define MEL 1127.01048

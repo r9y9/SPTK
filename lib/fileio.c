@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /********************************************************************
-    $Id: fileio.c,v 1.20 2014/12/11 08:30:53 uratec Exp $
+    $Id: fileio.c,v 1.22 2016/12/22 10:53:15 fjst15124 Exp $
 
     File I/O Functions
 
@@ -59,11 +59,11 @@
 #include <stdlib.h>
 
 #if defined(WIN32)
-#  include <fcntl.h>
-#  include <io.h>
-#  include "SPTK.h"
+#include <fcntl.h>
+#include <io.h>
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 #define LINEBUFSIZE 256
