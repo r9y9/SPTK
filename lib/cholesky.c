@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /****************************************************************
-    $Id: cholesky.c,v 1.14 2014/12/11 08:30:53 uratec Exp $
+    $Id: cholesky.c,v 1.16 2016/12/22 10:53:15 fjst15124 Exp $
 
     Solve Linear Set of Equations
 		       Using Cholesky Decomposition 
@@ -66,9 +66,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 int cholesky(double *c, double *a, double *b, const int n, double eps)
