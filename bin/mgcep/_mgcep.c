@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-   $Id: _mgcep.c,v 1.30 2014/12/11 08:30:41 uratec Exp $
+   $Id: _mgcep.c,v 1.32 2016/12/22 10:53:08 fjst15124 Exp $
 
    Mel-Generalized Cepstral Analysis
 
@@ -65,15 +65,12 @@
                               2 -> e is floor periodogram in db
        double   e     : value for log-periodogram
                         or floor periodogram in db
-       double   f     : mimimum value of the determinant
+       double   f     : mimimum value of the determinant 
                         of the normal matrix
        int      itype : input data type
-
+                         
        return value   : 0 -> completed by end condition
                         -1-> completed by maximum iteration
-                        1 -> invalid etype
-                        2 -> invalid itype
-                        3 -> failed to compute mel-generalized cepstrum
 
 *****************************************************************/
 
@@ -82,9 +79,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 /*  gain(epsilon) calculation  */
@@ -102,7 +99,7 @@ static double gain(double *er, double *c, int m, double g)
 }
 
 /*  b'(m) to c(m)  */
-void b2c(double *b, int m1, double *c, int m2, double a)
+static void b2c(double *b, int m1, double *c, int m2, double a)
 {
    int i, j;
    static double *d = NULL, *g;
@@ -187,12 +184,12 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
 
    if (etype == 1 && e < 0.0) {
       fprintf(stderr, "mgcep : value of e must be e>=0!\n");
-      return 1;
+      exit(1);
    }
 
    if (etype == 2 && e >= 0.0) {
       fprintf(stderr, "mgcep : value of E must be E<0!\n");
-      return 1;
+      exit(1);
    }
 
    if (etype == 1) {
@@ -251,7 +248,7 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
       break;
    default:
       fprintf(stderr, "mgcep : Input type %d is not supported!\n", itype);
-      return 2;
+      exit(1);
    }
    if (itype > 0) {
       for (i = 1; i < flng / 2; i++)
@@ -276,9 +273,6 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
    /* initial value */
    fillz(b, sizeof(*b), m + 1);
    ep = newton(x, flng, b, m, a, -1.0, n, 0, f);
-   if (ep == -1) {
-     return 3;
-   }
 
    if (g != -1.0) {
       if (a != 0.0) {
@@ -302,9 +296,6 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
       for (j = 1; j <= itr2; j++) {
          epo = ep;
          ep = newton(x, flng, b, m, a, g, n, j, f);
-	 if (ep == -1) {
-	   return 3;
-	 }
 
          if (j >= itr1)
             if (fabs((epo - ep) / ep) < dd) {
@@ -423,7 +414,7 @@ double newton(double *x, const int flng, double *c, const int m, const double a,
 
    if (theq(pr, &qr[2], &b[1], &rr[1], m, f)) {
       fprintf(stderr, "mgcep : Error in theq() at %dth iteration!\n", j);
-      return -1;
+      exit(1);
    }
 
    for (i = 1; i <= m; i++)

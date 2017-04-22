@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _mlsadf.c,v 1.19 2014/12/11 08:30:42 uratec Exp $
+    $Id: _mlsadf.c,v 1.22 2016/12/22 10:53:09 fjst15124 Exp $
 
     MLSA Digital Filter
 
@@ -64,9 +64,9 @@
 #include <stdio.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 static double pade[] = { 1.0,
@@ -77,7 +77,7 @@ static double pade[] = { 1.0,
    1.0, 0.4999391, 0.1107098, 0.01369984, 0.0009564853, 0.00003041721
 };
 
-double *ppade_mlsadf;
+double *ppade;
 
 static double mlsafir(double x, double *b, const int m, const double a,
                       double *d)
@@ -113,7 +113,7 @@ static double mlsadf1(double x, double *b, const double a,
    for (i = pd; i >= 1; i--) {
       d[i] = aa * pt[i - 1] + a * d[i];
       pt[i] = d[i] * b[1];
-      v = pt[i] * ppade_mlsadf[i];
+      v = pt[i] * ppade[i];
 
       x += (1 & i) ? v : -v;
       out += v;
@@ -135,7 +135,7 @@ static double mlsadf2(double x, double *b, const int m, const double a,
 
    for (i = pd; i >= 1; i--) {
       pt[i] = mlsafir(pt[i - 1], b, m, a, &d[(i - 1) * (m + 2)]);
-      v = pt[i] * ppade_mlsadf[i];
+      v = pt[i] * ppade[i];
 
       x += (1 & i) ? v : -v;
       out += v;
@@ -150,7 +150,7 @@ static double mlsadf2(double x, double *b, const int m, const double a,
 double mlsadf(double x, double *b, const int m, const double a, const int pd,
               double *d)
 {
-   ppade_mlsadf = &pade[pd * (pd + 1) / 2];
+   ppade = &pade[pd * (pd + 1) / 2];
 
    x = mlsadf1(x, b, a, pd, d);
    x = mlsadf2(x, b, m, a, pd, &d[2 * (pd + 1)]);
@@ -188,7 +188,7 @@ static double mlsadf2t(double x, double *b, const int m, const double a,
 
    for (i = pd; i >= 1; i--) {
       pt[i] = mlsafirt(pt[i - 1], b, m, a, &d[(i - 1) * (m + 2)]);
-      v = pt[i] * ppade_mlsadf[i];
+      v = pt[i] * ppade[i];
 
       x += (1 & i) ? v : -v;
       out += v;
@@ -203,7 +203,7 @@ static double mlsadf2t(double x, double *b, const int m, const double a,
 double mlsadft(double x, double *b, const int m, const double a, const int pd,
                double *d)
 {
-   ppade_mlsadf = &pade[pd * (pd + 1) / 2];
+   ppade = &pade[pd * (pd + 1) / 2];
 
    x = mlsadf1(x, b, a, pd, d);
    x = mlsadf2t(x, b, m, a, pd, &d[2 * (pd + 1)]);

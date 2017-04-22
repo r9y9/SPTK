@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _lpc.c,v 1.18 2014/12/11 08:30:39 uratec Exp $
+    $Id: _lpc.c,v 1.20 2016/12/22 10:53:06 fjst15124 Exp $
 
     LPC Analysis Using Levinson-Durbin method
 
@@ -67,9 +67,9 @@
 #include <stdlib.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 int lpc(double *x, const int flng, double *a, const int m, const double f)

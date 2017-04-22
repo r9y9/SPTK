@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /************************************************************************
 *                                                                       *
-*      $Id: _root_pol.c,v 1.17 2014/12/11 08:30:49 uratec Exp $        *
+*      $Id: _root_pol.c,v 1.20 2016/12/22 10:53:11 fjst15124 Exp $        *
 *                                                                       *
 *      Durand-Kerner-Aberth for Higher Order Equation                   *
 *                                                                       *
@@ -75,9 +75,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 typedef enum { plus, minus, multiply, divide } opt;
@@ -91,10 +91,10 @@ static double rad_root(const double x, const int i)
       return exp(log(x) / i);
 }
 
-static Complex c_math(Complex c1, opt op, Complex c2)
+static complex c_math(complex c1, opt op, complex c2)
 {
    double p;
-   Complex t;
+   complex t;
 
    switch (op) {
    case plus:
@@ -122,17 +122,17 @@ static Complex c_math(Complex c1, opt op, Complex c2)
    return t;
 }
 
-static double c_mag(Complex x)
+static double c_mag(complex x)
 {
    return sqrt(x.re * x.re + x.im * x.im);
 }
 
-static double c_arg(Complex x)
+static double c_arg(complex x)
 {
    return atan2(x.im, x.re);
 }
 
-void output_root_pol(Complex * x, int odr, int form)
+void output_root_pol(complex * x, int odr, int form)
 {
    int i, k;
    double mag, arg, *a;
@@ -174,12 +174,12 @@ void output_root_pol(Complex * x, int odr, int form)
    return;
 }
 
-Complex *cplx_getmem(const int leng)
+complex *cplx_getmem(const int leng)
 {
    int i;
-   Complex *p = NULL;
+   complex *p = NULL;
 
-   if ((p = (Complex *) malloc(sizeof(Complex) * leng)) == NULL) {
+   if ((p = (complex *) malloc(sizeof(complex) * leng)) == NULL) {
       fprintf(stderr, "root_pol : Cannot allocate memory!\n");
       exit(3);
    }
@@ -190,14 +190,14 @@ Complex *cplx_getmem(const int leng)
    return p;
 }
 
-void root_pol(double *a, const int odr, Complex * x, const int a_zero,
+void root_pol(double *a, const int odr, complex * x, const int a_zero,
               const double eps, const int itrat)
 {
    int i, j, k, l;
    double th, th1, th2, cm, cmax;
-   Complex cden, cnum, c1, *deltx;
+   complex cden, cnum, c1, *deltx;
 
-   deltx = cplx_getmem(odr);
+   deltx = cplx_getmem(odr + 1);
 
    if (!a_zero)
       for (i = 1; i <= odr; i++)

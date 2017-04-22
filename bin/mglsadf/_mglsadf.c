@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _mglsadf.c,v 1.19 2014/12/11 08:30:41 uratec Exp $
+    $Id: _mglsadf.c,v 1.21 2016/12/22 10:53:08 fjst15124 Exp $
 
     MGLSA Digital Filter
 
@@ -77,9 +77,9 @@
 #include <stdio.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 static double mglsadff(double x, double *b, const int m, const double a,
