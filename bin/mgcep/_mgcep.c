@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-   $Id: _mgcep.c,v 1.30 2014/12/11 08:30:41 uratec Exp $
+   $Id: _mgcep.c,v 1.32 2016/12/22 10:53:08 fjst15124 Exp $
 
    Mel-Generalized Cepstral Analysis
 
@@ -82,9 +82,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 /*  gain(epsilon) calculation  */
@@ -276,9 +276,6 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
    /* initial value */
    fillz(b, sizeof(*b), m + 1);
    ep = newton(x, flng, b, m, a, -1.0, n, 0, f);
-   if (ep == -1) {
-     return 3;
-   }
 
    if (g != -1.0) {
       if (a != 0.0) {
@@ -302,9 +299,9 @@ int mgcep(double *xw, int flng, double *b, const int m, const double a,
       for (j = 1; j <= itr2; j++) {
          epo = ep;
          ep = newton(x, flng, b, m, a, g, n, j, f);
-	 if (ep == -1) {
-	   return 3;
-	 }
+         if (ep == -1) {
+             return 3;
+         }
 
          if (j >= itr1)
             if (fabs((epo - ep) / ep) < dd) {

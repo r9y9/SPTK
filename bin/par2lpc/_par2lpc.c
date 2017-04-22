@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /***************************************************************
 
-    $Id: _par2lpc.c,v 1.17 2014/12/11 08:30:43 uratec Exp $
+    $Id: _par2lpc.c,v 1.19 2016/12/22 10:53:10 fjst15124 Exp $
 
     Transformation PARCOR to LPC
 
@@ -59,9 +59,9 @@
 #include <stdio.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 void par2lpc(double *k, double *a, const int m)

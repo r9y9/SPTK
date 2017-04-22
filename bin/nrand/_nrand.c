@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /****************************************************************
-  $Id: _nrand.c,v 1.16 2014/12/11 08:30:43 uratec Exp $
+  $Id: _nrand.c,v 1.18 2016/12/22 10:53:10 fjst15124 Exp $
 
     Generate Normal Distributed Random Value
         nrand(p, leng, seed)
@@ -58,9 +58,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 #define RAND_MAX 32767

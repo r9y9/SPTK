@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2013  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /***********************************************************
-   $Id: SPTK.h,v 1.54 2013/12/16 09:02:06 mataki Exp $
+   $Id: SPTK.h,v 1.66 2016/12/25 05:00:20 uratec Exp $
 
    Speech Signal Processing Toolkit
    SPTK.h
@@ -51,6 +51,8 @@
 
 #ifndef SPTK_H_
 #define SPTK_H_
+
+#include <stdio.h>
 
 #ifndef DLLEXPORT
 #  ifdef _MSC_VER
@@ -86,9 +88,9 @@
 /* #endif */
 
 #ifdef __BIG_ENDIAN
-#  if __BYTE_ORDER == __BIG_ENDIAN
-#    define WORDS_BIGENDIAN
-#  endif
+#if __BYTE_ORDER == __BIG_ENDIAN
+#define WORDS_BIGENDIAN
+#endif
 #endif
 
 /* enum for Boolean */
@@ -142,7 +144,7 @@ typedef struct _wavfile {
    int fmt_chunk_size;          /* size of 'fmt ' chunk (byte) */
    int data_chunk_size;         /* size of 'data' chunk (byte) */
    short format_id;             /* format ID (PCM(1) or IEEE float(3)) */
-   short channel_num;           /* mono:1，stereo:2 */
+   short channel_num;           /* mono:1: stereo:2 */
    int sample_freq;             /* sampling frequency (Hz) */
    int byte_per_sec;            /* byte per second */
    short block_size;            /* 16bit, mono => 16bit*1=2byte */
@@ -195,7 +197,7 @@ int toeplitz(double *t, double *a, double *b, const int n, double eps);
 
 
 /* tool routines */
-DLLEXPORT double acep(double x, double *c, const int m, const double lambda,
+double acep(double x, double *c, const int m, const double lambda,
             const double step, const double tau, const int pd,
             const double eps);
 void acorr(double *x, int l, double *r, const int np);
@@ -248,9 +250,10 @@ double glsadft(double x, double *c, const int m, const int n, double *d);
 double glsadf1t(double x, double *c, const int m, const int n, double *d);
 double cal_gconst(double *var, const int D);
 double cal_gconstf(double **var, const int D);
-double log_wgd(const GMM * gmm, const int m, const int L, const double *dat);
+double log_wgd(const GMM * gmm, const int m, const int L1, const int L2,
+               const double *dat);
 double log_add(double logx, double logy);
-double log_outp(const GMM * gmm, const int L, const double *dat);
+double log_outp(const GMM * gmm, const int L1, const int L2, const double *dat);
 void fillz_GMM(GMM * gmm);
 int alloc_GMM(GMM * gmm, const int M, const int L, const Boolean full);
 int load_GMM(GMM * gmm, FILE * fp);
@@ -288,10 +291,14 @@ void lbg(double *x, const int l, const int tnum, double *icb, int icbsize,
          const double end);
 int levdur(double *r, double *a, const int m, double eps);
 double lmadf(double x, double *c, const int m, const int pd, double *d);
-double lmadft(double x, double *c, const int m, const int pd, double *d);
-double lmadf1(double x, double *c, const int m, double *d, const int m1,
-              const int m2, const int pd);
-double lmadf1t(double x, double *b, const int pd, double *d);
+double cascade_lmadf(double x, double *c, const int m, const int pd, double *d,
+                     const int block_num, int *block_size);
+double lmadft(double x, double *c, const int m, const int pd, double *d,
+              const int block_num, int *block_size);
+double lmadf1(double x, double *c, const int m, double *d, const int pd,
+              const int m1, const int m2);
+double lmadf2t(double x, double *b, const int m, const int pd, double *d,
+               const int m1, const int m2);
 int lpc(double *x, const int flng, double *a, const int m, const double f);
 void lpc2c(double *a, int m1, double *c, const int m2);
 int lpc2lsp(double *lpc, double *lsp, const int order, const int numsp,
@@ -311,6 +318,8 @@ void mfcc(double *in, double *mc, const double sampleFreq, const double alpha,
           const double eps, const int wlng, const int flng, const int m,
           const int n, const int ceplift, const Boolean dftmode,
           const Boolean usehamming);
+void maskCov_GMM(GMM * gmm, const int *dim_list, const int cov_dim,
+                 const Boolean block_full, const Boolean block_corr);
 void frqtr(double *c1, int m1, double *c2, int m2, const double a);
 void mgc2mgc(double *c1, const int m1, const double a1, const double g1,
              double *c2, const int m2, const double a2, const double g2);
@@ -393,7 +402,7 @@ int search_wav_list(Filelist * filelist, char *key);
 /* excitation */
 void excite(double *pitch, int n, double *out, int fprd, int iprd, Boolean gauss, int seed_i);
 
-void swipe(double *input, double *output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype);
+DLLEXPORT void swipe(double *input, double *output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype);
 
 /****************************************************************
     The RAPT pitch tracker

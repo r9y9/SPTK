@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /************************************************************************
-    $Id: _ulaw.c,v 1.16 2014/12/11 08:30:51 uratec Exp $
+    $Id: _ulaw.c,v 1.18 2016/12/22 10:53:12 fjst15124 Exp $
 
     u-law coder
 
@@ -71,9 +71,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 #define abs(x) ((x>=0) ? (x) : (-(x)))

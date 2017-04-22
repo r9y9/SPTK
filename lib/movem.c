@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------- */
 
 /********************************************************
-    $Id: movem.c,v 1.13 2014/12/11 08:30:53 uratec Exp $
+    $Id: movem.c,v 1.15 2016/12/22 10:53:15 fjst15124 Exp $
 
     Data Transfer Function
 

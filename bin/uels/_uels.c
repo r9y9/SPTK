@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2014  Nagoya Institute of Technology          */
+/*                1996-2016  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _uels.c,v 1.28 2014/12/11 08:30:51 uratec Exp $
+    $Id: _uels.c,v 1.30 2016/12/22 10:53:12 fjst15124 Exp $
 
     Unbiased Estimation of Log Spectrum
 
@@ -77,9 +77,9 @@
 #include <math.h>
 
 #if defined(WIN32)
-#  include "SPTK.h"
+#include "SPTK.h"
 #else
-#  include <SPTK.h>
+#include <SPTK.h>
 #endif
 
 /* Fast Algorithm for Linear Prediction with Linear Phase */
@@ -248,7 +248,7 @@ int uels(double *xw, const int flng, double *c, const int m, const int itr1,
       if (x[i] <= 0) {
          fprintf(stderr,
                  "uels : The log periodogram has '0', use '-e' option!\n");
-	 return 3;
+         return 3;
       }
       x[i] = cr[i] = log(x[i]);
    }
