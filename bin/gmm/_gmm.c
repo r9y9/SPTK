@@ -327,7 +327,7 @@ double log_wgd(const GMM * gmm, const int m, const int l1, const int l2,
    return (lwgd);
 }
 
-double log_add(double logx, double logy)
+static double log_add_gmm(double logx, double logy)
 {
    double swap, diff, minLogExp, z;
 
@@ -355,7 +355,7 @@ double log_outp(const GMM * gmm, const int l1, const int l2, const double *dat)
 
    for (m = 0, logb = LZERO; m < gmm->nmix; m++) {
       logwgd = log_wgd(gmm, m, l1, l2, dat);
-      logb = log_add(logb, logwgd);
+      logb = log_add_gmm(logb, logwgd);
    }
    return (logb);
 }

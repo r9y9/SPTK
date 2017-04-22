@@ -198,7 +198,7 @@ int mcep(double *xw, const int flng, double *mc, const int m, const double a,
       if (x[i] <= 0.0) {
          fprintf(stderr,
                  "mcep : periodogram has '0', use '-e' option to floor it!\n");
-	 return 4;
+         return 4;
       }
       c[i] = log(x[i]);
    }

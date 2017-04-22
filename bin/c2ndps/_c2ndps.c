@@ -74,7 +74,7 @@ void c2ndps(double *c, const int m, double *n, const int l)
    fillz(n, sizeof(*n), l);
    tmp = dgetmem(l);
 
-   // generate mc(m)
+   /* generate mc(m) */
    for (i = 1; i < m + 1; i++) {
       n[i] = c[i] * i / 2.0;
       n[l - i] = n[i];

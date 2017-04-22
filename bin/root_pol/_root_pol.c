@@ -91,10 +91,10 @@ static double rad_root(const double x, const int i)
       return exp(log(x) / i);
 }
 
-static complex c_math(complex c1, opt op, complex c2)
+static Complex c_math(Complex c1, opt op, Complex c2)
 {
    double p;
-   complex t;
+   Complex t;
 
    switch (op) {
    case plus:
@@ -122,17 +122,17 @@ static complex c_math(complex c1, opt op, complex c2)
    return t;
 }
 
-static double c_mag(complex x)
+static double c_mag(Complex x)
 {
    return sqrt(x.re * x.re + x.im * x.im);
 }
 
-static double c_arg(complex x)
+static double c_arg(Complex x)
 {
    return atan2(x.im, x.re);
 }
 
-void output_root_pol(complex * x, int odr, int form)
+void output_root_pol(Complex * x, int odr, int form)
 {
    int i, k;
    double mag, arg, *a;
@@ -174,12 +174,12 @@ void output_root_pol(complex * x, int odr, int form)
    return;
 }
 
-complex *cplx_getmem(const int leng)
+Complex *cplx_getmem(const int leng)
 {
    int i;
-   complex *p = NULL;
+   Complex *p = NULL;
 
-   if ((p = (complex *) malloc(sizeof(complex) * leng)) == NULL) {
+   if ((p = (Complex *) malloc(sizeof(Complex) * leng)) == NULL) {
       fprintf(stderr, "root_pol : Cannot allocate memory!\n");
       exit(3);
    }
@@ -190,12 +190,12 @@ complex *cplx_getmem(const int leng)
    return p;
 }
 
-void root_pol(double *a, const int odr, complex * x, const int a_zero,
+void root_pol(double *a, const int odr, Complex * x, const int a_zero,
               const double eps, const int itrat)
 {
    int i, j, k, l;
    double th, th1, th2, cm, cmax;
-   complex cden, cnum, c1, *deltx;
+   Complex cden, cnum, c1, *deltx;
 
    deltx = cplx_getmem(odr + 1);
 
