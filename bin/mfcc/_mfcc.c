@@ -224,7 +224,7 @@ void mfcc(double *in, double *mc, const double sampleFreq, const double alpha,
       wx = px + wlng;
       sp = wx + flng;
       fb = sp + flng;
-      dc = fb + n + 1;
+      dc = fb + n * 2 + 1;
    }
    /* need to intizlize dct workspace to zeros */
    fillz(fb + 1, n * 2 + m * 2, sizeof(double));
