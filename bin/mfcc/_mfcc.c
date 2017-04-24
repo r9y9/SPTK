@@ -209,22 +209,25 @@ void mfcc(double *in, double *mc, const double sampleFreq, const double alpha,
    double energy = 0.0, c0 = 0.0;
    int k;
 
+   int memory_size = wlng + wlng + flng + flng + n * 2 + 1 + m * 2;
    if (x == NULL) {
-      x = dgetmem(wlng + wlng + flng + flng + n + 1 + m + 1);
+      x = dgetmem(memory_size);
       px = x + wlng;
       wx = px + wlng;
       sp = wx + flng;
       fb = sp + flng;
-      dc = fb + n + 1;
+      dc = fb + n * 2 + 1;
    } else {
       free(x);
-      x = dgetmem(wlng + wlng + flng + flng + n + 1 + m + 1);
+      x = dgetmem(memory_size);
       px = x + wlng;
       wx = px + wlng;
       sp = wx + flng;
       fb = sp + flng;
       dc = fb + n + 1;
    }
+   /* need to intizlize dct workspace to zeros */
+   fillz(fb + 1, n * 2 + m * 2, sizeof(double));
 
    movem(in, x, sizeof(*in), wlng);
    /* calculate energy */
