@@ -93,6 +93,10 @@
 #endif
 #endif
 
+#if defined (__cplusplus)
+extern "C" {
+#endif
+
 /* enum for Boolean */
 typedef enum _Boolean { FA, TR } Boolean;
 
@@ -418,5 +422,8 @@ int rapt(float *input, float* output, int length, double sample_freq,
 
 void b2c(double *b, int m1, double *c, int m2, double a);
 
+#if defined (__cplusplus)
+}
+#endif
 
 #endif  /* SPTK_H_ */
