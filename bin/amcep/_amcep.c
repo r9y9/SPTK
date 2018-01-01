@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2016  Nagoya Institute of Technology          */
+/*                1996-2017  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _amcep.c,v 1.20 2016/12/22 10:52:59 fjst15124 Exp $
+    $Id$
 
     Adaptive Mel Cepstral Analysis
 
@@ -78,26 +78,26 @@ double amcep(double x, double *b, const int m, const double a,
              const double lambda, const double step, const double tau,
              const int pd, const double eps)
 {
-   int i;
+   int i, memory_size;
    static double *bb = NULL, *d, *ep, *e, xx, gg = 1.0;
    static int size;
    double mu, tx;
 
-   int expected_size = 3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2);
+   memory_size = 3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2);
    if (bb == NULL) {
-      bb = dgetmem(expected_size);
+      bb = dgetmem(memory_size);
       e = bb + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = expected_size;
+      size = memory_size;
    }
-   if (expected_size > size) {
+   if (memory_size > size) {
       free(bb);
-      bb = dgetmem(expected_size);
+      bb = dgetmem(memory_size);
       e = bb + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = expected_size;
+      size = memory_size;
    }
 
    for (i = 1; i <= m; i++)
