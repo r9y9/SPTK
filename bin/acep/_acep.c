@@ -8,7 +8,7 @@
 /*                           Interdisciplinary Graduate School of    */
 /*                           Science and Engineering                 */
 /*                                                                   */
-/*                1996-2016  Nagoya Institute of Technology          */
+/*                1996-2017  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /* All rights reserved.                                              */
@@ -44,7 +44,7 @@
 
 /****************************************************************
 
-    $Id: _acep.c,v 1.18 2016/12/22 10:52:59 fjst15124 Exp $
+    $Id$
 
     Adaptive Cepstral Analysis
 
@@ -75,27 +75,27 @@
 double acep(double x, double *c, const int m, const double lambda,
             const double step, const double tau, const int pd, const double eps)
 {
-   int i;
+   int i, memory_size;
    static double *cc = NULL, *e, *ep, *d, gg = 1.0;
    static int size;
    double mu, tx;
 
-   int expected_size = m + m + m + 3 + (m + 1) * pd * 2;
+   memory_size = m + m + m + 3 + (m + 1) * pd * 2;
    if (cc == NULL) {
-      cc = dgetmem(expected_size);
+      cc = dgetmem(memory_size);
       e = cc + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = expected_size;
+      size = memory_size;
    }
 
-   if (expected_size > size) {
+   if (memory_size > size) {
       free(cc);
-      cc = dgetmem(expected_size);
+      cc = dgetmem(memory_size);
       e = cc + m + 1;
       ep = e + m + 1;
       d = ep + m + 1;
-      size = expected_size;
+      size = memory_size;
    }
 
    for (i = 1; i <= m; i++)
