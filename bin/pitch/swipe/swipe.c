@@ -75,8 +75,6 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#include "../../dllexport.h"
-
 #if 0
 #include <fftw3.h>   /* http://www.fftw.org/ */
 #include <sndfile.h> /* http://www.mega-nerd.com/libsndfile/ */
@@ -463,7 +461,7 @@ vector pitch(matrix S, vector pc, double st) {
 #if 0
 vector swipe(int fid, double min, double max, double st, double dt) {
 #else
-DLLEXPORT void swipe(double *input, double* output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype) {
+void swipe(double *input, double* output, int length, int samplerate, int frame_shift, double min, double max, double st, int otype) {
 #endif
     int i;
     double td = 0.;
