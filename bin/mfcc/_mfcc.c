@@ -205,7 +205,7 @@ void mfcc(double *in, double *mc, const double sampleFreq, const double alpha,
           const int n, const int ceplift, const Boolean dftmode,
           const Boolean usehamming)
 {
-   static double *x = NULL, *px, *wx, *sp, *fb, *dc;
+   double *x = NULL, *px, *wx, *sp, *fb, *dc;
    double energy = 0.0, c0 = 0.0;
    int k;
 
