@@ -110,12 +110,10 @@ int isnan(double x) {
 }
 #endif
 
-#ifndef log2
 /* a base-2 log function */
-double log2(double x) {
+double swipe_log2(double x) {
     return log(x) / log(2.);
 }
-#endif
 
 #ifndef round
 /* rounds a double to the nearest integer value */
@@ -407,7 +405,7 @@ void Slast(matrix S, vector x, vector pc, vector fERBs, vector d,
 vector pitch(matrix S, vector pc, double st) {
     int i, j;
     int maxi = -1;
-    int search = (int) round((log2(pc.v[2]) - log2(pc.v[0])) / POLYV + 1.);
+    int search = (int) round((swipe_log2(pc.v[2]) - swipe_log2(pc.v[0])) / POLYV + 1.);
     double nftc, maxv, log2pc;
     double tc2 = 1. / pc.v[1];
     vector coefs;
@@ -429,7 +427,7 @@ vector pitch(matrix S, vector pc, double st) {
             if (maxi == 0 || maxi == S.x - 1) p.v[j] = pc.v[0];
             else { /* general case */
                 tc2 = 1. / pc.v[maxi];
-                log2pc = log2(pc.v[maxi - 1]);
+                log2pc = swipe_log2(pc.v[maxi - 1]);
                 s.v[0] = S.m[maxi - 1][j];
                 s.v[1] = S.m[maxi][j];
                 s.v[2] = S.m[maxi + 1][j];
@@ -493,17 +491,17 @@ DLLEXPORT void swipe(double *input, double* output, int length, int samplerate, 
         dt = nyquist2;
         fprintf(stderr, "Timestep > SR...timestep set to %f.\n", nyquist2);
     }
-    ws = makeiv(round(log2((nyquist16) / min) -
-                                log2((nyquist16) / max)) + 1);
+    ws = makeiv(round(swipe_log2((nyquist16) / min) -
+                                swipe_log2((nyquist16) / max)) + 1);
     for (i = 0; i < ws.x; i++)
-        ws.v[i] = pow(2, round(log2(nyquist16 / min))) / pow(2, i);
-    pc = makev(ceil((log2(max) - log2(min)) / DLOG2P));
+        ws.v[i] = pow(2, round(swipe_log2(nyquist16 / min))) / pow(2, i);
+    pc = makev(ceil((swipe_log2(max) - swipe_log2(min)) / DLOG2P));
     d = makev(pc.x);
     for (i = pc.x - 1; i >= 0; i--) {
-        td = log2(min) + (i * DLOG2P);
+        td = swipe_log2(min) + (i * DLOG2P);
         pc.v[i] = pow(2, td);
-        d.v[i] = 1. + td - log2(nyquist16 / ws.v[0]);
-    } /* td now equals log2(min) */
+        d.v[i] = 1. + td - swipe_log2(nyquist16 / ws.v[0]);
+    } /* td now equals swipe_log2(min) */
 #if 0
     x = makev((int) info.frames); /* read in the signal */
     sf_read_double(source, x.v, x.x);
